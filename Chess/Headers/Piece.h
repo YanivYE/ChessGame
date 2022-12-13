@@ -5,6 +5,8 @@
 
 using std::string;
 
+enum Color {white, black};
+
 
 class Piece
 {
