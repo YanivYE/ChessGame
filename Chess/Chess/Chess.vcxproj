@@ -131,7 +131,16 @@
     <ClCompile Include="..\CPP\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Headers\Bishop.h" />
+    <ClInclude Include="..\Headers\EmptyPiece.h" />
+    <ClInclude Include="..\Headers\GameLogic.h" />
+    <ClInclude Include="..\Headers\King.h" />
+    <ClInclude Include="..\Headers\Knight.h" />
+    <ClInclude Include="..\Headers\Pawn.h" />
+    <ClInclude Include="..\Headers\Piece.h" />
     <ClInclude Include="..\Headers\Pipe.h" />
+    <ClInclude Include="..\Headers\Queen.h" />
+    <ClInclude Include="..\Headers\Rook.h" />
     <ClInclude Include="..\Headers\stdafx.h" />
     <ClInclude Include="..\Headers\targetver.h" />
   </ItemGroup>
