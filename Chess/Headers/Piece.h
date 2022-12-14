@@ -5,8 +5,7 @@
 
 using std::string;
 
-enum Color {white, black};
-
+enum Player {White, Black};
 
 class Piece
 {
@@ -18,6 +17,6 @@ public:
 protected:
 	string _type;
 	string _placement;
-	enum _color;
+	enum _player;
 
 };

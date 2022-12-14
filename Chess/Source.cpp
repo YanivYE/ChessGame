@@ -4,7 +4,7 @@ It is recommended to use the following code in your project,
 in order to read and write information from and to the Backend
 */
 
-#include "../Headers/Pipe.h"
+#include "Headers/Pipe.h"
 #include <iostream>
 #include <thread>
 

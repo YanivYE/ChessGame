@@ -127,8 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\CPP\Source.cpp" />
+    <ClCompile Include="..\CPP\Bishop.cpp" />
+    <ClCompile Include="..\CPP\EmptyPiece.cpp" />
+    <ClCompile Include="..\CPP\GameLogic.cpp" />
+    <ClCompile Include="..\CPP\King.cpp" />
+    <ClCompile Include="..\CPP\Knight.cpp" />
+    <ClCompile Include="..\CPP\Pawn.cpp" />
+    <ClCompile Include="..\CPP\Queen.cpp" />
+    <ClCompile Include="..\CPP\Rook.cpp" />
     <ClCompile Include="..\CPP\stdafx.cpp" />
+    <ClCompile Include="..\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Headers\Bishop.h" />
