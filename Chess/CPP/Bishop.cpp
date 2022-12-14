@@ -1,8 +1,8 @@
 #include "../Headers/Bishop.h"
 
-Bishop::Bishop()
+
+Bishop::Bishop(string type, string placement, Player player) : Piece(type, placement, player)
 {
-    Piece::Piece();
 }
 
 bool Bishop::isValidMove(string dest) const
