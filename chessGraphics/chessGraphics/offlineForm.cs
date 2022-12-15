@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace chessGraphics
 {
-    public partial class Form1 : Form
+    public partial class offlineForm : Form
     {
         private Square srcSquare;
         private Square dstSquare;
@@ -24,7 +24,7 @@ namespace chessGraphics
 
         const int BOARD_SIZE = 8;
 
-        public Form1()
+        public offlineForm()
         {
             InitializeComponent();
         }

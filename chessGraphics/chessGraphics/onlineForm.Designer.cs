@@ -1,6 +1,6 @@
 ﻿namespace chessGraphics
 {
-    partial class Form1
+    partial class onlineForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(onlineForm));
             this.btnBoard = new System.Windows.Forms.Button();
             this.lblMove = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
