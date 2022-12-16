@@ -17,12 +17,12 @@ void main()
 {
 	srand(time_t(NULL));
 
-	
 	Pipe p;
-	bool isConnect = p.connectToPipe();
-	
+	bool isConnectedPipe = p.connectToPipe();
+	sockaddr_in isConnectedServer = p.connectToServer();
+
 	string ans;
-	while (!isConnect)
+	while (!isConnectedPipe)
 	{
 		cout << "cant connect to graphics" << endl;
 		cout << "Do you try to connect again or exit? (0-try again, 1-exit)" << endl;
@@ -32,7 +32,7 @@ void main()
 		{
 			cout << "trying connect again.." << endl;
 			Sleep(5000);
-			isConnect = p.connectToPipe();
+			isConnectedPipe = p.connectToPipe();
 		}
 		else 
 		{
