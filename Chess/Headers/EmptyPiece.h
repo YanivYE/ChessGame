@@ -5,6 +5,7 @@
 class EmptyPiece : public Piece
 {
 public:
+	EmptyPiece(string type, string placement, Player player);
 	bool isValidMove(string dest) const override;
 
 
