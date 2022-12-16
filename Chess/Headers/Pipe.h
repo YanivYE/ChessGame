@@ -39,6 +39,10 @@
 #include <stdio.h>
 #include <conio.h>
 #include <tchar.h>
+#include <iostream>
+#include <sys/types.h>
+#include <winsock.h>
+#include <string.h>
 
 #pragma endregion
 
@@ -59,7 +63,7 @@ public:
 
 	}
 
-	bool connect()
+	bool connectToPipe()
 	{
 		hPipe = CreateFile(
 			strPipeName,			// Pipe name 
@@ -91,6 +95,28 @@ public:
 
 	}
 
+	sockaddr_in connectToServer()
+	{
+		// Create a new socket
+		int socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+
+		// Connect to the Python server at the specified IP address and port
+		sockaddr_in server;
+		server.sin_addr.s_addr = inet_addr("127.0.0.1");
+		server.sin_family = AF_INET;
+		server.sin_port = htons(8200);
+
+		int connection_status = connect(socket_desc, (sockaddr*)&server, sizeof(server));
+		
+		if (connection_status == -1)
+		{
+			std::cout << "Cannot connect. Please Try Again Later." << std::endl;
+			return sockaddr_in();
+		}
+
+		return server;
+	}
+
 	bool sendMessageToGraphics(char* msg)
 	{
 		//char ea[] = "SSS";
@@ -117,6 +143,13 @@ public:
 			cbBytesWritten, chRequest);
 
 		return true;
+
+	}
+
+	void sendMessageToServer(char* msg)
+	{
+		char* chRequest = msg;
+
 
 	}
 

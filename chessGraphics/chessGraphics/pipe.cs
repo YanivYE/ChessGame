@@ -19,6 +19,7 @@ namespace chessGraphics
         NamedPipeServerStream pipeServer;
         StreamString ss ;
 
+
         public pipe()
         {
             pipeServer =

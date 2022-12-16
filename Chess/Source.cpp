@@ -19,7 +19,7 @@ void main()
 
 	
 	Pipe p;
-	bool isConnect = p.connect();
+	bool isConnect = p.connectToPipe();
 	
 	string ans;
 	while (!isConnect)
@@ -32,7 +32,7 @@ void main()
 		{
 			cout << "trying connect again.." << endl;
 			Sleep(5000);
-			isConnect = p.connect();
+			isConnect = p.connectToPipe();
 		}
 		else 
 		{
