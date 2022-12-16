@@ -18,7 +18,7 @@ GameLogic::GameLogic(string graphicBoard)
 GameLogic::~GameLogic()
 {
 	int i = 0;
-	for (i = 0; i < GRAPHIC_BOARD_LENGTH; i++)
+	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
 		delete(this->_boardPieces[i]);
 	}
@@ -28,7 +28,7 @@ GameLogic::~GameLogic()
 std::vector<Piece*> GameLogic::toVector(string graphicBoard)
 {
 	int i = 0;
-	for (i = 0; i < GRAPHIC_BOARD_LENGTH; i++)
+	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
 		this->_boardPieces.push_back(charToPiece(graphicBoard[i], i));
 	}
@@ -139,7 +139,7 @@ int GameLogic::movmentCode(string source, string destination)
 	{
 		return 7;
 	}
-	return checkCode(this->_boardPieces[placementToIndex(source)], this->_boardPieces[placementToIndex(destination)]);
+	return checkCodes(this->_boardPieces[placementToIndex(source)], this->_boardPieces[placementToIndex(destination)]);
 }
 
 bool GameLogic::checkCode7(string source, string destination)
@@ -162,12 +162,43 @@ bool GameLogic::checkCode6(Piece* srcP, Piece* destP)
 	return srcP->isValidMove(destP->_placement);
 }
 
-bool GameLogic::checkCode4(Piece* srcP, Piece* destP)
+bool GameLogic::checkCode4(Player currentPlayer)
 {
-	return srcP->isValidMove(destP->_placement);
+	int i = 0;
+	for (i = 0; i < CHESS_BOARD_SIZE; i++)
+	{
+		if (this->_boardPieces[i]->_color == opponentColor(currentPlayer))
+		{
+			return this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement);
+		}
+	}
 }
 
-int GameLogic::checkCode(Piece* srcP, Piece* destP)
+Piece* GameLogic::currPlayerKing(Player currentPlayer)
+{
+	int i = 0;
+	for (i = 0; i < CHESS_BOARD_SIZE; i++)
+	{
+		if (this->_boardPieces[i]->_isKing)
+		{
+			if (this->_boardPieces[i]->_color == currentPlayer)
+			{
+				return this->_boardPieces[i];
+			}
+		}
+	}
+}
+
+Player GameLogic::opponentColor(Player currentPlayer)
+{
+	if (currentPlayer == White)
+	{
+		return Black;
+	}
+	return White;
+}
+
+int GameLogic::checkCodes(Piece* srcP, Piece* destP)
 {
 	if (checkCode2(srcP->_color, this->_turn))
 	{
@@ -181,10 +212,11 @@ int GameLogic::checkCode(Piece* srcP, Piece* destP)
 	{
 		return 6;
 	}
-	if (checkCode4(srcP, destP))
+	if (checkCode4(this->_turn))
 	{
 		return 4;
 	}
+
 }
 
 
