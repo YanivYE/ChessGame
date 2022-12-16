@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\CPP\Bishop.cpp" />
+    <ClCompile Include="..\CPP\EmptyPiece.cpp" />
+    <ClCompile Include="..\CPP\GameLogic.cpp" />
     <ClCompile Include="..\CPP\King.cpp" />
+    <ClCompile Include="..\CPP\Knight.cpp" />
     <ClCompile Include="..\CPP\Pawn.cpp" />
     <ClCompile Include="..\CPP\Piece.cpp" />
     <ClCompile Include="..\CPP\Queen.cpp" />
