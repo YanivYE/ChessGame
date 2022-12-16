@@ -162,16 +162,40 @@ bool GameLogic::checkCode6(Piece* srcP, Piece* destP)
 	return srcP->isValidMove(destP->_placement);
 }
 
-bool GameLogic::checkCode4(Player currentPlayer)
+bool GameLogic::checkCode4(string source, string destination, Player currentPlayer)
 {
 	int i = 0;
+	bool isCheck = false;
+	std::vector<Piece*> currStateVector = this->_boardPieces;
+	// change vector to the givven move
+	commitMove(source, destination);
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
 		if (this->_boardPieces[i]->_color == opponentColor(currentPlayer))
 		{
-			return this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement);
+			isCheck = this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement);
 		}
 	}
+	if (isCheck)
+	{
+		// return vector to prevoius state
+		this->_boardPieces = currStateVector;
+	}
+	return isCheck;
+}
+
+bool GameLogic::checkCode1(Player currentPlayer, string destination)
+{
+	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer));
+	return this->_boardPieces[placementToIndex(destination)]->isValidMove(opponentKing->_placement);
+}
+
+void GameLogic::commitMove(string source, string destination)
+{
+	Piece* movedPiece = this->_boardPieces[placementToIndex(source)];
+	this->_boardPieces[placementToIndex(source)] = new EmptyPiece(EMPTY_PIECE, source, None);
+	delete(this->_boardPieces[placementToIndex(destination)]);
+	this->_boardPieces[placementToIndex(destination)] = movedPiece;
 }
 
 Piece* GameLogic::currPlayerKing(Player currentPlayer)
@@ -212,11 +236,15 @@ int GameLogic::checkCodes(Piece* srcP, Piece* destP)
 	{
 		return 6;
 	}
-	if (checkCode4(this->_turn))
+	if (checkCode4(srcP->_placement, destP->_placement, this->_turn))
 	{
 		return 4;
 	}
-
+	if (checkCode1(this->_turn, destP->_placement))
+	{
+		return 1;
+	}
+	return 0;
 }
 
 
