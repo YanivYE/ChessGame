@@ -129,6 +129,7 @@ void GameLogic::switchTurn()
 	}
 	else
 	{
+
 		this->_turn == White;
 	}
 }
