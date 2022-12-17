@@ -1,5 +1,7 @@
 #pragma once
 
+// add defines, consts, comments
+
 #include <vector>
 #include "Piece.h"
 
