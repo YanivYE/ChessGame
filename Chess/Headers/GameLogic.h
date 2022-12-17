@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-
 #include "Piece.h"
 
 #define CHESS_BOARD_SIZE 64

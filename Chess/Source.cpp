@@ -5,6 +5,7 @@ in order to read and write information from and to the Backend
 */
 
 #include "Headers/Pipe.h"
+#include "Headers/GameLogic.h"
 #include <iostream>
 #include <thread>
 
@@ -70,7 +71,8 @@ void main()
 	// YOUR CODE
 
 	strcpy_s(msgToGraphics, "rnbkqbnrpppppppp################################PPPPPPPPRNBKQBNR1"); // just example...
-	
+	// copy to vector
+	GameLogic board = GameLogic(msgToGraphics);
 	p.sendMessageToGraphics(msgToGraphics);   // send the board string
 
 	// get message from graphics
@@ -85,7 +87,7 @@ void main()
 		// according the protocol. Ex: e2e4           (move e2 to e4)
 		
 		// YOUR CODE
-		strcpy_s(msgToGraphics, "YOUR CODE"); // msgToGraphics should contain the result of the operation
+		strcpy_s(msgToGraphics, board.movePieces(msgFromGraphics).c_str()); // msgToGraphics should contain the result of the operation
 
 		/******* JUST FOR EREZ DEBUGGING ******/
 		int r = rand() % 10; // just for debugging......
