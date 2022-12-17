@@ -4,7 +4,7 @@ King::King(string type, string placement, Player player) : Piece(type, placement
 {
 }
 
-bool King::isValidMove(string dest) const
+bool King::isValidMove(string dest, vector<Piece*> board) const
 {
     int row_difference = abs(dest[1] - this->_placement[1]);
     int col_difference = abs(dest[0] - this->_placement[0]);

@@ -4,7 +4,7 @@ EmptyPiece::EmptyPiece(string type, string placement, Player player) : Piece(typ
 {
 }
 
-bool EmptyPiece::isValidMove(string dest) const
+bool EmptyPiece::isValidMove(string dest, vector<Piece*> board) const
 {
     return false;
 }

@@ -7,7 +7,7 @@ class Rook : public Piece
 public:
 	Rook(string type, string placement, Player player);
 
-	bool isValidMove(string dest) const override;
+	bool isValidMove(string dest, vector<Piece*> board) const override;
 
 
 };

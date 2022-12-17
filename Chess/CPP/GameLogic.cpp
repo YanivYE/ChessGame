@@ -160,7 +160,7 @@ bool GameLogic::checkCode3(Player destPlayer, Player currentPlayer)
 
 bool GameLogic::checkCode6(Piece* srcP, Piece* destP)
 {
-	return srcP->isValidMove(destP->_placement);
+	return srcP->isValidMove(destP->_placement, this->_boardPieces);
 }
 
 bool GameLogic::checkCode4(string source, string destination, Player currentPlayer)
@@ -174,7 +174,7 @@ bool GameLogic::checkCode4(string source, string destination, Player currentPlay
 	{
 		if (this->_boardPieces[i]->_color == opponentColor(currentPlayer))
 		{
-			isCheck = this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement);
+			isCheck = this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement, this->_boardPieces);
 		}
 	}
 	if (isCheck)
@@ -188,7 +188,7 @@ bool GameLogic::checkCode4(string source, string destination, Player currentPlay
 bool GameLogic::checkCode1(Player currentPlayer, string destination)
 {
 	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer));
-	return this->_boardPieces[placementToIndex(destination)]->isValidMove(opponentKing->_placement);
+	return this->_boardPieces[placementToIndex(destination)]->isValidMove(opponentKing->_placement, this->_boardPieces);
 }
 
 void GameLogic::commitMove(string source, string destination)

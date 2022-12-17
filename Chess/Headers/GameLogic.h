@@ -55,6 +55,6 @@ private:
 	int checkCodes(Piece* srcP, Piece* destP);
 
 public:	
-	static std::vector<Piece*> _boardPieces;
+	std::vector<Piece*> _boardPieces;
 	Player _turn;
 };
