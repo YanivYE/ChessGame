@@ -12,36 +12,22 @@ player_sockets = {}
 def handle_client(client_soc, client_address, color):
     global num_connected_clients
 
-    # Define the opposite color before the try block
-    opposite_color = "Black" if color == "White" else "White"
-
     while True:
         # Receive a message from the client
         try:
             message_bytes = client_soc.recv(1024)
             message = message_bytes.decode("ascii")
-            if not message:
-                # If the message is empty, assume that the client has disconnected
-                print("Lost connection to {} ({})".format(client_address, color))
-                num_connected_clients -= 1
-                if opposite_color in player_sockets:
-                    opposite_player_socket = player_sockets[opposite_color]
-                    opposite_player_socket.send("Opposite player has disconnected. Exiting the game".encode("ascii"))
-                    opposite_player_socket.close()
-                break
             print("Received message from {} ({}): {}".format(client_address, color, message))
 
-            # Send the message to the opposite player if it is connected
-            if opposite_color in player_sockets:
-                opposite_player_socket = player_sockets[opposite_color]
-                opposite_player_socket.send(message.encode("ascii"))
+            # Send the message to the opposite player
+            opposite_color = "Black" if color == "White" else "White"
+            opposite_player_socket = player_sockets[opposite_color]
+            opposite_player_socket.send(message.encode("ascii"))
+
+            print("Send message to {} ({}): {}".format(opposite_player_socket.getsockname(), opposite_color, message))
         except (ConnectionResetError, ConnectionAbortedError):
             print("Lost connection to {} ({})".format(client_address, color))
             num_connected_clients -= 1
-            if opposite_color in player_sockets:
-                opposite_player_socket = player_sockets[opposite_color]
-                opposite_player_socket.send("Opposite player has disconnected. Exiting the game".encode("ascii"))
-                opposite_player_socket.close()
             break
 
 

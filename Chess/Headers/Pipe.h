@@ -33,20 +33,29 @@
 #pragma once
 #pragma region Includes
 #include "stdafx.h"
+#define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
 #include <string>
 #include <stdio.h>
 #include <conio.h>
 #include <tchar.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <stdlib.h>
 #include <iostream>
-#include <sys/types.h>
-#include <winsock.h>
-#include <string.h>
 
 #pragma endregion
 
 #define BUFFER_SIZE		1024 // 1K
+
+// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
+
+#define DEFAULT_PORT "8200"
+#define LAN "127.0.0.1"
 
 class Pipe
 {
@@ -95,26 +104,70 @@ public:
 
 	}
 
-	sockaddr_in connectToServer()
+	bool connectToLAN(SOCKET& server)
 	{
 		// Create a new socket
-		int socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+		SOCKET ConnectSocket = INVALID_SOCKET;
+		struct addrinfo* result = NULL,
+			* ptr = NULL,
+			hints;
+		int iResult = 0;
+		WSADATA wsaData;
 
-		// Connect to the Python server at the specified IP address and port
-		sockaddr_in server;
-		server.sin_addr.s_addr = inet_addr("127.0.0.1");
-		server.sin_family = AF_INET;
-		server.sin_port = htons(8200);
-
-		int connection_status = connect(socket_desc, (sockaddr*)&server, sizeof(server));
-		
-		if (connection_status == -1)
-		{
-			std::cout << "Cannot connect. Please Try Again Later." << std::endl;
-			return sockaddr_in();
+		// Initialize Winsock
+		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if (iResult != 0) {
+			std::cout << "WSAStartup failed with error: " << iResult << std::endl;
+			return false;
 		}
 
-		return server;
+		ZeroMemory(&hints, sizeof(hints));
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+
+		// Resolve the server address and port
+		iResult = getaddrinfo(LAN, DEFAULT_PORT, &hints, &result);
+		if (iResult != 0) {
+			printf("getaddrinfo failed with error: %d\n", iResult);
+			WSACleanup();
+			return false;
+		}
+
+		// Attempt to connect to an address until one succeeds
+		for (ptr = result; ptr != NULL; ptr = ptr->ai_next) 
+		{
+
+			// Create a SOCKET for connecting to server
+			ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
+				ptr->ai_protocol);
+			if (ConnectSocket == INVALID_SOCKET) {
+				printf("socket failed with error: %ld\n", WSAGetLastError());
+				WSACleanup();
+				return false;
+			}
+
+			// Connect to server.
+			iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+			if (iResult == SOCKET_ERROR) {
+				closesocket(ConnectSocket);
+				ConnectSocket = INVALID_SOCKET;
+				continue;
+			}
+			break;
+		}
+
+		freeaddrinfo(result);
+
+		if (ConnectSocket == INVALID_SOCKET) {
+			printf("Unable to connect to server!\n");
+			WSACleanup();
+			return false;
+		}
+
+		server = ConnectSocket;
+
+		return true;
 	}
 
 	bool sendMessageToGraphics(char* msg)
@@ -146,11 +199,34 @@ public:
 
 	}
 
-	void sendMessageToServer(char* msg)
+	bool sendMessageToServer(const std::string msg, SOCKET server)
 	{
-		char* chRequest = msg;
+		int iResult = send(server, msg.c_str(), (int)strlen(msg.c_str()), 0);
 
+		if (iResult == SOCKET_ERROR) {
+			printf("send failed with error: %d\n", WSAGetLastError());
+			closesocket(server);
+			WSACleanup();
+			return false;
+		}
 
+		return true;
+	}
+
+	std::string getMessageFromServer(SOCKET server)
+	{
+		char recvbuf[BUFFER_SIZE];
+
+		int iResult = recv(server, recvbuf, BUFFER_SIZE, 0);
+
+		if (iResult == SOCKET_ERROR) {
+			printf("recieving failed with error: %d\n", WSAGetLastError());
+			closesocket(server);
+			WSACleanup();
+			return "";
+		}
+		
+		return recvbuf;
 	}
 
 	std::string getMessageFromGraphics()
@@ -184,6 +260,5 @@ public:
 	{
 		CloseHandle(hPipe);
 	}
-
 
 };

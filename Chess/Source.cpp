@@ -16,27 +16,50 @@ using std::string;
 void main()
 {
 	srand(time_t(NULL));
-
+	
 	Pipe p;
-	bool isConnectedPipe = p.connectToPipe();
-	sockaddr_in isConnectedServer = p.connectToServer();
-
+	SOCKET serverSocket;
+	bool isConnectedServer = p.connectToLAN(serverSocket);
 	string ans;
+
+	while (!isConnectedServer)
+	{
+		cout << "cant connect to server" << endl;
+		cout << "Do you try to connect again or exit? (0-try again, 1-exit)" << endl;
+		std::cin >> ans;
+
+		if (ans == "0" && !isConnectedServer)
+		{
+			cout << "trying to connect again to server.." << endl;
+			Sleep(5000);
+			isConnectedServer = p.connectToLAN(serverSocket);
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	cout << "Server Connected!" << endl;
+
+	bool isConnectedPipe = p.connectToPipe();
+
 	while (!isConnectedPipe)
 	{
 		cout << "cant connect to graphics" << endl;
 		cout << "Do you try to connect again or exit? (0-try again, 1-exit)" << endl;
 		std::cin >> ans;
 
-		if (ans == "0")
+		if (ans == "0" && !isConnectedPipe)
 		{
-			cout << "trying connect again.." << endl;
+			cout << "trying to connect again to pipe.." << endl;
 			Sleep(5000);
 			isConnectedPipe = p.connectToPipe();
 		}
-		else 
+		else
 		{
 			p.close();
+
 			return;
 		}
 	}
@@ -52,6 +75,9 @@ void main()
 
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
+	string msgFromServer = "";
+
+	p.sendMessageToServer(msgFromGraphics, serverSocket);
 
 	while (msgFromGraphics != "quit")
 	{
@@ -73,6 +99,10 @@ void main()
 
 		// get message from graphics
 		msgFromGraphics = p.getMessageFromGraphics();
+		p.sendMessageToServer(msgFromGraphics, serverSocket);
+
+		msgFromServer = p.getMessageFromServer(serverSocket);
+		cout << msgFromServer << endl;
 	}
 
 	p.close();
