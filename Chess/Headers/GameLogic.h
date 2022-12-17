@@ -1,6 +1,7 @@
 #pragma once
 
 // add defines, consts, comments
+// check if move goes beiond another oppenent player
 
 #include <vector>
 #include "Piece.h"
@@ -17,6 +18,8 @@
 #define PAWN "Pawn"
 #define EMPTY_PIECE "Empty Piece"
 
+class Piece;
+
 class GameLogic
 {
 public:
@@ -25,13 +28,14 @@ public:
 	std::vector<Piece*> toVector(string graphicBoard);		// convert graphic board string into vector
 	string movePieces(string movment);		// return the code string for the givven move
 
+	static int placementToIndex(string placement);
+	static Player opponentColor(Player currentPlayer);
 
 private:
 	void switchTurn();
 	Piece* charToPiece(char pieceLetter, int index);	// convert each char from graphic board into its piece
 	string indexToPlacement(int index);
 	Player findPieceColor(char pieceLetter);
-	int placementToIndex(string placement);
 
 	int movmentCode(string source, string destination);
 	bool checkCode7(string source, string destination);
@@ -43,10 +47,9 @@ private:
 
 	void commitMove(string source, string destination);
 	Piece* currPlayerKing(Player currentPlayer);
-	Player opponentColor(Player currentPlayer);
 	int checkCodes(Piece* srcP, Piece* destP);
 
-private:	
-	std::vector<Piece*> _boardPieces;
+public:	
+	static std::vector<Piece*> _boardPieces;
 	Player _turn;
 };
