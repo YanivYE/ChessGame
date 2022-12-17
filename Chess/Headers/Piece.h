@@ -19,5 +19,4 @@ public:
 	string _type;
 	string _placement;
 	Player _color;
-	bool _isKing;
 };

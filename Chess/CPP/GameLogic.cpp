@@ -204,7 +204,7 @@ Piece* GameLogic::currPlayerKing(Player currentPlayer)
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
-		if (this->_boardPieces[i]->_isKing)
+		if (this->_boardPieces[i]->_type == KING)
 		{
 			if (this->_boardPieces[i]->_color == currentPlayer)
 			{
