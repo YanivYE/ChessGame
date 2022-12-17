@@ -2,11 +2,11 @@
 using namespace std;
 
 
-Bishop::Bishop(string type, string placement, Player player) : Piece(type, placement, player)
+Bishop::Bishop(const string type, const string placement, const Player player) : Piece(type, placement, player)
 {
 }
 
-bool Bishop::isValidMove(string dest, vector<Piece*> board) const
+bool Bishop::isValidMove(const string dest, const vector<Piece*> board) const
 {
     int row_difference = abs(dest[1] - this->_placement[1]);
     int col_difference = abs(dest[0] - this->_placement[0]);

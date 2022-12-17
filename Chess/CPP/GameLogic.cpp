@@ -9,7 +9,7 @@
 
 using namespace std;
 
-GameLogic::GameLogic(string graphicBoard)
+GameLogic::GameLogic(const string graphicBoard)
 {
 	this->_boardPieces = toVector(graphicBoard);
 	this->_turn = Player(int(graphicBoard[STARTING_PLAYER]) - '0');
@@ -25,7 +25,7 @@ GameLogic::~GameLogic()
 	this->_boardPieces.clear();
 }
 
-vector<Piece*> GameLogic::toVector(string graphicBoard)
+vector<Piece*> GameLogic::toVector(const string graphicBoard)
 {
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
@@ -35,26 +35,26 @@ vector<Piece*> GameLogic::toVector(string graphicBoard)
 	return this->_boardPieces;
 }
 
-Piece* GameLogic::charToPiece(char pieceLetter, int index)
+Piece* GameLogic::charToPiece(const char pieceLetter, const int index) const
 {
 	switch (pieceLetter)
 	{
-	case 'r':
+	case ROOK_CHAR:
 		return new Rook(ROOK, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case 'n':
+	case KNIGHT_CHAR:
 		return new Knight(KNIGHT, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case 'b':
+	case BISHOP_CHAR:
 		return new Bishop(BISHOP, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case 'k':
+	case KING_CHAR:
 		return new King(KING, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case 'q':
+	case QUEEN_CHAR:
 		return new Queen(QUEEN, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case 'p':
+	case PAWN_CHAR:
 		return new Pawn(PAWN, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
 	default:
@@ -63,10 +63,10 @@ Piece* GameLogic::charToPiece(char pieceLetter, int index)
 	}
 }
 
-string GameLogic::indexToPlacement(int index)
+string GameLogic::indexToPlacement(const int index) const
 {
-	int row = CHESS_BOARD_SIDE - (index / 8);
-	int col = index % 8;
+	int row = CHESS_BOARD_SIDE - (index / CHESS_BOARD_SIDE);
+	int col = index % CHESS_BOARD_SIDE;
 
 	char col_letter = 'a' + col;
 
@@ -75,7 +75,7 @@ string GameLogic::indexToPlacement(int index)
 	return chess_board_index;
 }
 
-int GameLogic::placementToIndex(string placement)
+int GameLogic::placementToIndex(const string placement)
 {
 	// Get the column letter from the placement string
 	char col_letter = placement[0];
@@ -94,9 +94,9 @@ int GameLogic::placementToIndex(string placement)
 }
 
 
-Player GameLogic::findPieceColor(char pieceLetter)
+Player GameLogic::findPieceColor(const char pieceLetter) const
 {
-	if (pieceLetter == '#')
+	if (pieceLetter == EMPTY_PIECE_CHAR)
 	{
 		return None;
 	}
@@ -107,7 +107,7 @@ Player GameLogic::findPieceColor(char pieceLetter)
 	return Black;
 }
 
-string GameLogic::movePieces(string movment)
+string GameLogic::movePieces(const string movment)
 {
 	int code = 0;
 	string source = movment.substr(0, 2);
@@ -129,41 +129,40 @@ void GameLogic::switchTurn()
 	}
 	else
 	{
-
 		this->_turn == White;
 	}
 }
 
-int GameLogic::movmentCode(string source, string destination)
+int GameLogic::movmentCode(const string source, const string destination) 
 {
 	if (checkCode7(source, destination))
 	{
-		return 7;
+		return CODE_7;
 	}
 	return checkCodes(this->_boardPieces[placementToIndex(source)], this->_boardPieces[placementToIndex(destination)]);
 }
 
-bool GameLogic::checkCode7(string source, string destination)
+bool GameLogic::checkCode7(const string source, const string destination) const
 {
 	return source == destination;
 }
 
-bool GameLogic::checkCode2(Player sourcePlayer, Player currentPlayer)
+bool GameLogic::checkCode2(const Player sourcePlayer, const Player currentPlayer) const
 {
 	return sourcePlayer != currentPlayer;
 }
 
-bool GameLogic::checkCode3(Player destPlayer, Player currentPlayer)
+bool GameLogic::checkCode3(const Player destPlayer, const Player currentPlayer) const
 {
 	return destPlayer == currentPlayer;
 }
 
-bool GameLogic::checkCode6(Piece* srcP, Piece* destP)
+bool GameLogic::checkCode6(const Piece* srcP, const Piece* destP) const
 {
 	return srcP->isValidMove(destP->_placement, this->_boardPieces);
 }
 
-bool GameLogic::checkCode4(string source, string destination, Player currentPlayer)
+bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer)
 {
 	int i = 0;
 	bool isCheck = false;
@@ -185,13 +184,13 @@ bool GameLogic::checkCode4(string source, string destination, Player currentPlay
 	return isCheck;
 }
 
-bool GameLogic::checkCode1(Player currentPlayer, string destination)
+bool GameLogic::checkCode1(const Player currentPlayer, const string destination) const
 {
 	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer));
 	return this->_boardPieces[placementToIndex(destination)]->isValidMove(opponentKing->_placement, this->_boardPieces);
 }
 
-void GameLogic::commitMove(string source, string destination)
+void GameLogic::commitMove(const string source, const string destination)
 {
 	Piece* movedPiece = this->_boardPieces[placementToIndex(source)];
 	this->_boardPieces[placementToIndex(source)] = new EmptyPiece(EMPTY_PIECE, source, None);
@@ -199,7 +198,7 @@ void GameLogic::commitMove(string source, string destination)
 	this->_boardPieces[placementToIndex(destination)] = movedPiece;
 }
 
-Piece* GameLogic::currPlayerKing(Player currentPlayer)
+Piece* GameLogic::currPlayerKing(const Player currentPlayer) const
 {
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
@@ -214,7 +213,7 @@ Piece* GameLogic::currPlayerKing(Player currentPlayer)
 	}
 }
 
-Player GameLogic::opponentColor(Player currentPlayer)
+Player GameLogic::opponentColor(const Player currentPlayer) 
 {
 	if (currentPlayer == White)
 	{
@@ -223,27 +222,27 @@ Player GameLogic::opponentColor(Player currentPlayer)
 	return White;
 }
 
-int GameLogic::checkCodes(Piece* srcP, Piece* destP)
+int GameLogic::checkCodes(const Piece* srcP, const Piece* destP) 
 {
 	if (checkCode2(srcP->_color, this->_turn))
 	{
-		return 2;
+		return CODE_2;
 	}
 	if (checkCode3(destP->_color, this->_turn))
 	{
-		return 3;
+		return CODE_3;
 	}
 	if (checkCode6(srcP, destP))
 	{
-		return 6;
+		return CODE_6;
 	}
 	if (checkCode4(srcP->_placement, destP->_placement, this->_turn))
 	{
-		return 4;
+		return CODE_4;
 	}
 	if (checkCode1(this->_turn, destP->_placement))
 	{
-		return 1;
+		return CODE_1;
 	}
-	return 0;
+	return CODE_0;
 }

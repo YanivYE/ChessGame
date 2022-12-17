@@ -11,8 +11,8 @@ Piece::Piece(string type, string placement, Player color)
 bool Piece::clearMovingPath(string dest, vector<Piece*> board) const
 {
     // Convert the positions from strings to pairs of (row, col) integers
-    pair<int, int> curPos = { 8 - (this->_placement[1] - '1'), this->_placement[0] - 'a' };
-    pair<int, int> destPos = { 8 - (dest[1] - '1'), dest[0] - 'a' };
+    pair<int, int> curPos = { CHESS_BOARD_SIDE - (this->_placement[1] - '1'), this->_placement[0] - 'a' };
+    pair<int, int> destPos = { CHESS_BOARD_SIDE - (dest[1] - '1'), dest[0] - 'a' };
     // Check if piece is a rook or queen (can move horizontally or vertically)
     if (this->_type == ROOK || this->_type == QUEEN)
     {

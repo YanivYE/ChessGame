@@ -5,8 +5,8 @@
 class EmptyPiece : public Piece
 {
 public:
-	EmptyPiece(string type, string placement, Player player);
-	bool isValidMove(string dest, vector<Piece*> board) const override;
+	EmptyPiece(const string type, const string placement, const Player player);
+	bool isValidMove(const string dest, const vector<Piece*> board) const override;
 
 
 };

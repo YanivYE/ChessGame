@@ -1,10 +1,10 @@
 #include "../Headers/EmptyPiece.h"
 
-EmptyPiece::EmptyPiece(string type, string placement, Player player) : Piece(type, placement, player)
+EmptyPiece::EmptyPiece(const string type, const string placement, const Player player) : Piece(type, placement, player)
 {
 }
 
-bool EmptyPiece::isValidMove(string dest, vector<Piece*> board) const
+bool EmptyPiece::isValidMove(const string dest, const vector<Piece*> board) const
 {
     return false;
 }
