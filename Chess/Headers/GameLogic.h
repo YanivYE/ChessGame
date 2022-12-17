@@ -3,6 +3,8 @@
 // add defines, consts, comments
 // check if move goes beiond another oppenent player
 
+enum Player { White, Black, None };
+
 #include <vector>
 #include "Piece.h"
 
@@ -17,6 +19,9 @@
 #define QUEEN "Queen"
 #define PAWN "Pawn"
 #define EMPTY_PIECE "Empty Piece"
+
+using std::string;
+using std::vector;
 
 class Piece;
 

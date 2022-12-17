@@ -16,8 +16,8 @@ def handle_client(client_soc, client_address, color):
     opposite_color = "Black" if color == "White" else "White"
 
     while True:
-        # Receive a message from the client
         try:
+            # Receive a message from the client
             message_bytes = client_soc.recv(1024)
             message = message_bytes.decode("ascii")
             if not message:
@@ -35,6 +35,7 @@ def handle_client(client_soc, client_address, color):
             if opposite_color in player_sockets:
                 opposite_player_socket = player_sockets[opposite_color]
                 opposite_player_socket.send(message.encode("ascii"))
+                print("Sent message to {} ({}): {}".format(opposite_player_socket.getsockname(), color, message))
         except (ConnectionResetError, ConnectionAbortedError):
             print("Lost connection to {} ({})".format(client_address, color))
             num_connected_clients -= 1
@@ -54,7 +55,7 @@ def create_listening_sock():
     listening_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to the server's address and port
-    server_address = ('127.0.0.1', 8200)
+    server_address = ('192.168.1.178', 8200)
     listening_sock.bind(server_address)
 
     # Listen for incoming connections

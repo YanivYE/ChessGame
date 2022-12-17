@@ -25,7 +25,7 @@ GameLogic::~GameLogic()
 	this->_boardPieces.clear();
 }
 
-std::vector<Piece*> GameLogic::toVector(string graphicBoard)
+vector<Piece*> GameLogic::toVector(string graphicBoard)
 {
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
@@ -167,7 +167,7 @@ bool GameLogic::checkCode4(string source, string destination, Player currentPlay
 {
 	int i = 0;
 	bool isCheck = false;
-	std::vector<Piece*> currStateVector = this->_boardPieces;
+	vector<Piece*> currStateVector = this->_boardPieces;
 	// change vector to the givven move
 	commitMove(source, destination);
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)

@@ -55,7 +55,7 @@
 #pragma comment (lib, "AdvApi32.lib")
 
 #define DEFAULT_PORT "8200"
-#define LAN "127.0.0.1"
+#define LAN "192.168.1.178"
 
 class Pipe
 {

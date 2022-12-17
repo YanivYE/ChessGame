@@ -1,12 +1,16 @@
 #include "../Headers/Pawn.h"
 
+
 Pawn::Pawn(string type, string placement, Player player) : Piece(type, placement, player)
 {
 }
 
 bool Pawn::isValidMove(string dest) const
 {
-    Piece* destPiece = GameLogic::_boardPieces[GameLogic::placementToIndex(dest)];
+    int index = GameLogic::placementToIndex(dest);
+
+    Piece* destPiece = GameLogic::_boardPieces[index];
+
     // Pawn can move forward one square if the destination is empty
     if (dest[1] == this->_placement[1] + 1 && dest[0] == this->_placement[0] &&
         destPiece->_type == EMPTY_PIECE)

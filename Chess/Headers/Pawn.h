@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Piece.h"
+#include "GameLogic.h"
+
+using std::string;
+using std::vector;
 
 class Pawn : public Piece
 {

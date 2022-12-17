@@ -6,8 +6,6 @@
 
 using std::string;
 
-enum Player {White, Black, None};
-
 class GameLogic;
 
 class Piece 
