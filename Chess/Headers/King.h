@@ -8,5 +8,4 @@ public:
 	King(string type, string placement, Player player);
 	bool isValidMove(string dest, vector<Piece*> board) const override;
 
-
 };

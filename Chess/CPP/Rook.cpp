@@ -8,7 +8,10 @@ bool Rook::isValidMove(string dest, vector<Piece*> board) const
 {
     if (dest[0] == this->_placement[0] || dest[1] == this->_placement[1]) 
     {
-        return true;
+        if (clearMovingPath(dest, board))
+        {
+            return true;
+        }
     }
 
     return false;
