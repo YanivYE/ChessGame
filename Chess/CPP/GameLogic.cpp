@@ -187,14 +187,15 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 		if (this->_boardPieces[i]->_color == opponentColor(currentPlayer))
 		{
 			isCheck = this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement, this->_boardPieces);
+			if (isCheck)
+			{
+				// return vector to prevoius state
+				this->_boardPieces = currStateVector;
+				return isCheck;
+			}
 		}
 	}
-	if (isCheck)
-	{
-		// return vector to prevoius state
-		this->_boardPieces = currStateVector;
-	}
-
+	
 	return isCheck;
 }
 
