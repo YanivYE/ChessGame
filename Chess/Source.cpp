@@ -25,8 +25,8 @@ void main()
 
 	while (!isConnectedServer)
 	{
-		cout << "cant connect to server" << endl;
-		cout << "Do you try to connect again or exit? (0-try again, 1-exit)" << endl;
+		cout << "Initial Server Connection Failed." << endl;
+		cout << "Would you like to try to connect again or exit? (0-try again, 1-exit)" << endl;
 		std::cin >> ans;
 
 		if (ans == "0" && !isConnectedServer)
@@ -88,13 +88,6 @@ void main()
 		
 		// YOUR CODE
 		strcpy_s(msgToGraphics, board.movePieces(msgFromGraphics).c_str()); // msgToGraphics should contain the result of the operation
-
-		/******* JUST FOR EREZ DEBUGGING ******/
-		int r = rand() % 10; // just for debugging......
-		msgToGraphics[0] = (char)(1 + '0');
-		msgToGraphics[1] = 0;
-		/******* JUST FOR EREZ DEBUGGING ******/
-
 
 		// return result to graphics		
 		p.sendMessageToGraphics(msgToGraphics);   

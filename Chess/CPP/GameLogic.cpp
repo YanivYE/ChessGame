@@ -109,28 +109,14 @@ Player GameLogic::findPieceColor(const char pieceLetter) const
 
 string GameLogic::movePieces(const string movment)
 {
-	int code = 0;
-	string source = movment.substr(0, 2);
-	string destination = movment.substr(2, 4);
+	int code = movmentCode(movment.substr(0, 2), movment.substr(2, 4));
+	char codeChr = code + '0';
 
-	code = movmentCode(source, destination);
+	string returnCode(1, codeChr);
 
-	switchTurn();
-	string charCode = "";
-	charCode = (int(code) - '0') + '\0';
-	return charCode;
-}
+	returnCode += '\0';
 
-void GameLogic::switchTurn()
-{
-	if (this->_turn == White)
-	{
-		this->_turn == Black;
-	}
-	else
-	{
-		this->_turn == White;
-	}
+	return returnCode;
 }
 
 int GameLogic::movmentCode(const string source, const string destination) 

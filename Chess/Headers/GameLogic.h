@@ -51,7 +51,6 @@ public:
 	static Player opponentColor(const Player currentPlayer);
 
 private:
-	void switchTurn();
 	Piece* charToPiece(const char pieceLetter, const int index) const;	// convert each char from graphic board into its piece
 	string indexToPlacement(const int index) const;
 	Player findPieceColor(const char pieceLetter) const;
