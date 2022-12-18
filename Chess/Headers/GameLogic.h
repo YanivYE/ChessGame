@@ -73,7 +73,7 @@ private:
 
 	void commitMove(const string source, const string destination);
 	Piece* currPlayerKing(const Player currentPlayer) const;
-	int checkCodes(const Piece* srcP, const Piece* destP);
+	int checkCodes(const Piece* srcP, Piece* destP);
 
 	Player charToPlayer(const char playerChar) const;
 public:	

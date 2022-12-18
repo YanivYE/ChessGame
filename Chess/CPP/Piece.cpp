@@ -8,6 +8,11 @@ Piece::Piece(const string type, const string placement, const Player color)
 	this->_color = color;
 }
 
+Piece::Piece(const Piece& other)
+{
+    *this = other;
+}
+
 bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
 {
     // Convert the positions from strings to pairs of (row, col) integers
@@ -67,3 +72,19 @@ bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
     // If none of the above conditions are met, the path is clear
     return true;
 }
+
+Piece& Piece::operator=(const Piece& other)
+{
+    if (this == &other) // tries to copy the object to itself
+    {
+        return *this;
+    }
+
+    // shallow copy fields
+    this->_color = other._color;
+    this->_placement = other._placement;
+    this->_type = other._type;
+
+    return *this;
+}
+

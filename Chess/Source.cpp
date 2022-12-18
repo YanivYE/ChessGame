@@ -19,11 +19,11 @@ void main()
 	srand(time_t(NULL));
 	
 	Pipe p;
-	SOCKET serverSocket;
-	bool isConnectedServer = p.connectToLAN(serverSocket);
+	//SOCKET serverSocket;
+	//bool isConnectedServer = p.connectToLAN(serverSocket);
 	string ans;
 
-	while (!isConnectedServer)
+	/*while (!isConnectedServer)
 	{
 		cout << "Initial Server Connection Failed." << endl;
 		cout << "Would you like to try to connect again or exit? (0-try again, 1-exit)" << endl;
@@ -42,7 +42,7 @@ void main()
 	}
 
 	cout << "Server Connected!" << endl;
-
+	*/
 	bool isConnectedPipe = p.connectToPipe();
 
 	while (!isConnectedPipe)
@@ -79,7 +79,7 @@ void main()
 	string msgFromGraphics = p.getMessageFromGraphics();
 	string msgFromServer = "";
 
-	p.sendMessageToServer(msgFromGraphics, serverSocket);
+	//p.sendMessageToServer(msgFromGraphics, serverSocket);
 
 	while (msgFromGraphics != "quit")
 	{
@@ -94,10 +94,10 @@ void main()
 
 		// get message from graphics
 		msgFromGraphics = p.getMessageFromGraphics();
-		p.sendMessageToServer(msgFromGraphics, serverSocket);
+		//p.sendMessageToServer(msgFromGraphics, serverSocket);
 
 		//msgFromServer = p.getMessageFromServer(serverSocket);
-		cout << msgFromServer << endl;
+		//cout << msgFromServer << endl;
 	}
 
 	p.close();

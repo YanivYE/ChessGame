@@ -103,11 +103,11 @@ void GameLogic::switchTurn()
 {
 	if (this->_turn == White)
 	{
-		this->_turn == Black;
+		this->_turn = Black;
 	}
 	else
 	{
-		this->_turn == White;
+		this->_turn = White;
 	}
 }
 
@@ -194,21 +194,29 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 		// return vector to prevoius state
 		this->_boardPieces = currStateVector;
 	}
+
 	return isCheck;
 }
 
 bool GameLogic::checkCode1(const Player currentPlayer, const string destination) const
 {
 	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer));
+
 	return this->_boardPieces[placementToIndex(destination)]->isValidMove(opponentKing->_placement, this->_boardPieces);
 }
 
 void GameLogic::commitMove(const string source, const string destination)
 {
 	Piece* movedPiece = this->_boardPieces[placementToIndex(source)];
+
 	this->_boardPieces[placementToIndex(source)] = new EmptyPiece(EMPTY_PIECE, source, None);
+
 	delete(this->_boardPieces[placementToIndex(destination)]);
+
+	movedPiece->_placement = destination;
+
 	this->_boardPieces[placementToIndex(destination)] = movedPiece;
+
 }
 
 Piece* GameLogic::currPlayerKing(const Player currentPlayer) const
@@ -235,8 +243,10 @@ Player GameLogic::opponentColor(const Player currentPlayer)
 	return White;
 }
 
-int GameLogic::checkCodes(const Piece* srcP, const Piece* destP) 
+int GameLogic::checkCodes(const Piece* srcP, Piece* destP) 
 {
+	int despPiecePlacemnt = placementToIndex(destP->_placement);
+
 	if (checkCode2(srcP->_color, this->_turn))
 	{
 		return CODE_2;
@@ -245,7 +255,7 @@ int GameLogic::checkCodes(const Piece* srcP, const Piece* destP)
 	{
 		return CODE_3;
 	}
-	if (checkCode6(srcP, destP))
+	if (!checkCode6(srcP, destP))
 	{
 		return CODE_6;
 	}
@@ -253,6 +263,9 @@ int GameLogic::checkCodes(const Piece* srcP, const Piece* destP)
 	{
 		return CODE_4;
 	}
+
+	destP = this->_boardPieces[despPiecePlacemnt];
+
 	if (checkCode1(this->_turn, destP->_placement))
 	{
 		switchTurn();
