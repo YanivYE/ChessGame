@@ -1,14 +1,14 @@
 #include "../Headers/Piece.h"
 using namespace std;
 
-Piece::Piece(string type, string placement, Player color)
+Piece::Piece(const string type, const string placement, const Player color)
 {
 	this->_placement = placement;
 	this->_type = type;
 	this->_color = color;
 }
 
-bool Piece::clearMovingPath(string dest, vector<Piece*> board) const
+bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
 {
     // Convert the positions from strings to pairs of (row, col) integers
     pair<int, int> curPos = { CHESS_BOARD_SIDE - (this->_placement[1] - '1'), this->_placement[0] - 'a' };

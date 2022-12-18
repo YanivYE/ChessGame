@@ -12,9 +12,9 @@ class GameLogic;
 class Piece 
 {
 public:
-	Piece(string type, string placement, Player color);
-	virtual bool isValidMove(string dest, vector<Piece*> board) const = 0;
-	bool clearMovingPath(string dest, vector<Piece*> board) const;
+	Piece(const string type, const string placement, const Player color);
+	virtual bool isValidMove(const string dest, const vector<Piece*> board) const = 0;
+	bool clearMovingPath(const string dest, const vector<Piece*> board) const;
 	// check for each piece is the move valid depends on its rules
 
 public:
