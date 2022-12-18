@@ -96,7 +96,7 @@ void main()
 		msgFromGraphics = p.getMessageFromGraphics();
 		p.sendMessageToServer(msgFromGraphics, serverSocket);
 
-		msgFromServer = p.getMessageFromServer(serverSocket);
+		//msgFromServer = p.getMessageFromServer(serverSocket);
 		cout << msgFromServer << endl;
 	}
 

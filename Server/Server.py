@@ -8,6 +8,8 @@ num_connected_clients = 0
 # Create a dictionary to store the sockets for each player
 player_sockets = {}
 
+LOCAL_IP = "192.168.1.178"
+
 
 def handle_client(client_soc, client_address, color):
     global num_connected_clients
@@ -55,7 +57,7 @@ def create_listening_sock():
     listening_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to the server's address and port
-    server_address = ('192.168.1.178', 8200)
+    server_address = (LOCAL_IP, 8200)
     listening_sock.bind(server_address)
 
     # Listen for incoming connections

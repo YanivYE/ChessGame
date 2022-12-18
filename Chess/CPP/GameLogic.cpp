@@ -12,7 +12,7 @@ using namespace std;
 GameLogic::GameLogic(const string graphicBoard)
 {
 	this->_boardPieces = toVector(graphicBoard);
-	this->_turn = Player(int(graphicBoard[STARTING_PLAYER]) - '0');
+	this->_turn = charToPlayer(graphicBoard[STARTING_PLAYER]);
 }
 
 GameLogic::~GameLogic()
@@ -39,22 +39,28 @@ Piece* GameLogic::charToPiece(const char pieceLetter, const int index) const
 {
 	switch (pieceLetter)
 	{
-	case ROOK_CHAR:
+	case ROOK_CHAR_LOWER:
+	case ROOK_CHAR_UPPER:
 		return new Rook(ROOK, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case KNIGHT_CHAR:
+	case KNIGHT_CHAR_LOWER:
+	case KNIGHT_CHAR_UPPER:
 		return new Knight(KNIGHT, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case BISHOP_CHAR:
+	case BISHOP_CHAR_LOWER:
+	case BISHOP_CHAR_UPPER:
 		return new Bishop(BISHOP, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case KING_CHAR:
+	case KING_CHAR_LOWER:
+	case KING_CHAR_UPPER:
 		return new King(KING, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case QUEEN_CHAR:
+	case QUEEN_CHAR_LOWER:
+	case QUEEN_CHAR_UPPER:
 		return new Queen(QUEEN, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
-	case PAWN_CHAR:
+	case PAWN_CHAR_LOWER:
+	case PAWN_CHAR_UPPER:
 		return new Pawn(PAWN, indexToPlacement(index), findPieceColor(pieceLetter));
 		break;
 	default:
@@ -93,6 +99,17 @@ int GameLogic::placementToIndex(const string placement)
 	return row * CHESS_BOARD_SIDE + col;
 }
 
+void GameLogic::switchTurn()
+{
+	if (this->_turn == White)
+	{
+		this->_turn == Black;
+	}
+	else
+	{
+		this->_turn == White;
+	}
+}
 
 Player GameLogic::findPieceColor(const char pieceLetter) const
 {
@@ -107,6 +124,15 @@ Player GameLogic::findPieceColor(const char pieceLetter) const
 	return Black;
 }
 
+Player GameLogic::charToPlayer(const char playerChar) const
+{
+	if (playerChar == '0')
+	{
+		return White;
+	}
+
+	return Black;
+}
 string GameLogic::movePieces(const string movment)
 {
 	int code = movmentCode(movment.substr(0, 2), movment.substr(2, 4));
@@ -115,6 +141,7 @@ string GameLogic::movePieces(const string movment)
 	string returnCode(1, codeChr);
 
 	returnCode += '\0';
+
 
 	return returnCode;
 }
@@ -148,7 +175,7 @@ bool GameLogic::checkCode6(const Piece* srcP, const Piece* destP) const
 	return srcP->isValidMove(destP->_placement, this->_boardPieces);
 }
 
-bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer)
+bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer) 
 {
 	int i = 0;
 	bool isCheck = false;
@@ -228,7 +255,10 @@ int GameLogic::checkCodes(const Piece* srcP, const Piece* destP)
 	}
 	if (checkCode1(this->_turn, destP->_placement))
 	{
+		switchTurn();
 		return CODE_1;
 	}
+
+	switchTurn();
 	return CODE_0;
 }

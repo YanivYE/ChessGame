@@ -7,7 +7,7 @@ enum Player { White, Black, None };
 
 #define CHESS_BOARD_SIZE 64
 #define CHESS_BOARD_SIDE 8
-#define STARTING_PLAYER 65
+#define STARTING_PLAYER 64
 
 #define ROOK "Rook"
 #define KNIGHT "Knight"
@@ -17,12 +17,18 @@ enum Player { White, Black, None };
 #define PAWN "Pawn"
 #define EMPTY_PIECE "Empty Piece"
 
-#define ROOK_CHAR 'r'
-#define KNIGHT_CHAR 'n'
-#define BISHOP_CHAR 'b'
-#define KING_CHAR 'k'
-#define QUEEN_CHAR 'q'
-#define PAWN_CHAR 'p'
+#define ROOK_CHAR_LOWER 'r'
+#define ROOK_CHAR_UPPER 'R'
+#define KNIGHT_CHAR_LOWER 'n'
+#define KNIGHT_CHAR_UPPER 'N'
+#define BISHOP_CHAR_LOWER 'b'
+#define BISHOP_CHAR_UPPER 'B'
+#define KING_CHAR_LOWER 'k'
+#define KING_CHAR_UPPER 'K'
+#define QUEEN_CHAR_LOWER 'q'
+#define QUEEN_CHAR_UPPER 'Q'
+#define PAWN_CHAR_LOWER 'p'
+#define PAWN_CHAR_UPPER 'P'
 #define EMPTY_PIECE_CHAR '#'
 
 #define CODE_0 0
@@ -51,6 +57,8 @@ public:
 	static Player opponentColor(const Player currentPlayer);
 
 private:
+	void switchTurn();
+
 	Piece* charToPiece(const char pieceLetter, const int index) const;	// convert each char from graphic board into its piece
 	string indexToPlacement(const int index) const;
 	Player findPieceColor(const char pieceLetter) const;
@@ -67,6 +75,7 @@ private:
 	Piece* currPlayerKing(const Player currentPlayer) const;
 	int checkCodes(const Piece* srcP, const Piece* destP);
 
+	Player charToPlayer(const char playerChar) const;
 public:	
 	vector<Piece*> _boardPieces;
 	Player _turn;
