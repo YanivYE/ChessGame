@@ -5,7 +5,7 @@
 class Knight : public Piece
 {
 public:
-	Knight(string type, string placement, Player player);
+	Knight(const string type, const string placement, const Player player);
 	bool isValidMove(const string dest, const vector<Piece*> board) const override;
 
 

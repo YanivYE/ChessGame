@@ -1,6 +1,6 @@
 #include "../Headers/King.h"
 
-King::King(string type, string placement, Player player) : Piece(type, placement, player)
+King::King(const string type, const string placement, const Player player) : Piece(type, placement, player)
 {
 }
 

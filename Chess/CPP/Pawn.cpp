@@ -1,11 +1,11 @@
 #include "../Headers/Pawn.h"
 
 
-Pawn::Pawn(string type, string placement, Player player) : Piece(type, placement, player)
+Pawn::Pawn(const string type, const string placement, const Player player) : Piece(type, placement, player)
 {
 }
 
-bool Pawn::isValidMove(string dest, vector<Piece*> board) const
+bool Pawn::isValidMove(const string dest, const vector<Piece*> board) const
 {
     int index = GameLogic::placementToIndex(dest);
     int destRow = dest[1] - '0';
@@ -14,12 +14,12 @@ bool Pawn::isValidMove(string dest, vector<Piece*> board) const
     int colorMultiplier = getColorMultiplier(this->_color);
     
     // Pawn can move forward one square if the destination is empty
-    if (destRow == thisRow + (1*colorMultiplier) && destPiece->_type == EMPTY_PIECE\
+    if (destRow == thisRow + (1 * colorMultiplier) && destPiece->_type == EMPTY_PIECE\
         && dest[0] == this->_placement[0])
     {
         return true;
     }
-    // On its first move, a pawn may move forward two squares if the destination is empty
+    // On the first move , pawn may move forward two squares if the destination is empty
     if (thisRow == getInitialColOfPawn(this->_color) && destRow == thisRow + (2 * colorMultiplier) && dest[0] == this->_placement[0] &&
         destPiece->_type == EMPTY_PIECE)
     {

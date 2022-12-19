@@ -5,8 +5,7 @@
 class Queen : public Piece
 {
 public:
-	Queen(string type, string placement, Player player);
+	Queen(const string type, const string placement, const Player player);
 	bool isValidMove(const string dest, const vector<Piece*> board) const override;
-	//bool clearMovingPath(string dest, vector<Piece*> board) const;
 
 };

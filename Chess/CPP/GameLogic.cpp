@@ -34,13 +34,13 @@ void GameLogic::clearBoard(vector<Piece*> board)
 void GameLogic::copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyBoard)
 {
 	int i = 0;
-	Piece* newPiece = nullptr;
+	Piece* copiedPiece = nullptr;
 
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
-		newPiece = copyPiece(originalBoard[i]);
+		copiedPiece = copyPiece(originalBoard[i]);
 
-		copyBoard.push_back(newPiece);
+		copyBoard.push_back(copiedPiece);
 	}
 }
 
@@ -69,24 +69,20 @@ char GameLogic::getPieceLetter(Piece* piece)
 	else if (strcmp(piece->_type.c_str(), BISHOP) == 0)
 	{
 		return getUpperLower(piece, BISHOP_CHAR_LOWER);
-
 	}
 	else if (strcmp(piece->_type.c_str(), KING) == 0)
 	{
 		return getUpperLower(piece, KING_CHAR_LOWER);
-
 	}
 	else if (strcmp(piece->_type.c_str(), QUEEN) == 0)
 	{
 		return getUpperLower(piece, QUEEN_CHAR_LOWER);
-
 	}
 	else if (strcmp(piece->_type.c_str(), PAWN) == 0)
 	{
 		return getUpperLower(piece, PAWN_CHAR_LOWER);
-
 	}
-	else if (strcmp(piece->_type.c_str(), EMPTY_PIECE) == 0)
+	else //if (strcmp(piece->_type.c_str(), EMPTY_PIECE) == 0)
 	{
 		return EMPTY_PIECE_CHAR;
 	}
