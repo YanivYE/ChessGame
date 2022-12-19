@@ -1,8 +1,5 @@
 #pragma once
 
-
-using std::vector;
-
 #include "GameLogic.h"
 #include "EmptyPiece.h"
 
