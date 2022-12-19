@@ -57,6 +57,9 @@ public:
 	static Player opponentColor(const Player currentPlayer);
 
 private:
+	void clearBoard(vector<Piece*> board);
+	vector<Piece*> copyBoard(vector<Piece*> board);
+
 	void switchTurn();
 
 	Piece* charToPiece(const char pieceLetter, const int index) const;	// convert each char from graphic board into its piece

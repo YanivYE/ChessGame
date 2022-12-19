@@ -27,7 +27,7 @@ bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
             // along the row
             for (int i = min(curPos.first, destPos.first) + 1; i < max(curPos.first, destPos.first); i++) 
             {
-                if (board[(i-1) * CHESS_BOARD_SIDE + curPos.second]->_type != EMPTY_PIECE) 
+                if (board[i * CHESS_BOARD_SIDE + curPos.second]->_type != EMPTY_PIECE) 
                 {
                     return false;
                 }
@@ -40,7 +40,7 @@ bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
             // along the column
             for (int i = min(curPos.second, destPos.second) + 1; i < max(curPos.second, destPos.second); i++) 
             {
-                if (board[curPos.first * CHESS_BOARD_SIDE + (i - 1)]->_type != EMPTY_PIECE)
+                if (board[curPos.first * CHESS_BOARD_SIDE + i]->_type != EMPTY_PIECE)
                 {
                     return false;
                 }

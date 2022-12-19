@@ -17,12 +17,30 @@ GameLogic::GameLogic(const string graphicBoard)
 
 GameLogic::~GameLogic()
 {
+	clearBoard(this->_boardPieces);
+}
+
+void GameLogic::clearBoard(vector<Piece*> board)
+{
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
-		delete(this->_boardPieces[i]);
+		delete(board[i]);
 	}
-	this->_boardPieces.clear();
+
+	board.clear();
+}
+
+vector<Piece*> GameLogic::copyBoard(vector<Piece*> board)
+{
+	int i = 0;
+	vector<Piece*> newVector;
+	for (i = 0; i < CHESS_BOARD_SIZE; i++)
+	{
+		newVector.push_back(board[i]);
+	}
+
+	return newVector;
 }
 
 vector<Piece*> GameLogic::toVector(const string graphicBoard)
@@ -179,7 +197,7 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 {
 	int i = 0;
 	bool isCheck = false;
-	vector<Piece*> currStateVector = this->_boardPieces;
+	vector<Piece*> currStateVector = copyBoard(this->_boardPieces);
 	// change vector to the givven move
 	commitMove(source, destination);
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
@@ -189,12 +207,15 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 			isCheck = this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement, this->_boardPieces);
 			if (isCheck)
 			{
+				clearBoard(this->_boardPieces);
 				// return vector to prevoius state
 				this->_boardPieces = currStateVector;
 				return isCheck;
 			}
 		}
 	}
+	
+	clearBoard(currStateVector);
 	
 	return isCheck;
 }
