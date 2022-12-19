@@ -99,7 +99,7 @@ vector<Piece*> BoardManager::toVector(const string graphicBoard)
 	return this->_boardPieces;
 }
 
-string BoardManager::movePieces(const string movment, GameLogic algorithm)
+string BoardManager::movePieces(const string movment, GameLogic& algorithm)
 {
 	int code = algorithm.movmentCode(movment.substr(0, 2), movment.substr(2, 4), this->_boardPieces);
 	char codeChr = code + '0';

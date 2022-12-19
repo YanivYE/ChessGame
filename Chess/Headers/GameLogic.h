@@ -54,7 +54,7 @@ public:
 	static int placementToIndex(const string placement);
 	static Player opponentColor(const Player currentPlayer);
 	static Piece* charToPiece(const char pieceLetter, const int index);	// convert each char from graphic board into its piece
-	int movmentCode(const string source, const string destination, vector<Piece*> board);
+	int movmentCode(const string source, const string destination, vector<Piece*>& board);
 
 private:
 	void switchTurn();
@@ -66,13 +66,13 @@ private:
 	bool checkCode1(const Player currentPlayer, const string destination, vector<Piece*> board) const;
 	bool checkCode2(const Player sourcePlayer, const Player currentPlayer) const;
 	bool checkCode3(const Player destPlayer, const Player currentPlayer) const;
-	bool checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*> board);
+	bool checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*>& board);
 	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
 	bool checkCode7(const string source, const string destination) const;
 	
 	Piece* currPlayerKing(const Player currentPlayer, vector<Piece*> board) const;
-	void commitMove(const string source, const string destination, vector<Piece*> board);
-	int checkCodes(const Piece* srcP, Piece* destP, vector<Piece*> board);
+	void commitMove(const string source, const string destination, vector<Piece*>& board);
+	int checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board);
 
 	Player charToPlayer(const char playerChar) const;
 

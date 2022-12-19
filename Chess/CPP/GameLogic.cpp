@@ -115,7 +115,7 @@ Player GameLogic::charToPlayer(const char playerChar) const
 }
 
 
-int GameLogic::movmentCode(const string source, const string destination, vector<Piece*> board)
+int GameLogic::movmentCode(const string source, const string destination, vector<Piece*>& board)
 {
 	if (checkCode7(source, destination))
 	{
@@ -144,7 +144,7 @@ bool GameLogic::checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*>
 	return srcP->isValidMove(destP->_placement, board);
 }
 
-bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*> board)
+bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*>& board)
 {
 	int i = 0;
 	bool isCheck = false;
@@ -203,7 +203,7 @@ Player GameLogic::opponentColor(const Player currentPlayer)
 	return White;
 }
 
-void GameLogic::commitMove(const string source, const string destination, vector<Piece*> board)
+void GameLogic::commitMove(const string source, const string destination, vector<Piece*>& board)
 {
 	Piece* movedPiece = board[GameLogic::placementToIndex(source)];
 
@@ -217,7 +217,7 @@ void GameLogic::commitMove(const string source, const string destination, vector
 
 }
 
-int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*> board)
+int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board)
 {
 	int despPiecePlacemnt = placementToIndex(destP->_placement);
 
