@@ -5,9 +5,9 @@ in order to read and write information from and to the Backend
 */
 
 #include "Headers/Pipe.h"
-#include "Headers/GameLogic.h"
 #include <iostream>
 #include <thread>
+#include "Headers/BoardManager.h"
 
 using std::cout;
 using std::endl;
@@ -72,7 +72,8 @@ void main()
 
 	strcpy_s(msgToGraphics, "rnbkqbnrpppppppp################################PPPPPPPPRNBKQBNR1"); // just example...
 	// copy to vector
-	GameLogic board = GameLogic(msgToGraphics);
+	BoardManager board = BoardManager(msgToGraphics);
+	GameLogic algorithm = GameLogic(msgToGraphics);
 	p.sendMessageToGraphics(msgToGraphics);   // send the board string
 
 	// get message from graphics
@@ -87,7 +88,7 @@ void main()
 		// according the protocol. Ex: e2e4           (move e2 to e4)
 		
 		// YOUR CODE
-		strcpy_s(msgToGraphics, board.movePieces(msgFromGraphics).c_str()); // msgToGraphics should contain the result of the operation
+		strcpy_s(msgToGraphics, board.movePieces(msgFromGraphics, algorithm).c_str()); // msgToGraphics should contain the result of the operation
 
 		// return result to graphics		
 		p.sendMessageToGraphics(msgToGraphics);   

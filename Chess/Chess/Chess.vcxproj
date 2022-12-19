@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\CPP\Bishop.cpp" />
+    <ClCompile Include="..\CPP\BoardManager.cpp" />
     <ClCompile Include="..\CPP\EmptyPiece.cpp" />
     <ClCompile Include="..\CPP\GameLogic.cpp" />
     <ClCompile Include="..\CPP\King.cpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Headers\Bishop.h" />
+    <ClInclude Include="..\Headers\BoardManager.h" />
     <ClInclude Include="..\Headers\EmptyPiece.h" />
     <ClInclude Include="..\Headers\GameLogic.h" />
     <ClInclude Include="..\Headers\King.h" />

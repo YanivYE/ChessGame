@@ -5,6 +5,8 @@ enum Player { White, Black, None };
 #include <vector>
 #include "Piece.h"
 
+using std::vector;
+
 #define CHESS_BOARD_SIZE 64
 #define CHESS_BOARD_SIDE 8
 #define STARTING_PLAYER 64
@@ -41,7 +43,7 @@ enum Player { White, Black, None };
 #define CODE_8 8
 
 using std::string;
-using std::vector;
+
 
 class Piece;
 
@@ -49,40 +51,32 @@ class GameLogic
 {
 public:
 	GameLogic(const string graphicBoard);
-	~GameLogic();
-	vector<Piece*> toVector(const string graphicBoard);		// convert graphic board string into vector
-	string movePieces(const string movment);		// return the code string for the givven move
-
 	static int placementToIndex(const string placement);
 	static Player opponentColor(const Player currentPlayer);
+	static Piece* charToPiece(const char pieceLetter, const int index);	// convert each char from graphic board into its piece
+	int movmentCode(const string source, const string destination, vector<Piece*> board);
 
 private:
-	void clearBoard(vector<Piece*> board);
-	void copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyBoard);
-	Piece* copyPiece(Piece* piece);
-	char getPieceLetter(Piece* piece);
-	char getUpperLower(Piece* piece, char lowerLetter);
-
 	void switchTurn();
+	
+	static string indexToPlacement(const int index);
+	static Player findPieceColor(const char pieceLetter);
 
-	Piece* charToPiece(const char pieceLetter, const int index) const;	// convert each char from graphic board into its piece
-	string indexToPlacement(const int index) const;
-	Player findPieceColor(const char pieceLetter) const;
-
-	int movmentCode(const string source, const string destination);
-	bool checkCode1(const Player currentPlayer, const string destination) const;
+	
+	bool checkCode1(const Player currentPlayer, const string destination, vector<Piece*> board) const;
 	bool checkCode2(const Player sourcePlayer, const Player currentPlayer) const;
 	bool checkCode3(const Player destPlayer, const Player currentPlayer) const;
-	bool checkCode4(const string source, const string destination, const Player currentPlayer);
-	bool checkCode6(const Piece* srcP, const Piece* destP) const;
+	bool checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*> board);
+	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
 	bool checkCode7(const string source, const string destination) const;
-
-	void commitMove(const string source, const string destination);
-	Piece* currPlayerKing(const Player currentPlayer) const;
-	int checkCodes(const Piece* srcP, Piece* destP);
+	
+	Piece* currPlayerKing(const Player currentPlayer, vector<Piece*> board) const;
+	void commitMove(const string source, const string destination, vector<Piece*> board);
+	int checkCodes(const Piece* srcP, Piece* destP, vector<Piece*> board);
 
 	Player charToPlayer(const char playerChar) const;
-public:	
-	vector<Piece*> _boardPieces;
+
+public:
 	Player _turn;
+
 };

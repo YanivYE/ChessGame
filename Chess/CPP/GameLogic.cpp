@@ -6,109 +6,16 @@
 #include "../Headers/Queen.h"
 #include "../Headers/Pawn.h"
 #include "../Headers/EmptyPiece.h"
+#include "../Headers/BoardManager.h"
 
-using namespace std;
+
 
 GameLogic::GameLogic(const string graphicBoard)
 {
-	this->_boardPieces = toVector(graphicBoard);
 	this->_turn = charToPlayer(graphicBoard[STARTING_PLAYER]);
 }
 
-GameLogic::~GameLogic()
-{
-	clearBoard(this->_boardPieces);
-}
-
-void GameLogic::clearBoard(vector<Piece*> board)
-{
-	int i = 0;
-	for (i = 0; i < CHESS_BOARD_SIZE; i++)
-	{
-		delete(board[i]);
-	}
-
-	board.clear();
-}
-
-void GameLogic::copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyBoard)
-{
-	int i = 0;
-	Piece* copiedPiece = nullptr;
-
-	for (i = 0; i < CHESS_BOARD_SIZE; i++)
-	{
-		copiedPiece = copyPiece(originalBoard[i]);
-
-		copyBoard.push_back(copiedPiece);
-	}
-}
-
-Piece* GameLogic::copyPiece(Piece* piece)
-{
-	int index = placementToIndex(piece->_placement);
-	Piece* newPiece = charToPiece(getPieceLetter(piece), index);
-
-	newPiece->_type = piece->_type;
-	newPiece->_placement = piece->_placement;
-	newPiece->_color = piece->_color;
-
-	return newPiece;
-}
-
-char GameLogic::getPieceLetter(Piece* piece)
-{
-	if (strcmp(piece->_type.c_str(), ROOK) == 0)
-	{
-		return getUpperLower(piece, ROOK_CHAR_LOWER);
-	}
-	else if (strcmp(piece->_type.c_str(), KNIGHT) == 0)
-	{
-		return getUpperLower(piece, KNIGHT_CHAR_LOWER);
-	}
-	else if (strcmp(piece->_type.c_str(), BISHOP) == 0)
-	{
-		return getUpperLower(piece, BISHOP_CHAR_LOWER);
-	}
-	else if (strcmp(piece->_type.c_str(), KING) == 0)
-	{
-		return getUpperLower(piece, KING_CHAR_LOWER);
-	}
-	else if (strcmp(piece->_type.c_str(), QUEEN) == 0)
-	{
-		return getUpperLower(piece, QUEEN_CHAR_LOWER);
-	}
-	else if (strcmp(piece->_type.c_str(), PAWN) == 0)
-	{
-		return getUpperLower(piece, PAWN_CHAR_LOWER);
-	}
-	else //if (strcmp(piece->_type.c_str(), EMPTY_PIECE) == 0)
-	{
-		return EMPTY_PIECE_CHAR;
-	}
-}
-
-char GameLogic::getUpperLower(Piece* piece, char lowerLetter)
-{
-	if (piece->_color == Black)
-	{
-		return lowerLetter;
-	}
-
-	return lowerLetter - 32;
-}
-
-vector<Piece*> GameLogic::toVector(const string graphicBoard)
-{
-	int i = 0;
-	for (i = 0; i < CHESS_BOARD_SIZE; i++)
-	{
-		this->_boardPieces.push_back(charToPiece(graphicBoard[i], i));
-	}
-	return this->_boardPieces;
-}
-
-Piece* GameLogic::charToPiece(const char pieceLetter, const int index) const
+Piece* GameLogic::charToPiece(const char pieceLetter, const int index) 
 {
 	switch (pieceLetter)
 	{
@@ -142,14 +49,14 @@ Piece* GameLogic::charToPiece(const char pieceLetter, const int index) const
 	}
 }
 
-string GameLogic::indexToPlacement(const int index) const
+string GameLogic::indexToPlacement(const int index) 
 {
 	int row = CHESS_BOARD_SIDE - (index / CHESS_BOARD_SIDE);
 	int col = index % CHESS_BOARD_SIDE;
 
 	char col_letter = 'a' + col;
 
-	string chess_board_index = string(1, col_letter) + to_string(row);
+	string chess_board_index = string(1, col_letter) + std::to_string(row);
 
 	return chess_board_index;
 }
@@ -184,7 +91,7 @@ void GameLogic::switchTurn()
 	}
 }
 
-Player GameLogic::findPieceColor(const char pieceLetter) const
+Player GameLogic::findPieceColor(const char pieceLetter) 
 {
 	if (pieceLetter == EMPTY_PIECE_CHAR)
 	{
@@ -206,26 +113,15 @@ Player GameLogic::charToPlayer(const char playerChar) const
 
 	return Black;
 }
-string GameLogic::movePieces(const string movment)
-{
-	int code = movmentCode(movment.substr(0, 2), movment.substr(2, 4));
-	char codeChr = code + '0';
-
-	string returnCode(1, codeChr);
-
-	returnCode += '\0';
 
 
-	return returnCode;
-}
-
-int GameLogic::movmentCode(const string source, const string destination) 
+int GameLogic::movmentCode(const string source, const string destination, vector<Piece*> board)
 {
 	if (checkCode7(source, destination))
 	{
 		return CODE_7;
 	}
-	return checkCodes(this->_boardPieces[placementToIndex(source)], this->_boardPieces[placementToIndex(destination)]);
+	return checkCodes(board[placementToIndex(source)], board[placementToIndex(destination)], board);
 }
 
 bool GameLogic::checkCode7(const string source, const string destination) const
@@ -243,70 +139,56 @@ bool GameLogic::checkCode3(const Player destPlayer, const Player currentPlayer) 
 	return destPlayer == currentPlayer;
 }
 
-bool GameLogic::checkCode6(const Piece* srcP, const Piece* destP) const
+bool GameLogic::checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const
 {
-	return srcP->isValidMove(destP->_placement, this->_boardPieces);
+	return srcP->isValidMove(destP->_placement, board);
 }
 
-bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer) 
+bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*> board)
 {
 	int i = 0;
 	bool isCheck = false;
 	vector<Piece*> currStateVector;
-	copyBoard(this->_boardPieces, currStateVector);
+	BoardManager::copyBoard(board, currStateVector);
 	// change vector to the givven move
-	commitMove(source, destination);
+	commitMove(source, destination, board);
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
-		if (this->_boardPieces[i]->_color == opponentColor(currentPlayer))
+		if (board[i]->_color == opponentColor(currentPlayer))
 		{
-			isCheck = this->_boardPieces[i]->isValidMove(currPlayerKing(currentPlayer)->_placement, this->_boardPieces);
+			isCheck = board[i]->isValidMove(currPlayerKing(currentPlayer, board)->_placement, board);
 			if (isCheck)
 			{
-				clearBoard(this->_boardPieces);
+				BoardManager::clearBoard(board);
 				// return vector to prevoius state
-				this->_boardPieces = currStateVector;
+				board = currStateVector;
 				return isCheck;
 			}
 		}
 	}
 	
-	clearBoard(currStateVector);
+	BoardManager::clearBoard(currStateVector);
 	
 	return isCheck;
 }
 
-bool GameLogic::checkCode1(const Player currentPlayer, const string destination) const
+bool GameLogic::checkCode1(const Player currentPlayer, const string destination, vector<Piece*> board) const
 {
-	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer));
+	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
 
-	return this->_boardPieces[placementToIndex(destination)]->isValidMove(opponentKing->_placement, this->_boardPieces);
+	return board[placementToIndex(destination)]->isValidMove(opponentKing->_placement, board);
 }
 
-void GameLogic::commitMove(const string source, const string destination)
-{
-	Piece* movedPiece = this->_boardPieces[placementToIndex(source)];
-
-	this->_boardPieces[placementToIndex(source)] = new EmptyPiece(EMPTY_PIECE, source, None);
-
-	delete(this->_boardPieces[placementToIndex(destination)]);
-
-	movedPiece->_placement = destination;
-
-	this->_boardPieces[placementToIndex(destination)] = movedPiece;
-
-}
-
-Piece* GameLogic::currPlayerKing(const Player currentPlayer) const
+Piece* GameLogic::currPlayerKing(const Player currentPlayer, vector<Piece*> board) const
 {
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
-		if (this->_boardPieces[i]->_type == KING)
+		if (board[i]->_type == KING)
 		{
-			if (this->_boardPieces[i]->_color == currentPlayer)
+			if (board[i]->_color == currentPlayer)
 			{
-				return this->_boardPieces[i];
+				return board[i];
 			}
 		}
 	}
@@ -321,7 +203,21 @@ Player GameLogic::opponentColor(const Player currentPlayer)
 	return White;
 }
 
-int GameLogic::checkCodes(const Piece* srcP, Piece* destP) 
+void GameLogic::commitMove(const string source, const string destination, vector<Piece*> board)
+{
+	Piece* movedPiece = board[GameLogic::placementToIndex(source)];
+
+	board[GameLogic::placementToIndex(source)] = new EmptyPiece(EMPTY_PIECE, source, None);
+
+	delete(board[GameLogic::placementToIndex(destination)]);
+
+	movedPiece->_placement = destination;
+
+	board[GameLogic::placementToIndex(destination)] = movedPiece;
+
+}
+
+int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*> board)
 {
 	int despPiecePlacemnt = placementToIndex(destP->_placement);
 
@@ -333,18 +229,18 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP)
 	{
 		return CODE_3;
 	}
-	if (!checkCode6(srcP, destP))
+	if (!checkCode6(srcP, destP, board))
 	{
 		return CODE_6;
 	}
-	if (checkCode4(srcP->_placement, destP->_placement, this->_turn))
+	if (checkCode4(srcP->_placement, destP->_placement, this->_turn, board))
 	{
 		return CODE_4;
 	}
 
-	destP = this->_boardPieces[despPiecePlacemnt];
+	destP = board[despPiecePlacemnt];
 
-	if (checkCode1(this->_turn, destP->_placement))
+	if (checkCode1(this->_turn, destP->_placement, board))
 	{
 		switchTurn();
 		return CODE_1;

@@ -51,6 +51,9 @@
     <ClCompile Include="..\CPP\Bishop.cpp">
       <Filter>Source Files\CPP</Filter>
     </ClCompile>
+    <ClCompile Include="..\CPP\BoardManager.cpp">
+      <Filter>Source Files\CPP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Headers\Pipe.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Headers\EmptyPiece.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Headers\BoardManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
