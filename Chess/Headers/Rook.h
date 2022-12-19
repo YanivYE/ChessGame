@@ -5,7 +5,11 @@
 class Rook : public Piece
 {
 public:
+	// rook constructor
 	Rook(const string type, const string placement, const Player player);
-	bool isValidMove(const string dest, const vector<Piece*> board) const override;
+	// rook destructor
+	~Rook();
 
+	// check if the moved rook move is valid
+	bool isValidMove(const string dest, const vector<Piece*> board) const override;
 };

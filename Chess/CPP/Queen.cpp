@@ -4,6 +4,10 @@ Queen::Queen(const string type, const string placement, const Player player) : P
 {
 }
 
+Queen::~Queen()
+{
+}
+
 bool Queen::isValidMove(const string dest, const vector<Piece*> board) const
 {
     if (dest[0] == this->_placement[0] || dest[1] == this->_placement[1] ||
