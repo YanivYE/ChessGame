@@ -70,12 +70,12 @@ private:
 	Player findPieceColor(const char pieceLetter) const;
 
 	int movmentCode(const string source, const string destination);
-	bool checkCode7(const string source, const string destination) const;
+	bool checkCode1(const Player currentPlayer, const string destination) const;
 	bool checkCode2(const Player sourcePlayer, const Player currentPlayer) const;
 	bool checkCode3(const Player destPlayer, const Player currentPlayer) const;
-	bool checkCode6(const Piece* srcP, const Piece* destP) const;
 	bool checkCode4(const string source, const string destination, const Player currentPlayer);
-	bool checkCode1(const Player currentPlayer, const string destination) const;
+	bool checkCode6(const Piece* srcP, const Piece* destP) const;
+	bool checkCode7(const string source, const string destination) const;
 
 	void commitMove(const string source, const string destination);
 	Piece* currPlayerKing(const Player currentPlayer) const;
