@@ -33,6 +33,7 @@ using std::vector;
 #define PAWN_CHAR_UPPER 'P'
 #define EMPTY_PIECE_CHAR '#'
 
+// TODO: change code_0 to the actual error
 #define CODE_0 0
 #define CODE_1 1
 #define CODE_2 2

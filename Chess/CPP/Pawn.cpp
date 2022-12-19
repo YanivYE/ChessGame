@@ -74,22 +74,38 @@ bool Pawn::isValidMove(const string dest, const vector<Piece*> board) const
     return false;
 }
 
+/*
+* Function gets a player color, and returns a multiplier that is or -1 or 1 that is suppose to determine
+* if we should decrease / increase to row(white gows straight by increasing row index,
+* and black by decreasing) 
+* Input: color - the color(black - white)
+* Output: a multiplier that is or -1 or 1
+*/
 int Pawn::getColorMultiplier(const Player color) const
 {
     if (color == White)
     {
+        // return white multiplier
         return WHITE_MULTIPLIER;
     }
 
+    // return black multiplier
     return BLACK_MULTIPLIER;
 }
 
+/*
+* Function gets a player color, and returns the intial row pos of the pawn from that color
+* Input: color - the color(black - white)
+* Output: the intial row pos of the pawn from that color
+*/
 int Pawn::getInitialRowOfPawn(const Player color) const
 {
     if (color == White)
     {
+        // return white initial row
         return INITIAL_ROW_INDEX_WHITE;
     }
 
+    // return black initial row
     return INITIAL_ROW_INDEX_BLACK;
 }
