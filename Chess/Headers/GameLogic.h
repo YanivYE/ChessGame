@@ -50,7 +50,7 @@ class GameLogic
 public:
 	GameLogic(const string graphicBoard);
 	~GameLogic();
-	std::vector<Piece*> toVector(const string graphicBoard);		// convert graphic board string into vector
+	vector<Piece*> toVector(const string graphicBoard);		// convert graphic board string into vector
 	string movePieces(const string movment);		// return the code string for the givven move
 
 	static int placementToIndex(const string placement);
@@ -58,7 +58,10 @@ public:
 
 private:
 	void clearBoard(vector<Piece*> board);
-	vector<Piece*> copyBoard(vector<Piece*> board);
+	void copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyBoard);
+	Piece* copyPiece(Piece* piece);
+	char getPieceLetter(Piece* piece);
+	char getUpperLower(Piece* piece, char lowerLetter);
 
 	void switchTurn();
 

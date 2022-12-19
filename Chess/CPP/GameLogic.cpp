@@ -31,16 +31,75 @@ void GameLogic::clearBoard(vector<Piece*> board)
 	board.clear();
 }
 
-vector<Piece*> GameLogic::copyBoard(vector<Piece*> board)
+void GameLogic::copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyBoard)
 {
 	int i = 0;
-	vector<Piece*> newVector;
+	Piece* newPiece = nullptr;
+
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
-		newVector.push_back(board[i]);
+		newPiece = copyPiece(originalBoard[i]);
+
+		copyBoard.push_back(newPiece);
+	}
+}
+
+Piece* GameLogic::copyPiece(Piece* piece)
+{
+	int index = placementToIndex(piece->_placement);
+	Piece* newPiece = charToPiece(getPieceLetter(piece), index);
+
+	newPiece->_type = piece->_type;
+	newPiece->_placement = piece->_placement;
+	newPiece->_color = piece->_color;
+
+	return newPiece;
+}
+
+char GameLogic::getPieceLetter(Piece* piece)
+{
+	if (strcmp(piece->_type.c_str(), ROOK) == 0)
+	{
+		return getUpperLower(piece, ROOK_CHAR_LOWER);
+	}
+	else if (strcmp(piece->_type.c_str(), KNIGHT) == 0)
+	{
+		return getUpperLower(piece, KNIGHT_CHAR_LOWER);
+	}
+	else if (strcmp(piece->_type.c_str(), BISHOP) == 0)
+	{
+		return getUpperLower(piece, BISHOP_CHAR_LOWER);
+
+	}
+	else if (strcmp(piece->_type.c_str(), KING) == 0)
+	{
+		return getUpperLower(piece, KING_CHAR_LOWER);
+
+	}
+	else if (strcmp(piece->_type.c_str(), QUEEN) == 0)
+	{
+		return getUpperLower(piece, QUEEN_CHAR_LOWER);
+
+	}
+	else if (strcmp(piece->_type.c_str(), PAWN) == 0)
+	{
+		return getUpperLower(piece, PAWN_CHAR_LOWER);
+
+	}
+	else if (strcmp(piece->_type.c_str(), EMPTY_PIECE) == 0)
+	{
+		return EMPTY_PIECE_CHAR;
+	}
+}
+
+char GameLogic::getUpperLower(Piece* piece, char lowerLetter)
+{
+	if (piece->_color == Black)
+	{
+		return lowerLetter;
 	}
 
-	return newVector;
+	return lowerLetter - 32;
 }
 
 vector<Piece*> GameLogic::toVector(const string graphicBoard)
@@ -197,7 +256,8 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 {
 	int i = 0;
 	bool isCheck = false;
-	vector<Piece*> currStateVector = copyBoard(this->_boardPieces);
+	vector<Piece*> currStateVector;
+	copyBoard(this->_boardPieces, currStateVector);
 	// change vector to the givven move
 	commitMove(source, destination);
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
