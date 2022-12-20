@@ -4,7 +4,7 @@
 * Function is the constructor for the pawn, it gets a type, placement, player color and sets the
 * pawn object members to the function paramters.
 * Input: type - the type of the piece(pawn)
-*        placement - the placement of biece(a2, a3, f5)
+*        placement - the placement of piece(a2, a3, f5)
 *        player - the player color
 * Output: none
 */
@@ -74,22 +74,38 @@ bool Pawn::isValidMove(const string dest, const vector<Piece*> board) const
     return false;
 }
 
+/*
+* Function gets a player color, and returns a multiplier that is or -1 or 1 that is suppose to determine
+* if we should decrease / increase to row(white gows straight by increasing row index,
+* and black by decreasing)
+* Input: color - the color(black - white)
+* Output: a multiplier that is or -1 or 1
+*/
+
 int Pawn::getColorMultiplier(const Player color) const
 {
     if (color == White)
     {
+        // return white multiplier  
         return WHITE_MULTIPLIER;
     }
-
+    // return black multiplier
     return BLACK_MULTIPLIER;
 }
 
+/*
+* Function gets a player color, and returns the intial row pos of the pawn from that color
+* Input: color - the color(black - white)
+* Output: the intial row pos of the pawn from that color
+*/
 int Pawn::getInitialRowOfPawn(const Player color) const
 {
     if (color == White)
     {
+        // return white initial row
         return INITIAL_ROW_INDEX_WHITE;
     }
 
+    // return black initial row
     return INITIAL_ROW_INDEX_BLACK;
 }

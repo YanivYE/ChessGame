@@ -4,7 +4,7 @@
 * Function is the constructor for the bishop, it gets a type, placement, player color and sets the 
 * bishop object members to the function paramters.
 * Input: type - the type of the piece(bishop)
-*        placement - the placement of biece(a2, a3, f5)
+*        placement - the placement of piece(a2, a3, f5)
 *        player - the player color
 * Output: none
 */

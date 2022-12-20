@@ -33,17 +33,16 @@ using std::vector;
 #define PAWN_CHAR_UPPER 'P'
 #define EMPTY_PIECE_CHAR '#'
 
-#define CODE_0 0
-#define CODE_1 1
-#define CODE_2 2
-#define CODE_3 3
-#define CODE_4 4
-#define CODE_6 6
-#define CODE_7 7
-#define CODE_8 8
+#define VALID_MOVE 0
+#define VALID_MOVE_MADE_CHESS 1
+#define INVALID_MOVE_NOT_YOUR_PLYAER 2
+#define INVALID_MOVE_DESTINATION_NOT_FREE 3
+#define INVALID_MOVE_CHESS_WILL_OCCURE 4
+#define INVALID_MOVE_ILLEGAL_MOVMENT 6
+#define INVALID_MOVE_NO_MOVMENT 7
+#define VALID_MOVE_CHECKMATE 8
 
 using std::string;
-
 
 class Piece;
 
@@ -69,6 +68,7 @@ private:
 	bool checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*>& board);
 	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
 	bool checkCode7(const string source, const string destination) const;
+	//bool checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board) const;
 	
 	Piece* currPlayerKing(const Player currentPlayer, vector<Piece*> board) const;
 	void commitMove(const string source, const string destination, vector<Piece*>& board);
@@ -76,7 +76,7 @@ private:
 
 	Player charToPlayer(const char playerChar) const;
 
-public:
+private:
 	Player _turn;
 
 };

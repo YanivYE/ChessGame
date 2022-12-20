@@ -17,8 +17,6 @@ public:
 	static char getPieceLetter(Piece* piece);
 	static char getUpperLower(Piece* piece, char lowerLetter);
 
-	
-
 private:
 	vector<Piece*> _boardPieces;
 };

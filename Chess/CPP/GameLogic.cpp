@@ -9,7 +9,6 @@
 #include "../Headers/BoardManager.h"
 
 
-
 GameLogic::GameLogic(const string graphicBoard)
 {
 	this->_turn = charToPlayer(graphicBoard[STARTING_PLAYER]);
@@ -119,7 +118,7 @@ int GameLogic::movmentCode(const string source, const string destination, vector
 {
 	if (checkCode7(source, destination))
 	{
-		return CODE_7;
+		return INVALID_MOVE_NO_MOVMENT;
 	}
 	return checkCodes(board[placementToIndex(source)], board[placementToIndex(destination)], board);
 }
@@ -179,6 +178,11 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 	return board[placementToIndex(destination)]->isValidMove(opponentKing->_placement, board);
 }
 
+//bool GameLogic::checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board) const
+//{
+//	
+//}
+
 Piece* GameLogic::currPlayerKing(const Player currentPlayer, vector<Piece*> board) const
 {
 	int i = 0;
@@ -223,29 +227,36 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 
 	if (checkCode2(srcP->_color, this->_turn))
 	{
-		return CODE_2;
+		return INVALID_MOVE_NOT_YOUR_PLYAER;
 	}
 	if (checkCode3(destP->_color, this->_turn))
 	{
-		return CODE_3;
+		return INVALID_MOVE_DESTINATION_NOT_FREE;
 	}
 	if (!checkCode6(srcP, destP, board))
 	{
-		return CODE_6;
+		return INVALID_MOVE_ILLEGAL_MOVMENT;
 	}
 	if (checkCode4(srcP->_placement, destP->_placement, this->_turn, board))
 	{
-		return CODE_4;
+		return INVALID_MOVE_CHESS_WILL_OCCURE;
 	}
 
 	destP = board[despPiecePlacemnt];
 
 	if (checkCode1(this->_turn, destP->_placement, board))
 	{
+		//if (checkCode8(this->_turn, destP->_placement, board))
+		//{
+		//	// add code 8
+		// 
+		//	switchTurn();
+		//	return VALID_MOVE_CHECKMATE;
+		//}
 		switchTurn();
-		return CODE_1;
+		return VALID_MOVE_MADE_CHESS;
 	}
 
 	switchTurn();
-	return CODE_0;
+	return VALID_MOVE;
 }

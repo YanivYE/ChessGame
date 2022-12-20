@@ -20,7 +20,7 @@ public:
 	// pure virtual for all pieces to use, and check there move if its valid
 	virtual bool isValidMove(const string dest, const vector<Piece*> board) const = 0;
 
-	//
+	// check if there is no possible to interpose between the piece and the destination
 	bool clearMovingPath(const string dest, const vector<Piece*> board) const;
 	
 	// deep copy piece function
