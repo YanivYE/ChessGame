@@ -165,15 +165,25 @@ vector<Piece*> BoardManager::toVector(const string graphicBoard)
 	return this->_boardPieces;
 }
 
+/*
+* Function gets a string movement string(d2d3), a gamelogic object and returns the code from the wanted
+* movement.
+* Input: movement - a string to move from to move to(d2d3)
+*		 algorithm - a gamelogic object
+* Output: the code from the wanted movement.
+*/
 string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 {
+	// get valid/invalid code by sending "d2", "d3", and the vector of pieces
 	int code = algorithm.movementCode(movement.substr(0, 2), movement.substr(2, 4), this->_boardPieces);
-	char codeChr = code + '0';
+	char codeChr = code + '0'; // convert it to a char
 
+	// create string with the char
 	string returnCode(1, codeChr);
 
+	// add NULL at the end of the string
 	returnCode += '\0';
 
-
+	// return the code string
 	return returnCode;
 }

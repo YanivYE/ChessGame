@@ -76,7 +76,7 @@ private:
 	bool checkCode2(const Player sourcePlayer, const Player currentPlayer) const;
 	// returns true if destination not free
 	bool checkCode3(const Player destPlayer, const Player currentPlayer) const;
-	// returns true if chess will accure because of move
+	// returns true if chess on current player will accure because of move
 	bool checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*>& board);
 	// returns true if invalid movement with piece
 	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
