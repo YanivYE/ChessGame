@@ -1,54 +1,101 @@
 #include "../Headers/BoardManager.h"
 
-
+/*
+* Function is the constructor for the board manager, it gets a graphicBoard and sets the
+* bishop object member to the function paramter.
+* Input: graphicBoard - the string of the board
+* Output: none
+*/
 BoardManager::BoardManager(const string graphicBoard)
 {
+	// create vector pieces by string
 	this->_boardPieces = toVector(graphicBoard);
 }
 
+/*
+* Function is the destructor for the board manager
+* Input: None
+* Output: none
+*/
 BoardManager::~BoardManager()
 {
 	clearBoard(this->_boardPieces);
 }
 
+/*
+* Function gets a vector of a board, and deletes all the elements.
+* Input: board - a vector of a board
+* Output: none
+*/
 void BoardManager::clearBoard(vector<Piece*> board)
 {
 	int i = 0;
+
+	// loop throught out board
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
+		// delete current element
 		delete(board[i]);
 	}
 
+	// clear all elements
 	board.clear();
 }
 
+/*
+* Function gets a vector of an original board, a copy board, and copies the elements from the 
+* original baord to the copy board(deep copy).
+* Input: originalBoard - a vector of an original board
+*		 copyBoard - a vector of the copy board
+* Output: none
+*/
 void BoardManager::copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyBoard)
 {
 	int i = 0;
 	Piece* copiedPiece = nullptr;
 
+	// loop through out the piece
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
+		// copy piece
 		copiedPiece = copyPiece(originalBoard[i]);
 
+		// add it to the vector
 		copyBoard.push_back(copiedPiece);
 	}
 }
 
+/*
+* Function gets a pointer to a piece, copies it to a new allocated piece, and returns the new piece
+* Input: piece - the piece to copy
+* Output: the copied piece pointer
+*/
 Piece* BoardManager::copyPiece(Piece* piece)
 {
+	// get index
 	int index = GameLogic::placementToIndex(piece->_placement);
+	// turn char(gets the char from the original piece) to piece
 	Piece* newPiece = GameLogic::charToPiece(getPieceLetter(piece), index);
 
+	// set members
 	newPiece->_type = piece->_type;
 	newPiece->_placement = piece->_placement;
 	newPiece->_color = piece->_color;
 
+	// return new members
 	return newPiece;
 }
 
+/*
+* Function gets a pointer to a piece, and returns their char in upper/lower case by the piece player.
+* Input: piece - the piece to gets it's letter
+* Output: the piece's char
+*/
 char BoardManager::getPieceLetter(Piece* piece)
 {
+	// string "switch case" for the pieces names, and returns their char in upper/lower
+	// case by the piece player.
+
 	if (strcmp(piece->_type.c_str(), ROOK) == 0)
 	{
 		return getUpperLower(piece, ROOK_CHAR_LOWER);
@@ -79,29 +126,48 @@ char BoardManager::getPieceLetter(Piece* piece)
 	}
 }
 
+/*
+* Function gets a pointer to a piece, a lower letter char and returns upper/lower letter by the piece
+* color(black - 1, white - 0).
+* Input: piece - the piece to gets it's color
+*		 lowerLetter - the lower letter to return / change
+* Output: the piece's char upper/lower
+*/
 char BoardManager::getUpperLower(Piece* piece, char lowerLetter)
 {
+	// if black so return lower
 	if (piece->_color == Black)
 	{
 		return lowerLetter;
 	}
 
-	return lowerLetter - 32;
+	// if white return upper
+	return lowerLetter - LOWER_TO_UPPER;
 }
 
+/*
+* Function gets a string of the board, and returns a vector with the pieces from the string.
+* Input: graphicBoard - the string of the board
+* Output: a vector with all the pieces from the string
+*/
 vector<Piece*> BoardManager::toVector(const string graphicBoard)
 {
 	int i = 0;
+
+	// loop through out the board size
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
+		// add current piece from the current char in string
 		this->_boardPieces.push_back(GameLogic::charToPiece(graphicBoard[i], i));
 	}
+
+	// return vector
 	return this->_boardPieces;
 }
 
-string BoardManager::movePieces(const string movment, GameLogic& algorithm)
+string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 {
-	int code = algorithm.movmentCode(movment.substr(0, 2), movment.substr(2, 4), this->_boardPieces);
+	int code = algorithm.movementCode(movement.substr(0, 2), movement.substr(2, 4), this->_boardPieces);
 	char codeChr = code + '0';
 
 	string returnCode(1, codeChr);
@@ -111,5 +177,3 @@ string BoardManager::movePieces(const string movment, GameLogic& algorithm)
 
 	return returnCode;
 }
-
-

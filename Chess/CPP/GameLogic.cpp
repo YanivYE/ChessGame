@@ -114,7 +114,7 @@ Player GameLogic::charToPlayer(const char playerChar) const
 }
 
 
-int GameLogic::movmentCode(const string source, const string destination, vector<Piece*>& board)
+int GameLogic::movementCode(const string source, const string destination, vector<Piece*>& board)
 {
 	if (checkCode7(source, destination))
 	{
@@ -227,7 +227,7 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 
 	if (checkCode2(srcP->_color, this->_turn))
 	{
-		return INVALID_MOVE_NOT_YOUR_PLYAER;
+		return INVALID_MOVE_NOT_YOUR_PLAYER;
 	}
 	if (checkCode3(destP->_color, this->_turn))
 	{
