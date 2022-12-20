@@ -81,7 +81,6 @@ bool Pawn::isValidMove(const string dest, const vector<Piece*> board) const
 * Input: color - the color(black - white)
 * Output: a multiplier that is or -1 or 1
 */
-
 int Pawn::getColorMultiplier(const Player color) const
 {
     if (color == White)
@@ -90,6 +89,7 @@ int Pawn::getColorMultiplier(const Player color) const
         return WHITE_MULTIPLIER;
     }
     // return black multiplier
+
     return BLACK_MULTIPLIER;
 }
 

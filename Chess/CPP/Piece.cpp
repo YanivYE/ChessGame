@@ -32,7 +32,7 @@ bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
 
     if (this->_type == ROOK || this->_type == QUEEN)
     {
-        if (curPos[1] == destPos[1]) 
+        if (curPos[1] == destPos[1])
         {
             for (int i = std::min(curPos[0], destPos[0]) + 1; i < std::max(curPos[0], destPos[0]); i++)
             {
@@ -53,9 +53,9 @@ bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
             }
         }
     }
-    if (this->_type == BISHOP || this->_type == QUEEN) 
+    if (this->_type == BISHOP || this->_type == QUEEN)
     {
-        if (abs(curPos[0] - destPos[0]) == abs(curPos[1] - destPos[1])) 
+        if (abs(curPos[0] - destPos[0]) == abs(curPos[1] - destPos[1]))
         {
             int rowDir = (destPos[0] - curPos[0]) / abs(destPos[0] - curPos[0]);
             int colDir = (destPos[1] - curPos[1]) / abs(destPos[1] - curPos[1]);
@@ -63,7 +63,7 @@ bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
             int col = curPos[1] + colDir;
             while (row != destPos[0] && col != destPos[1])
             {
-                if (board[row * CHESS_BOARD_SIDE + col]->_type != EMPTY_PIECE) 
+                if (board[row * CHESS_BOARD_SIDE + col]->_type != EMPTY_PIECE)
                 {
                     return false;
                 }
