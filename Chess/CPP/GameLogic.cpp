@@ -8,6 +8,8 @@
 #include "../Headers/EmptyPiece.h"
 #include "../Headers/BoardManager.h"
 
+// TODO: bonuses - adding checkmate, castling, multiplayer option, time limit?
+
 
 /*
 * Function is the constructor for the game logic object, it gets the graphic board string
