@@ -4,6 +4,14 @@ enum Player { White, Black, None };
 
 #include <vector>
 #include "Piece.h"
+#include "Bishop.h"
+#include "BoardManager.h"
+#include "EmptyPiece.h"
+#include "King.h"
+#include "Knight.h"
+#include "Pawn.h"
+#include "Queen.h"
+#include "Rook.h"
 
 using std::vector;
 
@@ -41,6 +49,7 @@ using std::vector;
 #define INVALID_MOVE_ILLEGAL_MOVMENT 6
 #define INVALID_MOVE_NO_MOVMENT 7
 #define VALID_MOVE_CHECKMATE 8
+#define VALID_MOVE_MADE_CASTLING 9
 
 using std::string;
 
@@ -84,6 +93,7 @@ private:
 	bool checkCode7(const string source, const string destination) const;
 
 	//bool checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board) const;
+	bool checkCode9(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
 	
 	// return the king of the current player(black - white)
 	Piece* currPlayerKing(const Player currentPlayer, vector<Piece*> board) const;

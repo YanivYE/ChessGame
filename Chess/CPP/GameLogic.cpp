@@ -1,12 +1,5 @@
 #include "../Headers/GameLogic.h"
-#include "../Headers/Rook.h"
-#include "../Headers/Knight.h"
-#include "../Headers/Bishop.h"
-#include "../Headers/King.h"
-#include "../Headers/Queen.h"
-#include "../Headers/Pawn.h"
-#include "../Headers/EmptyPiece.h"
-#include "../Headers/BoardManager.h"
+
 
 // TODO: bonuses - adding checkmate, castling, multiplayer option, time limit?
 
@@ -310,6 +303,11 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 //	
 //}
 
+bool GameLogic::checkCode9(const Piece* srcP, const Piece* destP, vector<Piece*> board) const
+{
+	return srcP->_type == KING && King::isCastling(destP->_placement, board, srcP);
+}
+
 /*
 * Function gets the current player color, and returns the current player's king
 * Input: currentPlayer - the current player color
@@ -364,19 +362,23 @@ Player GameLogic::opponentColor(const Player currentPlayer)
 void GameLogic::commitMove(const string source, const string destination, vector<Piece*>& board)
 {
 	// get moving piece(source)
-	Piece* movedPiece = board[GameLogic::placementToIndex(source)];
+	Piece* movedPiece = board[placementToIndex(source)];
+	if (movedPiece->_type == KING || movedPiece->_type == ROOK)
+	{
+		movedPiece->_moved = true;
+	}
 
 	// set source piece in board the empty new piece
-	board[GameLogic::placementToIndex(source)] = new EmptyPiece(EMPTY_PIECE, source, None);
+	board[placementToIndex(source)] = new EmptyPiece(EMPTY_PIECE, source, None);
 
 	// delete old piece from vector
-	delete(board[GameLogic::placementToIndex(destination)]);
+	delete(board[placementToIndex(destination)]);
 
 	// set new placement
 	movedPiece->_placement = destination;
 	
 	// set moved piece in vector
-	board[GameLogic::placementToIndex(destination)] = movedPiece;
+	board[placementToIndex(destination)] = movedPiece;
 }
 
 /*
@@ -431,6 +433,12 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 		switchTurn();
 
 		return VALID_MOVE_MADE_CHESS;
+	}
+
+	if (checkCode9(srcP, destP, board))
+	{
+		return VALID_MOVE_MADE_CASTLING;
+		switchTurn();
 	}
 
 	// change turns

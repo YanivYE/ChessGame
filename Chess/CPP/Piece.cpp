@@ -13,6 +13,7 @@ Piece::Piece(const string type, const string placement, const Player color)
 	this->_placement = placement;
 	this->_type = type;
 	this->_color = color;
+    this->_moved = false;
 }
 
 /*

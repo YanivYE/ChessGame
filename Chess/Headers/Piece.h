@@ -36,4 +36,6 @@ public:
 	string _type; // the type(name) of the piece
 	string _placement; // the placement of the piece(eg. a2, f5, g7)
 	Player _color; // the color(player) of the piece
+	bool _moved;
+
 };

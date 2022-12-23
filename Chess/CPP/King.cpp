@@ -35,21 +35,51 @@ bool King::isValidMove(string dest, vector<Piece*> board) const
     // check the col difference between the dest, and current pos
     int colDifference = abs(dest[0] - this->_placement[0]);
 
-    // check if moving more than 1 cube diagonoally/vertically/horizontally
-    if (rowDifference > 1 || colDifference > 1) 
+    // check if moving more than 1 cube diagonoally/vertically/horizontally and not castling
+    if ((rowDifference > 1 || colDifference > 1) && !isCastling(dest, board, this))
     {
-        // check castling
-        if (colDifference == 2 && rowDifference == 0)
-        {
-            if (getInitialRow(this) == PIECE_INITIAL_ROW_INDEX_WHITE || getInitialRow(this) == PIECE_INITIAL_ROW_INDEX_BLACK)
-            {
-
-            }
-        }
         // if so bad move
         return false;
     }
 
     // else good move
     return true;
+}
+
+bool King::isCastling(string dest, vector<Piece*> board, const Piece* king) 
+{
+    // check the row difference between the dest, and current pos
+    int rowDifference = abs(dest[1] - king->_placement[1]);
+    // check the col difference between the dest, and current pos
+    int colDifference = abs(dest[0] - king->_placement[0]);
+
+    // check castling
+    if (colDifference == 2 && rowDifference == 0)
+    {
+        if (king->_placement ==  WHITE_KING_INITIAL_PLACEMENT && !king->_moved) //this->_placement == BLACK_KING_INITIAL_PLACEMENT
+        {
+            if (board[GameLogic::placementToIndex(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
+                !board[GameLogic::placementToIndex(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT)]->_moved && 
+                board[GameLogic::placementToIndex(LEFT_WHITE_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
+                !board[GameLogic::placementToIndex(LEFT_WHITE_ROOK_INITIAL_PLACEMENT)]->_moved)
+            {
+                return true;
+            }
+        }
+        if (king->_placement == BLACK_KING_INITIAL_PLACEMENT && !king->_moved) //this->_placement == BLACK_KING_INITIAL_PLACEMENT
+        {
+            if (board[GameLogic::placementToIndex(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
+                !board[GameLogic::placementToIndex(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT)]->_moved &&
+                board[GameLogic::placementToIndex(LEFT_BLACK_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
+                !board[GameLogic::placementToIndex(LEFT_BLACK_ROOK_INITIAL_PLACEMENT)]->_moved)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+
+
+    
 }

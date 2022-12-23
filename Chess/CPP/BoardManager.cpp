@@ -181,9 +181,50 @@ string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 	// create string with the char
 	string returnCode(1, codeChr);
 
+	if (code == 9)
+	{
+		returnCode += "," , rookCastlingMovement(movement.substr(0, 2), movement.substr(2, 4));
+	}
+
 	// add NULL at the end of the string
 	returnCode += '\0';
 
 	// return the code string
 	return returnCode;
+}
+
+string BoardManager::rookCastlingMovement(string kingSource, string kingDest)
+{
+	string rookMovement = "";
+	if (kingSource == WHITE_KING_INITIAL_PLACEMENT)
+	{
+		if (kingDest == SMALL_CASTLING_WHITE_KING_PLACEMENT)
+		{
+			rookMovement += (convertRookIndexes(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT) , "," , convertRookIndexes(RIGHT_WHITE_ROOK_CASTLING_PLACEMENT));
+		}
+		else
+		{
+			rookMovement += (convertRookIndexes(LEFT_WHITE_ROOK_INITIAL_PLACEMENT), ",", convertRookIndexes(LEFT_WHITE_ROOK_CASTLING_PLACEMENT));
+		}
+	}
+	else
+	{
+		if (kingDest == SMALL_CASTLING_BLACK_KING_PLACEMENT)
+		{
+			rookMovement += (convertRookIndexes(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT), ",", convertRookIndexes(RIGHT_BLACK_ROOK_CASTLING_PLACEMENT));
+		}
+		else
+		{
+			rookMovement += (convertRookIndexes(LEFT_BLACK_ROOK_INITIAL_PLACEMENT), ",", convertRookIndexes(LEFT_BLACK_ROOK_CASTLING_PLACEMENT));
+		}
+	}
+	return rookMovement;
+	
+}
+
+string convertRookIndexes(string boardIndex)
+{
+	string rookIndex = "";
+	rookIndex += CHESS_BOARD_SIDE - (boardIndex[1] - '1') - 1, boardIndex[0] - 'a' ;
+	return rookIndex;
 }

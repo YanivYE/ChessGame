@@ -30,6 +30,9 @@ public:
 	// check if piece letter should be upper or lower case and return the letter
 	static char getUpperLower(Piece* piece, char lowerLetter);
 
+	string rookCastlingMovement(string kingSource, string kingDest);
+
+
 private:
 	// vector for the board pieces
 	vector<Piece*> _boardPieces;
