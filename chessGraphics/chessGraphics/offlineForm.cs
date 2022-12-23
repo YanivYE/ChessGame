@@ -218,12 +218,14 @@ namespace chessGraphics
             "Invalid move - illegeal movement with piece",
             "Invalid move - source and dest are equal",
             "Game over - check mate",
+            // TODO: add valid castling move
             "Unknown message"
             };
 
 
         string convertEngineToText(string m)
         {
+            // TODO: check what does try parse do, and see if works not only with string with 1 tav
             int res;
             bool b = int.TryParse(m, out res);
 
@@ -287,8 +289,15 @@ namespace chessGraphics
 
                         matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
                         matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.Blue;
-                    
-                    }
+
+                         //Square srcRook = new Square(1, 2);
+                         // TODO: code 9 - CASTLING check if contains made castling move
+                         // from messages array
+                         //if (res.ToLower().StartsWith("9"))
+                         //{
+
+                         //}
+                     }
 
                     lblEngineCalc.Visible = false;
                     lblResult.Text = string.Format("{0}", res);
@@ -328,5 +337,6 @@ namespace chessGraphics
 
             Application.Exit();
         }
+
     }
 }
