@@ -393,6 +393,8 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 {
 	// get index of dest piece
 	int despPieceIndex = placementToIndex(destP->_placement);
+	Piece* initialSrc = nullptr;
+	Piece* initialDst = nullptr;
 
 	// check if user tried to move player that isn't his
 	if (checkCode2(srcP->_color, this->_turn))
@@ -409,9 +411,15 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 	{
 		return INVALID_MOVE_ILLEGAL_MOVMENT;
 	}
+
+	initialSrc = BoardManager::copyPiece(srcP);
+	initialDst = BoardManager::copyPiece(destP);
+
 	// check if chess will accure because of move
 	if (checkCode4(srcP->_placement, destP->_placement, this->_turn, board))
 	{
+		delete(initialSrc);
+		delete(initialDst);
 		return INVALID_MOVE_CHESS_WILL_OCCURE;
 	}
 
@@ -431,19 +439,23 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 
 		// change turns
 		switchTurn();
-
+		delete(initialSrc);
+		delete(initialDst);
 		return VALID_MOVE_MADE_CHESS;
 	}
 
-	if (checkCode9(srcP, destP, board))
+	if (checkCode9(initialSrc, initialDst, board))
 	{
-		return VALID_MOVE_MADE_CASTLING;
+		delete(initialSrc);
+		delete(initialDst);
 		switchTurn();
+		return VALID_MOVE_MADE_CASTLING;
 	}
 
 	// change turns
 	switchTurn();
-
+	delete(initialSrc);
+	delete(initialDst);
 	// good move(code 0)
 	return VALID_MOVE;
 }

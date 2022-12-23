@@ -218,7 +218,7 @@ namespace chessGraphics
             "Invalid move - illegeal movement with piece",
             "Invalid move - source and dest are equal",
             "Game over - check mate",
-            // TODO: add valid castling move
+            "Valid move - you made castling",
             "Unknown message"
             };
 
@@ -227,7 +227,7 @@ namespace chessGraphics
         {
             // TODO: check what does try parse do, and see if works not only with string with 1 tav
             int res;
-            bool b = int.TryParse(m, out res);
+            bool b = int.TryParse(new string(m[0], 1), out res);
 
             if (!b || res < 0 || res >= messages.Length)
                 return messages[messages.Length - 1];
@@ -290,13 +290,56 @@ namespace chessGraphics
                         matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
                         matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.Blue;
 
+                         lblEngineCalc.Visible = false;
+                         lblResult.Text = string.Format("{0}", res);
+                         lblResult.Visible = true;
+                         label2.Visible = true;
+                         this.Refresh();
+
                          //Square srcRook = new Square(1, 2);
                          // TODO: code 9 - CASTLING check if contains made castling move
                          // from messages array
-                         //if (res.ToLower().StartsWith("9"))
-                         //{
+                         if (m.ToLower().Contains("9"))
+                         {
+                             lblEngineCalc.Visible = false;
+                             lblResult.Text = string.Format("{0}", res);
+                             lblResult.Visible = true;
+                             label2.Visible = true;
+                             this.Refresh();
 
-                         //}
+                             string[] rookPlacements = m.Split(',');
+                             int srcRow = rookPlacements[1][0] - '0';
+                             int dstRow = rookPlacements[3][0] - '0';
+                             int srcCol = rookPlacements[2][0] - '0';
+                             int dstCol = rookPlacements[4][0] - '0';
+                             Square srcRook = new Square(srcRow, srcCol);
+                             Square dstRook = new Square(dstRow, dstCol);
+
+                             matBoard[dstRook.Row, dstRook.Col].BackgroundImage = matBoard[srcRook.Row, srcRook.Col].BackgroundImage;
+                             matBoard[srcRook.Row, srcRook.Col].BackgroundImage = null;
+
+                             matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
+                             matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
+
+                             Invoke((MethodInvoker)delegate
+                             {
+                                 if (srcRook != null)
+                                     matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
+
+                                 if (dstRook != null)
+                                     matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
+
+                                 dstRook = null;
+                                 srcRook = null;
+
+                             });
+
+                             lblEngineCalc.Visible = false;
+                             lblResult.Text = string.Format("{0}", res);
+                             lblResult.Visible = true;
+                             label2.Visible = true;
+                             this.Refresh();
+                         }
                      }
 
                     lblEngineCalc.Visible = false;

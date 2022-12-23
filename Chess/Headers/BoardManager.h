@@ -2,6 +2,7 @@
 
 #include "GameLogic.h"
 #include "Piece.h"
+#include <iostream>
 
 #define LOWER_TO_UPPER 32
 
@@ -24,13 +25,13 @@ public:
 	// copy board vector from original to copy
 	static void copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyBoard);
 	// copy piece and return new pointer to copied piece
-	static Piece* copyPiece(Piece* piece);
+	static Piece* copyPiece(const Piece* piece);
 	// get piece letter(Pawn = P / p - depends on color)
-	static char getPieceLetter(Piece* piece);
+	static char getPieceLetter(const Piece* piece);
 	// check if piece letter should be upper or lower case and return the letter
-	static char getUpperLower(Piece* piece, char lowerLetter);
+	static char getUpperLower(const Piece* piece, char lowerLetter);
 
-	string rookCastlingMovement(string kingSource, string kingDest);
+	string rookCastlingMovement(string kingSource, string kingDest, GameLogic& algorithm);
 	string convertRookIndexes(string boardIndex);
 
 private:

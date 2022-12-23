@@ -52,6 +52,8 @@ public:
 	// get valid/invalid code from move
 	int movementCode(const string source, const string destination, vector<Piece*>& board);
 
+	// move piece from source to dest
+	void commitMove(const string source, const string destination, vector<Piece*>& board);
 private:
 	// switch turn in engine
 	void switchTurn();
@@ -79,8 +81,7 @@ private:
 	
 	// return the king of the current player(black - white)
 	Piece* currPlayerKing(const Player currentPlayer, vector<Piece*> board) const;
-	// move piece from source to dest
-	void commitMove(const string source, const string destination, vector<Piece*>& board);
+
 	// check codes after moving piece
 	int checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board);
 

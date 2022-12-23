@@ -59,7 +59,7 @@ bool King::isCastling(string dest, vector<Piece*> board, const Piece* king)
         if (king->_placement ==  WHITE_KING_INITIAL_PLACEMENT && !king->_moved) //this->_placement == BLACK_KING_INITIAL_PLACEMENT
         {
             if (board[GameLogic::placementToIndex(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
-                !board[GameLogic::placementToIndex(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT)]->_moved && 
+                !board[GameLogic::placementToIndex(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT)]->_moved || 
                 board[GameLogic::placementToIndex(LEFT_WHITE_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
                 !board[GameLogic::placementToIndex(LEFT_WHITE_ROOK_INITIAL_PLACEMENT)]->_moved)
             {
@@ -69,10 +69,11 @@ bool King::isCastling(string dest, vector<Piece*> board, const Piece* king)
         if (king->_placement == BLACK_KING_INITIAL_PLACEMENT && !king->_moved) //this->_placement == BLACK_KING_INITIAL_PLACEMENT
         {
             if (board[GameLogic::placementToIndex(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
-                !board[GameLogic::placementToIndex(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT)]->_moved &&
+                !board[GameLogic::placementToIndex(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT)]->_moved ||
                 board[GameLogic::placementToIndex(LEFT_BLACK_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
                 !board[GameLogic::placementToIndex(LEFT_BLACK_ROOK_INITIAL_PLACEMENT)]->_moved)
             {
+
                 return true;
             }
         }

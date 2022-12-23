@@ -70,7 +70,7 @@ void BoardManager::copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyB
 * Input: piece - the piece to copy
 * Output: the copied piece pointer
 */
-Piece* BoardManager::copyPiece(Piece* piece)
+Piece* BoardManager::copyPiece(const Piece* piece)
 {
 	// get index
 	int index = GameLogic::placementToIndex(piece->_placement);
@@ -91,7 +91,7 @@ Piece* BoardManager::copyPiece(Piece* piece)
 * Input: piece - the piece to gets it's letter
 * Output: the piece's char
 */
-char BoardManager::getPieceLetter(Piece* piece)
+char BoardManager::getPieceLetter(const Piece* piece)
 {
 	// string "switch case" for the pieces names, and returns their char in upper/lower
 	// case by the piece player.
@@ -133,7 +133,7 @@ char BoardManager::getPieceLetter(Piece* piece)
 *		 lowerLetter - the lower letter to return / change
 * Output: the piece's char upper/lower
 */
-char BoardManager::getUpperLower(Piece* piece, char lowerLetter)
+char BoardManager::getUpperLower(const Piece* piece, char lowerLetter)
 {
 	// if black so return lower
 	if (piece->_color == Black)
@@ -183,7 +183,8 @@ string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 
 	if (code == 9)
 	{
-		returnCode += "," , rookCastlingMovement(movement.substr(0, 2), movement.substr(2, 4));
+		returnCode += ",";
+		returnCode += rookCastlingMovement(movement.substr(0, 2), movement.substr(2, 4), algorithm);
 	}
 
 	// add NULL at the end of the string
@@ -193,31 +194,36 @@ string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 	return returnCode;
 }
 
-string BoardManager::rookCastlingMovement(string kingSource, string kingDest)
+string BoardManager::rookCastlingMovement(string kingSource, string kingDest, GameLogic& algorithm)
 {
 	string rookMovement = "";
 	if (kingSource == WHITE_KING_INITIAL_PLACEMENT)
 	{
 		if (kingDest == SMALL_CASTLING_WHITE_KING_PLACEMENT)
 		{
-			rookMovement += (convertRookIndexes(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT) , "," , convertRookIndexes(RIGHT_WHITE_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(LEFT_WHITE_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(LEFT_WHITE_ROOK_CASTLING_PLACEMENT));
+			algorithm.commitMove(LEFT_WHITE_ROOK_INITIAL_PLACEMENT, LEFT_WHITE_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
 		}
 		else
 		{
-			rookMovement += (convertRookIndexes(LEFT_WHITE_ROOK_INITIAL_PLACEMENT), ",", convertRookIndexes(LEFT_WHITE_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(RIGHT_WHITE_ROOK_CASTLING_PLACEMENT));
+			algorithm.commitMove(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT, RIGHT_WHITE_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
 		}
 	}
 	else
 	{
 		if (kingDest == SMALL_CASTLING_BLACK_KING_PLACEMENT)
 		{
-			rookMovement += (convertRookIndexes(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT), ",", convertRookIndexes(RIGHT_BLACK_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(LEFT_BLACK_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(LEFT_BLACK_ROOK_CASTLING_PLACEMENT));
+			algorithm.commitMove(LEFT_BLACK_ROOK_INITIAL_PLACEMENT, LEFT_BLACK_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
 		}
 		else
 		{
-			rookMovement += (convertRookIndexes(LEFT_BLACK_ROOK_INITIAL_PLACEMENT), ",", convertRookIndexes(LEFT_BLACK_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(RIGHT_BLACK_ROOK_CASTLING_PLACEMENT));
+			algorithm.commitMove(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT, RIGHT_BLACK_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
 		}
 	}
+
 	return rookMovement;
 	
 }
@@ -225,6 +231,10 @@ string BoardManager::rookCastlingMovement(string kingSource, string kingDest)
 string BoardManager::convertRookIndexes(string boardIndex)
 {
 	string rookIndex = "";
-	rookIndex += CHESS_BOARD_SIDE - (boardIndex[1] - '1') - 1, boardIndex[0] - 'a' ;
+
+	rookIndex += std::to_string((CHESS_BOARD_SIDE - (boardIndex[1] - '1') - 1));
+	rookIndex += ",";
+	rookIndex += std::to_string((boardIndex[0] - 'a'));
+
 	return rookIndex;
 }
