@@ -7,6 +7,11 @@
 using std::string;
 using std::vector;
 
+#define PAWN_INITIAL_ROW_INDEX_WHITE 2
+#define PAWN_INITIAL_ROW_INDEX_BLACK 7
+#define PIECE_INITIAL_ROW_INDEX_WHITE 1
+#define PIECE_INITIAL_ROW_INDEX_BLACK 8
+
 class GameLogic;
 
 class Piece 
@@ -25,6 +30,8 @@ public:
 	
 	// deep copy piece function
 	Piece& operator=(const Piece& other);
+	int getInitialRow(const Piece* piece) const;
+
 public:
 	string _type; // the type(name) of the piece
 	string _placement; // the placement of the piece(eg. a2, f5, g7)

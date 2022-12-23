@@ -52,7 +52,7 @@ bool Pawn::isValidMove(const string dest, const vector<Piece*> board) const
     }
     // check if we are on first move, is moving forward two cubes, if the destination cube is empty,
     // and going on the same col
-    if (thisRow == getInitialRowOfPawn(this->_color) && destRow == thisRow + (2 * colorMultiplier) && 
+    if (thisRow == getInitialRow(this) && destRow == thisRow + (2 * colorMultiplier) && 
         dest[0] == this->_placement[0] && destPiece->_type == EMPTY_PIECE)
     {
         // if so good move
@@ -93,19 +93,3 @@ int Pawn::getColorMultiplier(const Player color) const
     return BLACK_MULTIPLIER;
 }
 
-/*
-* Function gets a player color, and returns the intial row pos of the pawn from that color
-* Input: color - the color(black - white)
-* Output: the intial row pos of the pawn from that color
-*/
-int Pawn::getInitialRowOfPawn(const Player color) const
-{
-    if (color == White)
-    {
-        // return white initial row
-        return INITIAL_ROW_INDEX_WHITE;
-    }
-
-    // return black initial row
-    return INITIAL_ROW_INDEX_BLACK;
-}

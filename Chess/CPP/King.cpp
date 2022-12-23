@@ -38,6 +38,14 @@ bool King::isValidMove(string dest, vector<Piece*> board) const
     // check if moving more than 1 cube diagonoally/vertically/horizontally
     if (rowDifference > 1 || colDifference > 1) 
     {
+        // check castling
+        if (colDifference == 2 && rowDifference == 0)
+        {
+            if (getInitialRow(this) == PIECE_INITIAL_ROW_INDEX_WHITE || getInitialRow(this) == PIECE_INITIAL_ROW_INDEX_BLACK)
+            {
+
+            }
+        }
         // if so bad move
         return false;
     }

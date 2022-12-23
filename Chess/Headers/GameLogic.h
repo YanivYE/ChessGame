@@ -82,6 +82,7 @@ private:
 	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
 	// returns if source and dest are the same
 	bool checkCode7(const string source, const string destination) const;
+
 	//bool checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board) const;
 	
 	// return the king of the current player(black - white)

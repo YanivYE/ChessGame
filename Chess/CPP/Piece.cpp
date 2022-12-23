@@ -122,3 +122,32 @@ Piece& Piece::operator=(const Piece& other)
     return *this;
 }
 
+
+/*
+* Function gets a player color, and returns the intial row pos of the pawn from that color
+* Input: color - the color(black - white)
+* Output: the intial row pos of the pawn from that color
+*/
+int Piece::getInitialRow(const Piece* piece) const
+{
+    if (piece->_type == PAWN)
+    {
+        if (piece->_color == White)
+        {
+            // return white initial row
+            return PAWN_INITIAL_ROW_INDEX_WHITE;
+        }
+
+        // return black initial row
+        return PAWN_INITIAL_ROW_INDEX_BLACK;
+    }
+    if (piece->_color == White)
+    {
+        // return white initial row
+        return PIECE_INITIAL_ROW_INDEX_WHITE;
+    }
+
+    // return black initial row
+    return PIECE_INITIAL_ROW_INDEX_BLACK;
+    
+}
