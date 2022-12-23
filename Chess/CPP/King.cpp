@@ -79,7 +79,4 @@ bool King::isCastling(string dest, vector<Piece*> board, const Piece* king)
     }
 
     return false;
-
-
-    
 }

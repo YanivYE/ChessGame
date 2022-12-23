@@ -75,7 +75,7 @@ string GameLogic::indexToPlacement(const int index)
 
 	char col_letter = 'a' + col;	// set col as a letter
 
-	string chess_board_index = string(1, col_letter) + std::to_string(row); 
+	string chess_board_index = string(1, col_letter) + std::to_string(row);
 	// create a string from the index like e2 for example
 
 	return chess_board_index;

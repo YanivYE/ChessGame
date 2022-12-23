@@ -1,31 +1,15 @@
 #pragma once
 
-enum Player { White, Black, None };
-
-#include <vector>
+#include "BoardManager.h"
 #include "Piece.h"
 #include "Bishop.h"
-#include "BoardManager.h"
 #include "EmptyPiece.h"
 #include "King.h"
 #include "Knight.h"
 #include "Pawn.h"
 #include "Queen.h"
 #include "Rook.h"
-
-using std::vector;
-
-#define CHESS_BOARD_SIZE 64
-#define CHESS_BOARD_SIDE 8
-#define STARTING_PLAYER 64
-
-#define ROOK "Rook"
-#define KNIGHT "Knight"
-#define BISHOP "Bishop"
-#define KING "King"
-#define QUEEN "Queen"
-#define PAWN "Pawn"
-#define EMPTY_PIECE "Empty Piece"
+#include <string>
 
 #define ROOK_CHAR_LOWER 'r'
 #define ROOK_CHAR_UPPER 'R'
@@ -50,8 +34,6 @@ using std::vector;
 #define INVALID_MOVE_NO_MOVMENT 7
 #define VALID_MOVE_CHECKMATE 8
 #define VALID_MOVE_MADE_CASTLING 9
-
-using std::string;
 
 class Piece;
 
@@ -81,13 +63,13 @@ private:
 
 	// check if valid move, and made chess
 	bool checkCode1(const Player currentPlayer, const string destination, vector<Piece*> board) const;
-	// returns true if user tried to move player that isn't his
+		// returns true if user tried to move player that isn't his
 	bool checkCode2(const Player sourcePlayer, const Player currentPlayer) const;
 	// returns true if destination not free
 	bool checkCode3(const Player destPlayer, const Player currentPlayer) const;
 	// returns true if chess on current player will accure because of move
 	bool checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*>& board);
-	// returns true if invalid movement with piece
+		// returns true if invalid movement with piece
 	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
 	// returns if source and dest are the same
 	bool checkCode7(const string source, const string destination) const;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameLogic.h"
-#include "EmptyPiece.h"
+#include "Piece.h"
 
 #define LOWER_TO_UPPER 32
 
@@ -31,7 +31,7 @@ public:
 	static char getUpperLower(Piece* piece, char lowerLetter);
 
 	string rookCastlingMovement(string kingSource, string kingDest);
-
+	string convertRookIndexes(string boardIndex);
 
 private:
 	// vector for the board pieces

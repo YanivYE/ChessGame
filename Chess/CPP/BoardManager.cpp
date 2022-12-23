@@ -222,7 +222,7 @@ string BoardManager::rookCastlingMovement(string kingSource, string kingDest)
 	
 }
 
-string convertRookIndexes(string boardIndex)
+string BoardManager::convertRookIndexes(string boardIndex)
 {
 	string rookIndex = "";
 	rookIndex += CHESS_BOARD_SIDE - (boardIndex[1] - '1') - 1, boardIndex[0] - 'a' ;

@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Piece.h"
-#include <vector>
 #include "GameLogic.h"
-
-using std::string;
+#include "Piece.h"
 
 #define WHITE_MULTIPLIER 1
 #define BLACK_MULTIPLIER -1

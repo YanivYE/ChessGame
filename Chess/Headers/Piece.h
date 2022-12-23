@@ -1,16 +1,29 @@
 #pragma once
 
-#include <string>
 #include <iostream>
-#include "GameLogic.h"
+#include <vector>
 
 using std::string;
 using std::vector;
+
+enum Player { White, Black, None };
 
 #define PAWN_INITIAL_ROW_INDEX_WHITE 2
 #define PAWN_INITIAL_ROW_INDEX_BLACK 7
 #define PIECE_INITIAL_ROW_INDEX_WHITE 1
 #define PIECE_INITIAL_ROW_INDEX_BLACK 8
+
+#define CHESS_BOARD_SIZE 64
+#define CHESS_BOARD_SIDE 8
+#define STARTING_PLAYER 64
+
+#define ROOK "Rook"
+#define KNIGHT "Knight"
+#define BISHOP "Bishop"
+#define KING "King"
+#define QUEEN "Queen"
+#define PAWN "Pawn"
+#define EMPTY_PIECE "Empty Piece"
 
 class GameLogic;
 
