@@ -1,5 +1,0 @@
-﻿  BoardManager.cpp
-  GameLogic.cpp
-  Generating Code...
-C:\Users\user\Desktop\C++\week7+8\chess_project\Chess\CPP\GameLogic.cpp(335): warning C4715: 'GameLogic::currPlayerKing': not all control paths return a value
-  Chess.vcxproj -> C:\Users\user\Desktop\C++\week7+8\chess_project\Chess\x64\Debug\Chess.exe
