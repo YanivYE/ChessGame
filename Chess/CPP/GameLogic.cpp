@@ -264,6 +264,7 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 			{
 				// if so clear old board 
 				BoardManager::clearBoard(board);
+				
 
 				// return vector to prevoius state
 				board = currStateVector;
@@ -290,12 +291,24 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 */
 bool GameLogic::checkCode1(const Player currentPlayer, const string destination, vector<Piece*> board) const
 {
+	bool madeCheck = false;
 	// get openent king
 	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
 
 	// after we already moved the player, we check if the destination piece can make move on king,
 	// if so, so it's threatening the openents king
-	return board[placementToIndex(destination)]->isValidMove(opponentKing->_placement, board);
+	madeCheck = board[placementToIndex(destination)]->isValidMove(opponentKing->_placement, board);
+
+	if (madeCheck)
+	{
+		((King*)opponentKing)->_inCheck = true;
+	}
+	else
+	{
+		((King*)opponentKing)->_inCheck = false;
+	}
+
+	return madeCheck;
 }
 
 //bool GameLogic::checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board) const

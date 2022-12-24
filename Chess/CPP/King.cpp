@@ -10,6 +10,7 @@
 */
 King::King(const string type, const string placement, const Player player) : Piece(type, placement, player)
 {
+    this->_inCheck = false;
 }
 
 /*
@@ -54,7 +55,7 @@ bool King::isCastling(string dest, vector<Piece*> board, const Piece* king)
     int colDifference = abs(dest[0] - king->_placement[0]);
 
     // check castling
-    if (colDifference == 2 && rowDifference == 0)
+    if (colDifference == 2 && rowDifference == 0 && !((King*)king)->_inCheck && king->clearMovingPath(dest, board))
     {
         if (king->_placement ==  WHITE_KING_INITIAL_PLACEMENT && !king->_moved) //this->_placement == BLACK_KING_INITIAL_PLACEMENT
         {

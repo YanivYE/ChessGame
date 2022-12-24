@@ -39,7 +39,7 @@ bool Piece::clearMovingPath(const string dest, const vector<Piece*> board) const
     int curPos[2] = { CHESS_BOARD_SIDE - (this->_placement[1] - '1') - 1, this->_placement[0] - 'a' };
     int destPos[2] = { CHESS_BOARD_SIDE - (dest[1] - '1') - 1, dest[0] - 'a' };
 
-    if (this->_type == ROOK || this->_type == QUEEN)    
+    if (this->_type == ROOK || this->_type == QUEEN || this->_type == KING)
         // if the piece is rook or queen - checking horizontal and vertical moves
     {
         if (curPos[1] == destPos[1])    // if the cols are the same - moving verticaly

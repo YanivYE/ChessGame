@@ -19,4 +19,7 @@ public:
 	// check if the moved king move is valid
 	bool isValidMove(const string dest, const vector<Piece*> board) const override;
 	static bool isCastling(string dest, vector<Piece*> board, const Piece* king);
+
+public:
+	bool _inCheck;
 };
