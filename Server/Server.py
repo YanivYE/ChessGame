@@ -74,9 +74,16 @@ def main():
 
     # Accept incoming connections and start a new thread for each client
     while True:
-        client_soc, client_address = listening_sock.accept()
+        if listening_sock.fileno() != -1:
+            client_soc, client_address = listening_sock.accept()
+        else:
+            break
 
         num_connected_clients += 1
+
+        if num_connected_clients == 2:
+            # If the number of connected clients has reached 2, stop accepting new connections
+            listening_sock.close()
 
         if num_connected_clients <= 2:
             if num_connected_clients == 1:
@@ -91,12 +98,17 @@ def main():
 
             print("Connected to {}, with the color: {}".format(client_address, color))
 
+            client_soc.send(str(num_connected_clients).encode("ascii"))
+            print("Sent message to {} ({}): {}".format(client_soc.getsockname(), color, str(num_connected_clients)))
+
             t = threading.Thread(target=handle_client, args=(client_soc, client_address, color))
             t.start()
         else:
             print("Cannot accept more than 2 connections at once. Disconnecting {}".format(client_address))
             client_soc.close()
             num_connected_clients -= 1
+
+    print("Exited - now game play yay")
 
 
 if __name__ == '__main__':

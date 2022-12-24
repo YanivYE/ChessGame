@@ -27,10 +27,14 @@ namespace chessGraphics
 
         private void button2_Click(object sender, EventArgs e)
         {
-            onlineForm onlineGameForm = new onlineForm();
-            onlineGameForm.Show();
+            connectionForm connection = new connectionForm();
+            connection.Show();
 
             this.Hide();
+            //onlineForm onlineGameForm = new onlineForm();
+            //onlineGameForm.Show();
+
+            //this.Hide();
         }
 
         private void OnMouseEnterButton1(object sender, EventArgs e)

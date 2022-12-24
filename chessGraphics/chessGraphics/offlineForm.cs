@@ -290,57 +290,57 @@ namespace chessGraphics
                         matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
                         matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.Blue;
 
-                         lblEngineCalc.Visible = false;
-                         lblResult.Text = string.Format("{0}", res);
-                         lblResult.Visible = true;
-                         label2.Visible = true;
-                         this.Refresh();
+                        lblEngineCalc.Visible = false;
+                        lblResult.Text = string.Format("{0}", res);
+                        lblResult.Visible = true;
+                        label2.Visible = true;
+                        this.Refresh();
 
-                         //Square srcRook = new Square(1, 2);
-                         // TODO: code 9 - CASTLING check if contains made castling move
-                         // from messages array
-                         if (m.ToLower().Contains("9"))
-                         {
-                             lblEngineCalc.Visible = false;
-                             lblResult.Text = string.Format("{0}", res);
-                             lblResult.Visible = true;
-                             label2.Visible = true;
-                             this.Refresh();
+                        //Square srcRook = new Square(1, 2);
+                        // TODO: code 9 - CASTLING check if contains made castling move
+                        // from messages array
+                        if (m.ToLower().Contains("9"))
+                        {
+                            lblEngineCalc.Visible = false;
+                            lblResult.Text = string.Format("{0}", res);
+                            lblResult.Visible = true;
+                            label2.Visible = true;
+                            this.Refresh();
 
-                             string[] rookPlacements = m.Split(',');
-                             int srcRow = rookPlacements[1][0] - '0';
-                             int dstRow = rookPlacements[3][0] - '0';
-                             int srcCol = rookPlacements[2][0] - '0';
-                             int dstCol = rookPlacements[4][0] - '0';
-                             Square srcRook = new Square(srcRow, srcCol);
-                             Square dstRook = new Square(dstRow, dstCol);
+                            string[] rookPlacements = m.Split(',');
+                            int srcRow = rookPlacements[1][0] - '0';
+                            int dstRow = rookPlacements[3][0] - '0';
+                            int srcCol = rookPlacements[2][0] - '0';
+                            int dstCol = rookPlacements[4][0] - '0';
+                            Square srcRook = new Square(srcRow, srcCol);
+                            Square dstRook = new Square(dstRow, dstCol);
 
-                             matBoard[dstRook.Row, dstRook.Col].BackgroundImage = matBoard[srcRook.Row, srcRook.Col].BackgroundImage;
-                             matBoard[srcRook.Row, srcRook.Col].BackgroundImage = null;
+                            matBoard[dstRook.Row, dstRook.Col].BackgroundImage = matBoard[srcRook.Row, srcRook.Col].BackgroundImage;
+                            matBoard[srcRook.Row, srcRook.Col].BackgroundImage = null;
 
-                             matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
-                             matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
+                            matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
+                            matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
 
-                             Invoke((MethodInvoker)delegate
-                             {
-                                 if (srcRook != null)
-                                     matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
+                            Invoke((MethodInvoker)delegate
+                            {
+                                if (srcRook != null)
+                                    matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
 
-                                 if (dstRook != null)
-                                     matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
+                                if (dstRook != null)
+                                    matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
 
-                                 dstRook = null;
-                                 srcRook = null;
+                                dstRook = null;
+                                srcRook = null;
 
-                             });
+                            });
 
-                             lblEngineCalc.Visible = false;
-                             lblResult.Text = string.Format("{0}", res);
-                             lblResult.Visible = true;
-                             label2.Visible = true;
-                             this.Refresh();
-                         }
-                     }
+                            lblEngineCalc.Visible = false;
+                            lblResult.Text = string.Format("{0}", res);
+                            lblResult.Visible = true;
+                            label2.Visible = true;
+                            this.Refresh();
+                        }
+                    }
 
                     lblEngineCalc.Visible = false;
                     lblResult.Text = string.Format("{0}", res);
