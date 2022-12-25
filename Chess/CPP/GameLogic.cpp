@@ -311,15 +311,57 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 	return madeCheck;
 }
 
-//bool GameLogic::checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board) const
-//{
-//	
-//}
+bool GameLogic::checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board)
+{
+	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
+	if (isPossibleKingEscape(opponentKing, currentPlayer, board) || isPossibleAttackerCapture(destination, opponentColor(currentPlayer), board))
+	{
+		return false;
+	}
+	return true;
+}
 
-bool GameLogic::checkCode9(const Piece* srcP, const Piece* destP, vector<Piece*> board) const
+
+bool GameLogic::checkCode9(const Piece* srcP, const Piece* destP, const vector<Piece*> board) const
 {
 	return srcP->_type == KING && King::isCastling(destP->_placement, board, srcP);
 }
+
+
+bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*> board)
+{
+	int i = 0;
+	vector<string> possibleMoves = ((King*)king)->getKingMoves(king->_placement);
+
+	for (i = 0; i < possibleMoves.size(); i++)
+	{
+		if (king->isValidMove(possibleMoves[i], board))
+		{
+			if (!checkCode4(king->_placement, possibleMoves[i], currentPlayer, board))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool GameLogic::isPossibleAttackerCapture(const string attackerPlacement, const Player oppenentPLayer, vector<Piece*> board)
+{
+	int i = 0;
+	for (i = 0; i < CHESS_BOARD_SIZE; i++)
+	{
+		if (board[i]->_color == oppenentPLayer)
+		{
+			if (board[i]->isValidMove(attackerPlacement, board))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 /*
 * Function gets the current player color, and returns the current player's king
@@ -442,13 +484,15 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 	// check if valid move, and made chess
 	if (checkCode1(this->_turn, destP->_placement, board))
 	{
-		//if (checkCode8(this->_turn, destP->_placement, board))
-		//{
-		//	// add code 8
-		// 
-		//	switchTurn();
-		//	return VALID_MOVE_CHECKMATE;
-		//}
+		if (checkCode8(this->_turn, destP->_placement, board))
+		{
+			// add code 8
+		 
+			switchTurn();
+			delete(initialSrc);
+			delete(initialDst);
+			return VALID_MOVE_CHECKMATE;
+		}
 
 		// change turns
 		switchTurn();
@@ -459,9 +503,9 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 
 	if (checkCode9(initialSrc, initialDst, board))
 	{
+		switchTurn();
 		delete(initialSrc);
 		delete(initialDst);
-		switchTurn();
 		return VALID_MOVE_MADE_CASTLING;
 	}
 

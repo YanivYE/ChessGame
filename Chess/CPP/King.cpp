@@ -82,3 +82,32 @@ bool King::isCastling(string dest, vector<Piece*> board, const Piece* king)
 
     return false;
 }
+
+
+vector<string> King::getKingMoves(const string& pos)
+{
+    int r, c = 0;
+    vector<string> kingMoves;
+
+    // The row and column of the king's position
+    int row = pos[1] - '1';
+    int col = pos[0] - 'a';
+
+    // Check all eight directions the king can move in
+    for (r = -1; r <= 1; r++)
+    {
+        for (c = -1; c <= 1; c++)
+        {
+            // Skip the position the king is already in
+            if (r == 0 && c == 0) continue;
+
+            // Check if the new position is on the board
+            if (row + r >= 0 && row + r < 8 && col + c >= 0 && col + c < 8)
+            {
+                // Add the new position to the list of moves
+                kingMoves.push_back({ char(col + c + 'a'), char(row + r + '1') });
+            }
+        }
+    }
+    return kingMoves;
+}
