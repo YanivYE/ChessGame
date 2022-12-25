@@ -76,15 +76,16 @@ private:
 	// returns if source and dest are the same
 	bool checkCode7(const string source, const string destination) const;
 
-	bool checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board);
+	bool checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*> board);
 
 	bool checkCode9(const Piece* srcP, const Piece* destP, const vector<Piece*> board) const;
 	
 	bool isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*> board);
 	// return the king of the current player(black - white)
 
-	bool isPossibleAttackerCapture(const string attackerPlacement, const Player oppenentPLayer, vector<Piece*> board);
+	bool isPossibleCapture(const string attackerPlacement, const Player oppenentPLayer, vector<Piece*> board);
 
+	bool isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*> board);
 
 	Piece* currPlayerKing(const Player currentPlayer, vector<Piece*> board) const;
 
@@ -93,6 +94,8 @@ private:
 
 	// get player by char(0 - 1) - (white - black)
 	Player charToPlayer(const char playerChar) const;
+
+	void switchTurnAndClearMemory(Piece* initialSrc, Piece* initialDst);
 private:
 	// curent turn(black / white)
 	Player _turn;

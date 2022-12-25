@@ -311,10 +311,12 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 	return madeCheck;
 }
 
-bool GameLogic::checkCode8(const Player currentPlayer, const string destination, vector<Piece*> board)
+bool GameLogic::checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*> board)
 {
 	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
-	if (isPossibleKingEscape(opponentKing, currentPlayer, board) || isPossibleAttackerCapture(destination, opponentColor(currentPlayer), board))
+	if (isPossibleKingEscape(opponentKing, currentPlayer, board) || 
+		isPossibleCapture(attacker->_placement, opponentColor(currentPlayer), board) ||
+		isPossibleInterpose(attacker, opponentKing, board))
 	{
 		return false;
 	}
@@ -346,14 +348,14 @@ bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, ve
 	return false;
 }
 
-bool GameLogic::isPossibleAttackerCapture(const string attackerPlacement, const Player oppenentPLayer, vector<Piece*> board)
+bool GameLogic::isPossibleCapture(const string destPlacement, const Player oppenentPLayer, vector<Piece*> board)
 {
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
 		if (board[i]->_color == oppenentPLayer)
 		{
-			if (board[i]->isValidMove(attackerPlacement, board))
+			if (board[i]->isValidMove(destPlacement, board))
 			{
 				return true;
 			}
@@ -362,6 +364,70 @@ bool GameLogic::isPossibleAttackerCapture(const string attackerPlacement, const 
 	return false;
 }
 
+bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*> board)
+{
+	// set two "points" of dest and current position like 2D array indexes
+	int curPos[2] = { CHESS_BOARD_SIDE - (attacker->_placement[1] - '1') - 1, attacker->_placement[0] - 'a' };
+	int destPos[2] = { CHESS_BOARD_SIDE - (king->_placement[1] - '1') - 1, king->_placement[0] - 'a' };
+	string boardPlacement = "";
+	if (attacker->_type == ROOK || attacker->_type == QUEEN)
+		// if the piece is rook or queen - checking horizontal and vertical moves
+	{
+		if (curPos[1] == destPos[1])    // if the cols are the same - moving verticaly
+		{
+			for (int i = std::min(curPos[0], destPos[0]) + 1; i < std::max(curPos[0], destPos[0]); i++)
+			{
+				boardPlacement = string(1, curPos[1] + 'a') + std::to_string(i);
+				if (isPossibleCapture(boardPlacement, king->_color, board))
+				{
+					return true;
+				}
+				// every iteration gets a square between. check on the 
+				// square if any of the king color players can move there
+			}
+		}
+		else if (curPos[0] == destPos[0])   // if the rows are the same - moving horizontaly
+		{
+			for (int i = std::min(curPos[1], destPos[1]) + 1; i < std::max(curPos[1], destPos[1]); i++)
+			{
+				boardPlacement = string(1, i + 'a') + std::to_string(curPos[0]);
+				if (isPossibleCapture(boardPlacement, king->_color, board))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	if (attacker->_type == BISHOP || attacker->_type == QUEEN)
+		// if the piece is bishop or queen - checking diagnoly moves
+	{
+		if (abs(curPos[0] - destPos[0]) == abs(curPos[1] - destPos[1]))
+			// if the cols difference is the same as the rows difference - moving diagnoly
+		{
+			int rowDir = (destPos[0] - curPos[0]) / abs(destPos[0] - curPos[0]);
+			int colDir = (destPos[1] - curPos[1]) / abs(destPos[1] - curPos[1]);
+			// dirs determine if we should decrease or increase the rows and cols each time 
+			// when we check the diagnol
+
+			int row = curPos[0] + rowDir;
+			int col = curPos[1] + colDir;
+			// row and col is the current placment in the diagnol we check
+
+			while (row != destPos[0] && col != destPos[1])  // as long as we dont reach the diagnol end
+			{
+				boardPlacement = string(1, col + 'a') + std::to_string(row);
+				if (isPossibleCapture(boardPlacement, king->_color, board))
+				{
+					return true;
+				}
+				// set next index in diangol
+				row += rowDir;
+				col += colDir;
+			}
+		}
+	}
+	return true;
+}
 
 /*
 * Function gets the current player color, and returns the current player's king
@@ -484,35 +550,31 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 	// check if valid move, and made chess
 	if (checkCode1(this->_turn, destP->_placement, board))
 	{
-		if (checkCode8(this->_turn, destP->_placement, board))
+		if (checkCode8(this->_turn, destP, board))
 		{
-			// add code 8
-		 
-			switchTurn();
-			delete(initialSrc);
-			delete(initialDst);
+			switchTurnAndClearMemory(initialSrc, initialDst);
 			return VALID_MOVE_CHECKMATE;
 		}
 
-		// change turns
-		switchTurn();
-		delete(initialSrc);
-		delete(initialDst);
+		switchTurnAndClearMemory(initialSrc, initialDst);
 		return VALID_MOVE_MADE_CHESS;
 	}
 
 	if (checkCode9(initialSrc, initialDst, board))
 	{
-		switchTurn();
-		delete(initialSrc);
-		delete(initialDst);
+		switchTurnAndClearMemory(initialSrc, initialDst);
 		return VALID_MOVE_MADE_CASTLING;
 	}
 
+	
+	// good move(code 0)
+	return VALID_MOVE;
+}
+
+void GameLogic::switchTurnAndClearMemory(Piece* initialSrc, Piece* initialDst)
+{
 	// change turns
 	switchTurn();
 	delete(initialSrc);
 	delete(initialDst);
-	// good move(code 0)
-	return VALID_MOVE;
 }
