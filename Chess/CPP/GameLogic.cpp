@@ -566,7 +566,7 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 		return VALID_MOVE_MADE_CASTLING;
 	}
 
-	
+	switchTurnAndClearMemory(initialSrc, initialDst);
 	// good move(code 0)
 	return VALID_MOVE;
 }
