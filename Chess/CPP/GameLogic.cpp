@@ -239,7 +239,8 @@ bool GameLogic::checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*>
 *		 board - the vector of the board
 * Output: if check will accure on player because he moved a piece
 */
-bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*>& board)
+bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer, 
+	vector<Piece*>& board, bool checkingKingEscape)
 {
 	int i = 0;
 	bool isCheck = false;
@@ -273,9 +274,19 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 			}
 		}
 	}
+	if (checkingKingEscape)
+	{
+		// if so clear old board 
+		BoardManager::clearBoard(board);
+		board = currStateVector;
+	}
+	else
+	{
+		// if not, clear copied board
+		BoardManager::clearBoard(currStateVector);
+	}
+
 	
-	// if not, clear copied board
-	BoardManager::clearBoard(currStateVector);
 	
 	// return false
 	return isCheck;
@@ -311,11 +322,11 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 	return madeCheck;
 }
 
-bool GameLogic::checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*> board)
+bool GameLogic::checkCode8(const Player opponentPlayer, const Piece* attacker, vector<Piece*>& board)
 {
-	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
-	if (isPossibleKingEscape(opponentKing, currentPlayer, board) || 
-		isPossibleCapture(attacker->_placement, opponentColor(currentPlayer), board) ||
+	Piece* opponentKing = currPlayerKing(opponentPlayer, board);
+	if (isPossibleKingEscape(opponentKing, opponentPlayer, board) ||
+		isPossibleSquareCapture(attacker->_placement, opponentPlayer, board) ||
 		isPossibleInterpose(attacker, opponentKing, board))
 	{
 		return false;
@@ -330,30 +341,33 @@ bool GameLogic::checkCode9(const Piece* srcP, const Piece* destP, const vector<P
 }
 
 
-bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*> board)
+bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*>& board)
 {
 	int i = 0;
+	Piece* copiedKing = BoardManager::copyPiece(king);
 	vector<string> possibleMoves = ((King*)king)->getKingMoves(king->_placement);
 
 	for (i = 0; i < possibleMoves.size(); i++)
 	{
-		if (king->isValidMove(possibleMoves[i], board))
+		if (king->isValidMove(possibleMoves[i], board) && !checkCode3(king->_color, currentPlayer))
 		{
-			if (!checkCode4(king->_placement, possibleMoves[i], currentPlayer, board))
+			if (!checkCode4(king->_placement, possibleMoves[i], currentPlayer, board, true))
 			{
+				king = copiedKing;
 				return true;
 			}
+			king = copiedKing;
 		}
 	}
 	return false;
 }
 
-bool GameLogic::isPossibleCapture(const string destPlacement, const Player oppenentPLayer, vector<Piece*> board)
+bool GameLogic::isPossibleSquareCapture(const string destPlacement, const Player oppenentPlayer, vector<Piece*> board)
 {
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
-		if (board[i]->_color == oppenentPLayer)
+		if (board[i]->_color == oppenentPlayer)
 		{
 			if (board[i]->isValidMove(destPlacement, board))
 			{
@@ -378,7 +392,7 @@ bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, ve
 			for (int i = std::min(curPos[0], destPos[0]) + 1; i < std::max(curPos[0], destPos[0]); i++)
 			{
 				boardPlacement = string(1, curPos[1] + 'a') + std::to_string(i);
-				if (isPossibleCapture(boardPlacement, king->_color, board))
+				if (isPossibleSquareCapture(boardPlacement, king->_color, board))
 				{
 					return true;
 				}
@@ -391,7 +405,7 @@ bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, ve
 			for (int i = std::min(curPos[1], destPos[1]) + 1; i < std::max(curPos[1], destPos[1]); i++)
 			{
 				boardPlacement = string(1, i + 'a') + std::to_string(curPos[0]);
-				if (isPossibleCapture(boardPlacement, king->_color, board))
+				if (isPossibleSquareCapture(boardPlacement, king->_color, board))
 				{
 					return true;
 				}
@@ -415,8 +429,8 @@ bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, ve
 
 			while (row != destPos[0] && col != destPos[1])  // as long as we dont reach the diagnol end
 			{
-				boardPlacement = string(1, col + 'a') + std::to_string(row);
-				if (isPossibleCapture(boardPlacement, king->_color, board))
+				boardPlacement = string(1, col + 'a') + std::to_string(row + 1);
+				if (isPossibleSquareCapture(boardPlacement, king->_color, board))
 				{
 					return true;
 				}
@@ -426,7 +440,7 @@ bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, ve
 			}
 		}
 	}
-	return true;
+	return false;
 }
 
 /*
@@ -513,7 +527,7 @@ void GameLogic::commitMove(const string source, const string destination, vector
 int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board)
 {
 	// get index of dest piece
-	int despPieceIndex = placementToIndex(destP->_placement);
+	int destPieceIndex = placementToIndex(destP->_placement);
 	Piece* initialSrc = nullptr;
 	Piece* initialDst = nullptr;
 
@@ -537,7 +551,7 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 	initialDst = BoardManager::copyPiece(destP);
 
 	// check if chess will accure because of move
-	if (checkCode4(srcP->_placement, destP->_placement, this->_turn, board))
+	if (checkCode4(srcP->_placement, destP->_placement, this->_turn, board, false))
 	{
 		delete(initialSrc);
 		delete(initialDst);
@@ -545,12 +559,12 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 	}
 
 	// get dest p because we changed it after check code 4
-	destP = board[despPieceIndex];
+	destP = board[destPieceIndex];
 
 	// check if valid move, and made chess
 	if (checkCode1(this->_turn, destP->_placement, board))
 	{
-		if (checkCode8(this->_turn, destP, board))
+		if (checkCode8(opponentColor(this->_turn), destP, board))
 		{
 			switchTurnAndClearMemory(initialSrc, initialDst);
 			return VALID_MOVE_CHECKMATE;

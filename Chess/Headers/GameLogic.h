@@ -70,20 +70,21 @@ private:
 	// returns true if destination not free
 	bool checkCode3(const Player destPlayer, const Player currentPlayer) const;
 	// returns true if chess on current player will accure because of move
-	bool checkCode4(const string source, const string destination, const Player currentPlayer, vector<Piece*>& board);
+	bool checkCode4(const string source, const string destination, const Player currentPlayer, 
+		vector<Piece*>& board, bool checkingKingEscape);
 		// returns true if invalid movement with piece
 	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
 	// returns if source and dest are the same
 	bool checkCode7(const string source, const string destination) const;
 
-	bool checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*> board);
+	bool checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*>& board);
 
 	bool checkCode9(const Piece* srcP, const Piece* destP, const vector<Piece*> board) const;
 	
-	bool isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*> board);
+	bool isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*>& board);
 	// return the king of the current player(black - white)
 
-	bool isPossibleCapture(const string attackerPlacement, const Player oppenentPLayer, vector<Piece*> board);
+	bool isPossibleSquareCapture(const string attackerPlacement, const Player oppenentPlayer, vector<Piece*> board);
 
 	bool isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*> board);
 
