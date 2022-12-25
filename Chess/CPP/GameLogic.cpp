@@ -311,7 +311,7 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 	return madeCheck;
 }
 
-bool GameLogic::checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*> board)
+bool GameLogic::checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*>& board)
 {
 	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
 	if (isPossibleKingEscape(opponentKing, currentPlayer, board) || 
@@ -330,7 +330,7 @@ bool GameLogic::checkCode9(const Piece* srcP, const Piece* destP, const vector<P
 }
 
 
-bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*> board)
+bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*>& board)
 {
 	int i = 0;
 	vector<string> possibleMoves = ((King*)king)->getKingMoves(king->_placement);

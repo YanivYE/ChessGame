@@ -76,11 +76,11 @@ private:
 	// returns if source and dest are the same
 	bool checkCode7(const string source, const string destination) const;
 
-	bool checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*> board);
+	bool checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*>& board);
 
 	bool checkCode9(const Piece* srcP, const Piece* destP, const vector<Piece*> board) const;
 	
-	bool isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*> board);
+	bool isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*>& board);
 	// return the king of the current player(black - white)
 
 	bool isPossibleCapture(const string attackerPlacement, const Player oppenentPLayer, vector<Piece*> board);
