@@ -321,7 +321,6 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 
 	return madeCheck;
 }
-
 bool GameLogic::checkCode8(const Player opponentPlayer, const Piece* attacker, vector<Piece*>& board)
 {
 	Piece* opponentKing = currPlayerKing(opponentPlayer, board);
