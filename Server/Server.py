@@ -1,6 +1,5 @@
 import socket
 import threading
-import time
 
 # This variable will keep track of the number of connected clients
 num_connected_clients = 0
@@ -8,7 +7,10 @@ num_connected_clients = 0
 # Create a dictionary to store the sockets for each player
 player_sockets = {}
 
-LOCAL_IP = "192.168.1.178"
+hostname = socket.gethostname()
+IP = socket.gethostbyname(hostname)
+
+print("Your Local Computer IP Address Is: " + IP)
 
 
 def handle_client(client_soc, client_address, color):
@@ -57,13 +59,18 @@ def create_listening_sock():
     listening_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to the server's address and port
-    server_address = (LOCAL_IP, 8200)
+    server_address = (IP, 8200)
     listening_sock.bind(server_address)
 
     # Listen for incoming connections
     listening_sock.listen(5)
 
     return listening_sock
+
+
+def receive_message(client_socket):
+    data = client_socket.recv(1024)
+    print('Received message: ', data)
 
 
 def main():
@@ -108,7 +115,13 @@ def main():
             client_soc.close()
             num_connected_clients -= 1
 
-    print("Exited - now game play yay")
+    while True:
+        for sock in player_sockets.values():
+            print(sock)
+            connection, client_address = sock.accept()
+
+            receive_thread = threading.Thread(target=receive_message, args=(connection,))
+            receive_thread.start()
 
 
 if __name__ == '__main__':

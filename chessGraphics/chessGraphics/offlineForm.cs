@@ -39,8 +39,6 @@ namespace chessGraphics
                 lblCurrentPlayer.Visible = true;
                 label1.Visible = true;
 
-                        
-
                 string s = enginePipe.getEngineMessage();
 
                 if (s.Length != (BOARD_SIZE * BOARD_SIZE + 1))
@@ -53,6 +51,7 @@ namespace chessGraphics
                 {
                     isCurPlWhite = (s[s.Length - 1] == '0');
                     paintBoard(s);
+
                 }
 
             });
@@ -62,6 +61,8 @@ namespace chessGraphics
         Thread connectionThread;
         private void Form1_Load(object sender, EventArgs e)
         {
+            System.Diagnostics.Process.Start("C:\\Users\\user\\Desktop\\C++\\week7+8\\chess_project\\Chess\\x64\\Debug\\Chess.exe");
+
             enginePipe = new pipe();
             //this.Show();
             
@@ -69,9 +70,8 @@ namespace chessGraphics
             connectionThread = new Thread(initForm);
             connectionThread.Start();
             connectionThread.IsBackground = true;
-            
+
             //initForm();
-        
         }
 
         Image getImageBySign(char sign)

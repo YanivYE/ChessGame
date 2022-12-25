@@ -12,89 +12,45 @@ namespace chessGraphics
     public partial class connectionForm : Form
     {
         bool validIP = false;
-
+        Server _server;
         public connectionForm()
         {
             InitializeComponent();
-        }
-
-        private void connectToServer()
-        {
-            try
-            {
-                const int PORT = 8200;
-
-                if (validIP)
-                {
-                    // Connect to the server
-                    var client = new TcpClient();
-                    client.Connect(IPAddress.Parse(this.textBox1.Text), PORT);
-
-                    if (client.Connected)
-                    {
-                        this.isConnected.Text = "CONNECTED";
-                        this.isConnected.ForeColor = Color.Green;
-                    }
-
-                    var buffer = new byte[1024];
-                    int bytesReceived = client.GetStream().Read(buffer, 0, 1024);
-                    var response = Encoding.ASCII.GetString(buffer, 0, bytesReceived);
-                    this.numClients.Text = response;
-                }
-                else
-                {
-                    MessageBox.Show("Illegail IPV4 Adress. Pleae enter in this format: X.X.X.X, thank you.", "Invalid IP",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    this.textBox1.Clear();
-                }
-            }
-            catch(System.Net.Sockets.SocketException e)
-            {
-                MessageBox.Show("Couldn't Connect. Please try agaian later", "Connection not established.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                this.textBox1.Clear();
-
-                validIP = false;
-
-                this.button1.Enabled = true;
-                this.textBox1.Enabled = true;
-            }
+            _server = new Server(this);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             byte tempForParsing;
 
-            if (String.IsNullOrWhiteSpace(this.textBox1.Text))
+            if (String.IsNullOrWhiteSpace(this.ipBox.Text))
             {
                 validIP = false;
 
                 // for printing bad nessage
-                connectToServer();
+                _server.connectToServer(validIP);
 
                 return;
             }
 
-            string[] splitValues = this.textBox1.Text.Split('.');
+            string[] splitValues = this.ipBox.Text.Split('.');
             if (splitValues.Length != 4)
             {
                 validIP = false;
 
                 // for printing bad nessage
-                connectToServer();
+                _server.connectToServer(validIP);
 
                 return;
             }
 
             validIP = splitValues.All(r => byte.TryParse(r, out tempForParsing));
-            connectToServer();
+            _server.connectToServer(validIP);
 
             if (validIP)
             {
                 this.button1.Enabled = false;
-                this.textBox1.Enabled = false;
+                this.ipBox.Enabled = false;
             }
         }
 
