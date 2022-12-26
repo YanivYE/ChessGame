@@ -324,9 +324,11 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 bool GameLogic::checkCode8(const Player opponentPlayer, const Piece* attacker, vector<Piece*>& board)
 {
 	Piece* opponentKing = currPlayerKing(opponentPlayer, board);
+	Piece* copiedAttacker = BoardManager::copyPiece(attacker);
+	Piece* copiedKing = BoardManager::copyPiece(opponentKing);
 	if (isPossibleKingEscape(opponentKing, opponentPlayer, board) ||
-		isPossibleSquareCapture(attacker->_placement, opponentPlayer, board) ||
-		isPossibleInterpose(attacker, opponentKing, board))
+		isPossibleSquareCapture(copiedAttacker->_placement, opponentPlayer, board) ||
+		isPossibleInterpose(copiedAttacker, copiedKing, board))
 	{
 		return false;
 	}
@@ -348,7 +350,7 @@ bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, ve
 
 	for (i = 0; i < possibleMoves.size(); i++)
 	{
-		if (king->isValidMove(possibleMoves[i], board) && !checkCode3(king->_color, currentPlayer))
+		if (king->isValidMove(possibleMoves[i], board) && !checkCode3(board[placementToIndex(possibleMoves[i])]->_color, currentPlayer))
 		{
 			if (!checkCode4(king->_placement, possibleMoves[i], currentPlayer, board, true))
 			{
@@ -361,7 +363,7 @@ bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, ve
 	return false;
 }
 
-bool GameLogic::isPossibleSquareCapture(const string destPlacement, const Player oppenentPlayer, vector<Piece*> board)
+bool GameLogic::isPossibleSquareCapture(const string destPlacement, const Player oppenentPlayer, vector<Piece*>& board)
 {
 	int i = 0;
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
@@ -370,7 +372,10 @@ bool GameLogic::isPossibleSquareCapture(const string destPlacement, const Player
 		{
 			if (board[i]->isValidMove(destPlacement, board))
 			{
-				return true;
+				if (!checkCode4(board[i]->_placement, destPlacement, oppenentPlayer, board, true))
+				{
+					return true;
+				}
 			}
 		}
 	}
@@ -428,7 +433,7 @@ bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, ve
 
 			while (row != destPos[0] && col != destPos[1])  // as long as we dont reach the diagnol end
 			{
-				boardPlacement = string(1, col + 'a') + std::to_string(row + 1);
+				boardPlacement = string(1, col + 'a') + std::to_string(CHESS_BOARD_SIDE - row);
 				if (isPossibleSquareCapture(boardPlacement, king->_color, board))
 				{
 					return true;

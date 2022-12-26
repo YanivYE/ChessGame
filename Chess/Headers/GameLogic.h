@@ -84,7 +84,7 @@ private:
 	bool isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*>& board);
 	// return the king of the current player(black - white)
 
-	bool isPossibleSquareCapture(const string attackerPlacement, const Player oppenentPlayer, vector<Piece*> board);
+	bool isPossibleSquareCapture(const string attackerPlacement, const Player oppenentPlayer, vector<Piece*>& board);
 
 	bool isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*> board);
 
