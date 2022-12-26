@@ -86,7 +86,7 @@ private:
 
 	bool isPossibleSquareCapture(const string attackerPlacement, const Player oppenentPlayer, vector<Piece*>& board);
 
-	bool isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*> board);
+	bool isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*>& board);
 
 	Piece* currPlayerKing(const Player currentPlayer, vector<Piece*> board) const;
 

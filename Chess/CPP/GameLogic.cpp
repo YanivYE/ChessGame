@@ -326,7 +326,7 @@ bool GameLogic::checkCode8(const Player opponentPlayer, const Piece* attacker, v
 	Piece* opponentKing = currPlayerKing(opponentPlayer, board);
 	Piece* copiedAttacker = BoardManager::copyPiece(attacker);
 	Piece* copiedKing = BoardManager::copyPiece(opponentKing);
-	if (isPossibleKingEscape(opponentKing, opponentPlayer, board) ||
+	if (isPossibleKingEscape(opponentKing, opponentPlayer, board)||
 		isPossibleSquareCapture(copiedAttacker->_placement, opponentPlayer, board) ||
 		isPossibleInterpose(copiedAttacker, copiedKing, board))
 	{
@@ -382,7 +382,7 @@ bool GameLogic::isPossibleSquareCapture(const string destPlacement, const Player
 	return false;
 }
 
-bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*> board)
+bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, vector<Piece*>& board)
 {
 	// set two "points" of dest and current position like 2D array indexes
 	int curPos[2] = { CHESS_BOARD_SIDE - (attacker->_placement[1] - '1') - 1, attacker->_placement[0] - 'a' };

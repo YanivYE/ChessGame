@@ -88,6 +88,7 @@ vector<string> King::getKingMoves(const string& pos)
 {
     int r, c = 0;
     vector<string> kingMoves;
+    string placement = "";
 
     // The row and column of the king's position
     int row = pos[1] - '1';
@@ -104,8 +105,11 @@ vector<string> King::getKingMoves(const string& pos)
             // Check if the new position is on the board
             if (row + r >= 0 && row + r < 8 && col + c >= 0 && col + c < 8)
             {
+                placement = char(col + c + 'a');
+                placement += (char(row + r + '1'));
+
                 // Add the new position to the list of moves
-                kingMoves.push_back({ char(col + c + 'a'), char(row + r + '1') });
+                kingMoves.push_back(placement);
             }
         }
     }
