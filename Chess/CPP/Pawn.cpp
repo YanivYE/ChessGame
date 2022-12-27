@@ -62,14 +62,16 @@ bool Pawn::isValidMove(const string dest, const vector<Piece*> board) const
     // check if is capturing an enemy piece by moving diagonally 1
     if (abs(destRow - thisRow) == 1 && abs(dest[0] - this->_placement[0]) == 1)
     {
-        // check if there is openent piece at dest
-        if (destPiece->_color == GameLogic::opponentColor(this->_color))
+        if (destRow - thisRow == colorMultiplier)
         {
-            // if so we eat and good move
-            return true;
+            // check if there is openent piece at dest
+            if (destPiece->_color == GameLogic::opponentColor(this->_color))
+            {
+                // if so we eat and good move
+                return true;
+            }
         }
     }
-
     // else bad move
     return false;
 }
