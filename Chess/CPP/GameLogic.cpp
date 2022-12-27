@@ -242,54 +242,7 @@ bool GameLogic::checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*>
 bool GameLogic::checkCode4(const string source, const string destination, const Player currentPlayer, 
 	vector<Piece*>& board, bool checkingKingEscape)
 {
-	int i = 0;
-	bool isCheck = false;
-	vector<Piece*> currStateVector; 
-	// copy current state of vector and save it
-	BoardManager::copyBoard(board, currStateVector);
-
-	// change vector to the given move
-	commitMove(source, destination, board);
-
-	// loop through out the board 
-	for (i = 0; i < CHESS_BOARD_SIZE; i++)
-	{
-		// check if current piece color is openent color
-		if (board[i]->_color == opponentColor(currentPlayer))
-		{
-			// if so, check if check will happen on current player because of the movement of 
-			// current player
-			isCheck = board[i]->isValidMove(currPlayerKing(currentPlayer, board)->_placement, board);
-
-			if (isCheck)
-			{
-				// if so clear old board 
-				BoardManager::clearBoard(board);
-				
-
-				// return vector to prevoius state
-				board = currStateVector;
-
-				return isCheck;
-			}
-		}
-	}
-	if (checkingKingEscape)
-	{
-		// if so clear old board 
-		BoardManager::clearBoard(board);
-		board = currStateVector;
-	}
-	else
-	{
-		// if not, clear copied board
-		BoardManager::clearBoard(currStateVector);
-	}
-
-	
-	
-	// return false
-	return isCheck;
+	return madeChess(source, destination, currentPlayer, board, checkingKingEscape);
 }
 
 /*
@@ -300,17 +253,20 @@ bool GameLogic::checkCode4(const string source, const string destination, const 
 		 board - the vector of the board
 * Output: if check will accure on openent if we move a piece to the destiantion
 */
-bool GameLogic::checkCode1(const Player currentPlayer, const string destination, vector<Piece*> board) const
+bool GameLogic::checkCode1(const string source, const string destination, const Player currentPlayer,
+	vector<Piece*>& board, bool checkingKingEscape) 
 {
-	bool madeCheck = false;
+	bool isCheck = false;
 	// get openent king
-	Piece* opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
+	Piece* opponentKing = nullptr;
 
 	// after we already moved the player, we check if the destination piece can make move on king,
 	// if so, so it's threatening the openents king
-	madeCheck = board[placementToIndex(destination)]->isValidMove(opponentKing->_placement, board);
+	isCheck = madeChess(source, destination, opponentColor(currentPlayer), board, checkingKingEscape);
 
-	if (madeCheck)
+	opponentKing = currPlayerKing(opponentColor(currentPlayer), board);
+
+	if (isCheck)
 	{
 		((King*)opponentKing)->_inCheck = true;
 	}
@@ -319,8 +275,9 @@ bool GameLogic::checkCode1(const Player currentPlayer, const string destination,
 		((King*)opponentKing)->_inCheck = false;
 	}
 
-	return madeCheck;
+	return isCheck;
 }
+
 bool GameLogic::checkCode8(const Player opponentPlayer, const Piece* attacker, vector<Piece*>& board)
 {
 	Piece* opponentKing = currPlayerKing(opponentPlayer, board);
@@ -341,6 +298,54 @@ bool GameLogic::checkCode9(const Piece* srcP, const Piece* destP, const vector<P
 	return srcP->_type == KING && King::isCastling(destP->_placement, board, srcP);
 }
 
+bool GameLogic::madeChess(const string source, const string destination, const Player currentPlayer,
+	vector<Piece*>& board, bool checkingKingEscape)
+{
+	int i = 0;
+	bool isCheck = false;
+	vector<Piece*> currStateVector;
+	// copy current state of vector and save it
+	BoardManager::copyBoard(board, currStateVector);
+
+	// change vector to the given move
+	commitMove(source, destination, board);
+
+	// loop through out the board 
+	for (i = 0; i < CHESS_BOARD_SIZE; i++)
+	{
+		// check if current piece color is openent color
+		if (board[i]->_color == opponentColor(currentPlayer))
+		{
+			// if so, check if check will happen on current player because of the movement of 
+			// current player
+			isCheck = board[i]->isValidMove(currPlayerKing(currentPlayer, board)->_placement, board);
+
+			if (isCheck)
+			{
+				// if so clear old board 
+				BoardManager::clearBoard(board);
+
+
+				// return vector to prevoius state
+				board = currStateVector;
+
+				return isCheck;
+			}
+		}
+	}
+	if (checkingKingEscape)
+	{
+		// if so clear old board 
+		BoardManager::clearBoard(board);
+		board = currStateVector;
+	}
+	else
+	{
+		// if not, clear copied board
+		BoardManager::clearBoard(currStateVector);
+	}
+	return isCheck;
+}
 
 bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*>& board)
 {
@@ -352,7 +357,7 @@ bool GameLogic::isPossibleKingEscape(Piece* king, const Player currentPlayer, ve
 	{
 		if (king->isValidMove(possibleMoves[i], board) && !checkCode3(board[placementToIndex(possibleMoves[i])]->_color, currentPlayer))
 		{
-			if (!checkCode4(king->_placement, possibleMoves[i], currentPlayer, board, true))
+			if (!madeChess(king->_placement, possibleMoves[i], currentPlayer, board, true))
 			{
 				king = copiedKing;
 				return true;
@@ -372,7 +377,7 @@ bool GameLogic::isPossibleSquareCapture(const string destPlacement, const Player
 		{
 			if (board[i]->isValidMove(destPlacement, board))
 			{
-				if (!checkCode4(board[i]->_placement, destPlacement, oppenentPlayer, board, true))
+				if (!madeChess(board[i]->_placement, destPlacement, oppenentPlayer, board, true))
 				{
 					return true;
 				}
@@ -566,8 +571,10 @@ int GameLogic::checkCodes(const Piece* srcP, Piece* destP, vector<Piece*>& board
 	destP = board[destPieceIndex];
 
 	// check if valid move, and made chess
-	if (checkCode1(this->_turn, destP->_placement, board))
+	if (checkCode1(srcP->_placement, destP->_placement, this->_turn, board, false))
 	{
+		// get dest p because we changed it after check code 1
+		destP = board[destPieceIndex];
 		if (checkCode8(opponentColor(this->_turn), destP, board))
 		{
 			switchTurnAndClearMemory(initialSrc, initialDst);

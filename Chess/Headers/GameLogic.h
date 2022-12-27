@@ -64,7 +64,8 @@ private:
 	static Player findPieceColor(const char pieceLetter);
 
 	// check if valid move, and made chess
-	bool checkCode1(const Player currentPlayer, const string destination, vector<Piece*> board) const;
+	bool checkCode1(const string source, const string destination, const Player currentPlayer,
+		vector<Piece*>& board, bool checkingKingEscape);
 		// returns true if user tried to move player that isn't his
 	bool checkCode2(const Player sourcePlayer, const Player currentPlayer) const;
 	// returns true if destination not free
@@ -81,6 +82,9 @@ private:
 
 	bool checkCode9(const Piece* srcP, const Piece* destP, const vector<Piece*> board) const;
 	
+	bool madeChess(const string source, const string destination, const Player currentPlayer,
+		vector<Piece*>& board, bool checkingKingEscape);
+
 	bool isPossibleKingEscape(Piece* king, const Player currentPlayer, vector<Piece*>& board);
 	// return the king of the current player(black - white)
 
