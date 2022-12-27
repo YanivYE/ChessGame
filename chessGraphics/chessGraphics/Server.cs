@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Drawing;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace chessGraphics
 {
@@ -22,7 +23,7 @@ namespace chessGraphics
             _connectionForm = connectionForm;
         }
 
-        public bool connectToServer(bool validIP)
+        public bool connectToServer(bool validIP, BackgroundWorker worker)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace chessGraphics
                         _connectionForm.isConnected.ForeColor = Color.Green;
                     }
 
-                    string response = shouldStartGame();
+                    string response = shouldStartGame(worker);
 
                     _connectionForm.numClients.Text = response;
 
@@ -78,7 +79,7 @@ namespace chessGraphics
             _nwStream.Write(messageBytes, 0, messageByteLength);
         }
 
-        public string shouldStartGame()
+        public string shouldStartGame(BackgroundWorker worker)
         {
             try
             { 
@@ -92,7 +93,9 @@ namespace chessGraphics
                     onlineForm onlineGameForm = new onlineForm();
                     onlineGameForm.Show();
 
-                    _connectionForm.Hide();
+                    worker.CancelAsync();
+
+                    this._connectionForm.Hide();
 
                     sendMessageToServer("startgame");
 

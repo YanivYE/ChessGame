@@ -33,7 +33,7 @@ namespace chessGraphics
                 validIP = false;
 
                 // for printing bad nessage
-                _server.connectToServer(validIP);
+                _server.connectToServer(validIP, worker);
 
                 return;
             }
@@ -44,14 +44,14 @@ namespace chessGraphics
                 validIP = false;
 
                 // for printing bad nessage
-                _server.connectToServer(validIP);
+                _server.connectToServer(validIP, worker);
 
                 return;
             }
 
             validIP = splitValues.All(r => byte.TryParse(r, out tempForParsing));
 
-            if (_server.connectToServer(validIP))
+            if (_server.connectToServer(validIP, worker))
             {
                 this.button1.Enabled = false;
                 this.ipBox.Enabled = false;
@@ -77,7 +77,7 @@ namespace chessGraphics
             
             while (!worker.CancellationPending || result != wantedResult)
             {
-                result = _server.shouldStartGame();
+                result = _server.shouldStartGame(worker);
                 // Check for new messages here
                 Thread.Sleep(1000); // wait for 1 second before checking again
             }

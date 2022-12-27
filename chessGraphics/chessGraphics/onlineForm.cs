@@ -33,13 +33,11 @@ namespace chessGraphics
         {
             enginePipe.connect();
 
-            Invoke((MethodInvoker)delegate {
+            Invoke((MethodInvoker)delegate {  
 
                 lblWaiting.Visible = false;
                 lblCurrentPlayer.Visible = true;
                 label1.Visible = true;
-
-
 
                 string s = enginePipe.getEngineMessage();
 
@@ -53,25 +51,27 @@ namespace chessGraphics
                 {
                     isCurPlWhite = (s[s.Length - 1] == '0');
                     paintBoard(s);
+
                 }
 
             });
-
+    
         }
 
         Thread connectionThread;
         private void Form1_Load(object sender, EventArgs e)
         {
+            System.Diagnostics.Process.Start("C:\\Users\\user\\Desktop\\C++\\week7+8\\chess_project\\Chess\\x64\\Debug\\Chess.exe");
+
             enginePipe = new pipe();
             //this.Show();
-
+            
             //MessageBox.Show("Press OK to start waiting for engine to connect...");
             connectionThread = new Thread(initForm);
             connectionThread.Start();
             connectionThread.IsBackground = true;
 
             //initForm();
-
         }
 
         Image getImageBySign(char sign)
@@ -112,21 +112,21 @@ namespace chessGraphics
 
         private void paintBoard(string board)
         {
-            int i, j, z = 0;
+            int i, j, z=0;
 
             matBoard = new Button[BOARD_SIZE, BOARD_SIZE];
 
             btnBoard.FlatAppearance.MouseOverBackColor = Color.LightGray;
-
+            
             Button newBtn;
             Point pnt;
 
             int currentWidth = btnBoard.Location.X;
             int currentHeight = btnBoard.Location.Y;
-
+            
             bool isColBlack = true;
-            bool isRowBlack = true;
-
+            bool isRowBlack = true ;
+            
             this.SuspendLayout();
 
             lblCurrentPlayer.Text = isCurPlWhite ? "White" : "Black";
@@ -141,7 +141,7 @@ namespace chessGraphics
                     newBtn = new Button();
                     matBoard[i, j] = newBtn;
 
-                    newBtn.FlatAppearance.MouseOverBackColor = btnBoard.FlatAppearance.MouseOverBackColor;
+                    newBtn.FlatAppearance.MouseOverBackColor = btnBoard.FlatAppearance.MouseOverBackColor ;
                     newBtn.BackColor = isColBlack ? Color.Gray : Color.White;
                     newBtn.FlatAppearance.BorderColor = btnBoard.FlatAppearance.BorderColor;
                     newBtn.FlatAppearance.BorderSize = btnBoard.FlatAppearance.BorderSize;
@@ -149,12 +149,12 @@ namespace chessGraphics
 
                     newBtn.Size = new System.Drawing.Size(btnBoard.Width, btnBoard.Height);
                     newBtn.Tag = new Square(i, j);
-                    pnt = new Point(currentWidth, currentHeight);
+                    pnt = new Point(currentWidth, currentHeight );
                     newBtn.Location = pnt;
                     newBtn.BackgroundImageLayout = ImageLayout.Stretch;
 
-                    newBtn.BackgroundImage = getImageBySign(board[z]);
-
+                    newBtn.BackgroundImage  = getImageBySign(board[z]);
+                    
                     newBtn.Click += lastlbl_Click;
 
                     Controls.Add(newBtn);
@@ -183,7 +183,7 @@ namespace chessGraphics
                 // unselected
                 if (matBoard[srcSquare.Row, srcSquare.Col] == b)
                 {
-
+                 
                     matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
                     srcSquare = null;
                 }
@@ -194,7 +194,7 @@ namespace chessGraphics
 
                     Thread t = new Thread(playMove);
                     t.Start();
-                    //   t.IsBackground = true;
+                 //   t.IsBackground = true;
                     //playMove();
                 }
             }
@@ -203,7 +203,7 @@ namespace chessGraphics
                 srcSquare = (Square)b.Tag;
                 matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
             }
-
+         
         }
 
         // messages should be according the protocol.
@@ -225,15 +225,16 @@ namespace chessGraphics
 
         string convertEngineToText(string m)
         {
+            // TODO: check what does try parse do, and see if works not only with string with 1 tav
             int res;
-            bool b = int.TryParse(m, out res);
+            bool b = int.TryParse(new string(m[0], 1), out res);
 
             if (!b || res < 0 || res >= messages.Length)
                 return messages[messages.Length - 1];
 
             return messages[res];
         }
-
+        
 
 
         void playMove()
@@ -244,25 +245,25 @@ namespace chessGraphics
 
             try
             {
-                Invoke((MethodInvoker)delegate {
+                 Invoke((MethodInvoker)delegate {
 
-                    lblEngineCalc.Visible = true;
-
-                    lblMove.Text = string.Format("Move from {0} to {1}", srcSquare, dstSquare);
+                     lblEngineCalc.Visible = true;
+            
+                     lblMove.Text = string.Format("Move from {0} to {1}", srcSquare, dstSquare);
                     lblMove.Visible = true;
                     //lblEngineCalc.Invalidate();
-
+            
                     label2.Visible = false;
                     lblResult.Visible = false;
 
                     this.Refresh();
-
+            
 
                     // should send pipe to engine
                     enginePipe.sendEngineMove(srcSquare.ToString() + dstSquare.ToString());
+                    
 
-
-                    // should get pipe from engine
+                     // should get pipe from engine
                     string m = enginePipe.getEngineMessage();
 
                     if (!enginePipe.isConnected())
@@ -346,27 +347,29 @@ namespace chessGraphics
                     lblResult.Visible = true;
                     label2.Visible = true;
                     this.Refresh();
-                });
-            }
-            catch
-            {
-
-            }
-            finally
-            {
-                Invoke((MethodInvoker)delegate
+                 });
+                
+           
+                }
+                catch
                 {
-                    if (srcSquare != null)
-                        matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
 
-                    if (dstSquare != null)
-                        matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.Blue;
+                }
+                finally
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        if (srcSquare != null)
+                            matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
 
-                    dstSquare = null;
-                    srcSquare = null;
+                        if (dstSquare != null)
+                            matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.Blue;
 
-                });
-            }
+                        dstSquare = null;
+                        srcSquare = null;
+
+                    });
+                }
 
         }
 
@@ -377,5 +380,6 @@ namespace chessGraphics
 
             Application.Exit();
         }
+
     }
 }

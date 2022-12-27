@@ -10,7 +10,7 @@ player_sockets = {}
 
 hostname = socket.gethostname()
 IP = socket.gethostbyname(hostname)
-
+IP = "172.20.10.4"
 print("Your Local Computer IP Address Is: " + IP)
 
 
