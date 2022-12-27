@@ -89,11 +89,11 @@ namespace chessGraphics
 
                 if (response.Equals("startgame") || response.Equals("2"))
                 {
+                    worker.CancelAsync();
 
                     onlineForm onlineGameForm = new onlineForm();
                     onlineGameForm.Show();
 
-                    worker.CancelAsync();
 
                     this._connectionForm.Hide();
 
