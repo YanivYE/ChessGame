@@ -22,7 +22,7 @@ namespace chessGraphics
             _connectionForm = connectionForm;
         }
 
-        public void connectToServer(bool validIP)
+        public bool connectToServer(bool validIP)
         {
             try
             {
@@ -41,24 +41,11 @@ namespace chessGraphics
                         _connectionForm.isConnected.ForeColor = Color.Green;
                     }
 
-                    var buffer = new byte[1024];
-                    int bytesReceived = _client.GetStream().Read(buffer, 0, 1024);
-                    string response = Encoding.ASCII.GetString(buffer, 0, bytesReceived);
-
-                    if(response.Equals('2'))
-                    {
-                        
-                        onlineForm onlineGameForm = new onlineForm();
-                        onlineGameForm.Show();
-
-                        _connectionForm.Hide();
-
-                        sendMessageToServer("startgame");
-                    }
+                    string response = shouldStartGame();
 
                     _connectionForm.numClients.Text = response;
 
-
+                    return true;
                 }
                 else
                 {
@@ -66,6 +53,8 @@ namespace chessGraphics
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     _connectionForm.ipBox.Clear();
+
+                    return false;
                 }
             }
             catch (System.Net.Sockets.SocketException e)
@@ -75,10 +64,10 @@ namespace chessGraphics
 
                 _connectionForm.ipBox.Clear();
 
-                validIP = false;
-
                 _connectionForm.button1.Enabled = true;
                 _connectionForm.ipBox.Enabled = true;
+
+                return false;
             }
         }
 
@@ -89,6 +78,40 @@ namespace chessGraphics
             _nwStream.Write(messageBytes, 0, messageByteLength);
         }
 
+        public string shouldStartGame()
+        {
+            try
+            { 
+                var buffer = new byte[1024];
+                int bytesReceived = _client.GetStream().Read(buffer, 0, 1024);
+                string response = Encoding.ASCII.GetString(buffer, 0, bytesReceived);
+
+                if (response.Equals("startgame") || response.Equals("2"))
+                {
+
+                    onlineForm onlineGameForm = new onlineForm();
+                    onlineGameForm.Show();
+
+                    _connectionForm.Hide();
+
+                    sendMessageToServer("startgame");
+
+                    return response;
+                }
+
+                return response;
+            }
+            catch (System.IO.IOException e)
+            {
+                MessageBox.Show("Connection to server has lost. Bye bye.");
+                Application.Exit();
+                return "";
+            }
+            catch(System.InvalidOperationException e1)
+            {
+                return "";
+            }
+        }
 
     }
 }

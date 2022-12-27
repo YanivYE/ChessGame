@@ -1,5 +1,6 @@
 import socket
 import threading
+import time
 
 # This variable will keep track of the number of connected clients
 num_connected_clients = 0
@@ -24,15 +25,19 @@ def handle_client(client_soc, client_address, color):
             # Receive a message from the client
             message_bytes = client_soc.recv(1024)
             message = message_bytes.decode("ascii")
+
             if not message:
                 # If the message is empty, assume that the client has disconnected
                 print("Lost connection to {} ({})".format(client_address, color))
                 num_connected_clients -= 1
+                del player_sockets[color]
                 if opposite_color in player_sockets:
                     opposite_player_socket = player_sockets[opposite_color]
-                    opposite_player_socket.send("Opposite player has disconnected. Exiting the game".encode("ascii"))
+                    opposite_player_socket.send("quit".encode("ascii"))
+                    print("One Player has disconnected. Exiting the game")
                     opposite_player_socket.close()
                 break
+
             print("Received message from {} ({}): {}".format(client_address, color, message))
 
             # Send the message to the opposite player if it is connected
@@ -43,9 +48,11 @@ def handle_client(client_soc, client_address, color):
         except (ConnectionResetError, ConnectionAbortedError):
             print("Lost connection to {} ({})".format(client_address, color))
             num_connected_clients -= 1
+            del player_sockets[color]
             if opposite_color in player_sockets:
                 opposite_player_socket = player_sockets[opposite_color]
-                opposite_player_socket.send("Opposite player has disconnected. Exiting the game".encode("ascii"))
+                opposite_player_socket.send("quit".encode("ascii"))
+                print("One Player has disconnected. Exiting the game")
                 opposite_player_socket.close()
             break
 
@@ -69,8 +76,11 @@ def create_listening_sock():
 
 
 def receive_message(client_socket):
-    data = client_socket.recv(1024)
-    print('Received message: ', data)
+    try:
+        data = client_socket.recv(1024)
+        print('Received message: ', data)
+    except (ConnectionResetError, ConnectionAbortedError):
+        print(end="")
 
 
 def main():
@@ -115,13 +125,16 @@ def main():
             client_soc.close()
             num_connected_clients -= 1
 
-    while True:
-        for sock in player_sockets.values():
-            print(sock)
-            connection, client_address = sock.accept()
+    for sock in player_sockets.values():
+        receive_thread = threading.Thread(target=receive_message, args=(sock,))
+        receive_thread.start()
 
-            receive_thread = threading.Thread(target=receive_message, args=(connection,))
-            receive_thread.start()
+    while True:
+        if num_connected_clients == 2:
+
+            print("Sent message to {} ({}): {}".format(player_sockets["Black"].getsockname(), "Black", str(num_connected_clients)))
+
+        time.sleep(1)
 
 
 if __name__ == '__main__':
