@@ -4,7 +4,7 @@ It is recommended to use the following code in your project,
 in order to read and write information from and to the Backend
 */
 
-#include "Headers/Pipe.h"
+#include "Headers/GraphicHandeler.h"
 #include <iostream>
 #include <thread>
 #include "Headers/BoardManager.h"
@@ -18,48 +18,25 @@ void main()
 {
 	srand(time_t(NULL));
 	
-	Pipe p;
-	//SOCKET serverSocket;
-	//bool isConnectedServer = p.connectToLAN(serverSocket);
+	GraphicHandeler graphicHandeler;
 	string ans;
+	bool isConnectedEngine = graphicHandeler.connectToGraphics();
 
-	/*while (!isConnectedServer)
-	{
-		cout << "Initial Server Connection Failed." << endl;
-		cout << "Would you like to try to connect again or exit? (0-try again, 1-exit)" << endl;
-		std::cin >> ans;
-
-		if (ans == "0" && !isConnectedServer)
-		{
-			cout << "trying to connect again to server.." << endl;
-			Sleep(5000);
-			isConnectedServer = p.connectToLAN(serverSocket);
-		}
-		else
-		{
-			return;
-		}
-	}
-
-	cout << "Server Connected!" << endl;
-	*/
-	bool isConnectedPipe = p.connectToPipe();
-
-	while (!isConnectedPipe)
+	while (!isConnectedEngine)
 	{
 		cout << "cant connect to graphics" << endl;
 		cout << "Do you try to connect again or exit? (0-try again, 1-exit)" << endl;
 		std::cin >> ans;
 
-		if (ans == "0" && !isConnectedPipe)
+		if (ans == "0" && !isConnectedEngine)
 		{
 			cout << "trying to connect again to pipe.." << endl;
-			Sleep(5000);
-			isConnectedPipe = p.connectToPipe();
+			//Sleep(5000);
+			isConnectedEngine = graphicHandeler.connectToGraphics();
 		}
 		else
 		{
-			p.close();
+			graphicHandeler.dsiconnect();
 
 			return;
 		}
@@ -74,10 +51,10 @@ void main()
 	// copy to vector
 	BoardManager board = BoardManager(msgToGraphics);
 	GameLogic algorithm = GameLogic(msgToGraphics);
-	p.sendMessageToGraphics(msgToGraphics);   // send the board string
+	graphicHandeler.sendMessageToGraphics(msgToGraphics);   // send the board string
 
 	// get message from graphics
-	string msgFromGraphics = p.getMessageFromGraphics();
+	string msgFromGraphics = graphicHandeler.getMessageFromGraphics();
 	string msgFromServer = "";
 
 	//p.sendMessageToServer(msgFromGraphics, serverSocket);
@@ -91,15 +68,15 @@ void main()
 		strcpy_s(msgToGraphics, board.movePieces(msgFromGraphics, algorithm).c_str()); // msgToGraphics should contain the result of the operation
 
 		// return result to graphics		
-		p.sendMessageToGraphics(msgToGraphics);   
+		graphicHandeler.sendMessageToGraphics(msgToGraphics);
 
 		// get message from graphics
-		msgFromGraphics = p.getMessageFromGraphics();
+		msgFromGraphics = graphicHandeler.getMessageFromGraphics();
 		//p.sendMessageToServer(msgFromGraphics, serverSocket);
 
 		//msgFromServer = p.getMessageFromServer(serverSocket);
 		//cout << msgFromServer << endl;
 	}
 
-	p.close();
+	graphicHandeler.dsiconnect();
 }

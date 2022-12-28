@@ -16,7 +16,7 @@ namespace chessGraphics
         private Square srcSquare;
         private Square dstSquare;
 
-        private pipe enginePipe;
+        private engine myEngine;
         Button[,] matBoard;
 
         bool isCurPlWhite = true;
@@ -31,7 +31,7 @@ namespace chessGraphics
 
         private void initForm()
         {
-            enginePipe.connect();
+            myEngine.connect();
 
             Invoke((MethodInvoker)delegate {  
 
@@ -39,7 +39,7 @@ namespace chessGraphics
                 lblCurrentPlayer.Visible = true;
                 label1.Visible = true;
 
-                string s = enginePipe.getEngineMessage();
+                string s = myEngine.getEngineMessage();
 
                 if (s.Length != (BOARD_SIZE * BOARD_SIZE + 1))
                 {
@@ -61,9 +61,7 @@ namespace chessGraphics
         Thread connectionThread;
         private void Form1_Load(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("C:\\Users\\user\\Desktop\\C++\\week7+8\\chess_project\\Chess\\x64\\Debug\\Chess.exe");
-
-            enginePipe = new pipe();
+            myEngine = new engine();
             //this.Show();
             
             //MessageBox.Show("Press OK to start waiting for engine to connect...");
@@ -231,6 +229,9 @@ namespace chessGraphics
 
             if (!b || res < 0 || res >= messages.Length)
                 return messages[messages.Length - 1];
+            
+            if(res == 8)
+                return messages[res] + "\n" + lblCurrentPlayer.Text + "Wins!";
 
             return messages[res];
         }
@@ -257,16 +258,16 @@ namespace chessGraphics
                     lblResult.Visible = false;
 
                     this.Refresh();
-            
 
-                    // should send pipe to engine
-                    enginePipe.sendEngineMove(srcSquare.ToString() + dstSquare.ToString());
+
+                     // should send pipe to engine
+                     myEngine.sendEngineMove(srcSquare.ToString() + dstSquare.ToString());
                     
 
                      // should get pipe from engine
-                    string m = enginePipe.getEngineMessage();
+                    string m = myEngine.getEngineMessage();
 
-                    if (!enginePipe.isConnected())
+                    if (!myEngine.isConnected())
                     {
                         MessageBox.Show("Connection to engine has lost. Bye bye.");
                         this.Close();
@@ -375,8 +376,8 @@ namespace chessGraphics
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            enginePipe.sendEngineMove("quit");
-            enginePipe.close();
+            myEngine.sendEngineMove("quit");
+            myEngine.close();
 
             Application.Exit();
         }

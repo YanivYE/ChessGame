@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Threading;
 
 namespace chessGraphics
 {
@@ -16,6 +17,7 @@ namespace chessGraphics
     {
         public static TcpClient _client;
         NetworkStream _nwStream;
+        string response;
 
         private connectionForm _connectionForm;
         public Server(connectionForm connectionForm) 
@@ -23,7 +25,8 @@ namespace chessGraphics
             _connectionForm = connectionForm;
         }
 
-        public bool connectToServer(bool validIP, BackgroundWorker worker)
+        // In the Server class
+        public bool connectToServer(bool validIP)
         {
             try
             {
@@ -42,11 +45,22 @@ namespace chessGraphics
                         _connectionForm.isConnected.ForeColor = Color.Green;
                     }
 
-                    string response = shouldStartGame(worker);
+                    // Receive a message from the server
+                    var buffer = new byte[1024];
+                    int bytesReceived = _client.GetStream().Read(buffer, 0, 1024);
+                    response = Encoding.ASCII.GetString(buffer, 0, bytesReceived);
 
-                    _connectionForm.numClients.Text = response;
+                    // If the server sends a message indicating that there are 2 clients connected,
+                    // transfer both clients to the gameForm form
+                    if (response.Equals("2"))
+                    {
+                        // Send a message to the server indicating that this client is ready to start the game
+                        sendMessageToServer("startgame");
 
-                    return true;
+                        onlineForm gameForm = new onlineForm();
+                        gameForm.Show();
+                        this._connectionForm.Hide();
+                    }
                 }
                 else
                 {
@@ -70,6 +84,8 @@ namespace chessGraphics
 
                 return false;
             }
+
+            return true;
         }
 
         public void sendMessageToServer(string message)
@@ -78,43 +94,5 @@ namespace chessGraphics
             int messageByteLength = Buffer.ByteLength(messageBytes);
             _nwStream.Write(messageBytes, 0, messageByteLength);
         }
-
-        public string shouldStartGame(BackgroundWorker worker)
-        {
-            try
-            { 
-                var buffer = new byte[1024];
-                int bytesReceived = _client.GetStream().Read(buffer, 0, 1024);
-                string response = Encoding.ASCII.GetString(buffer, 0, bytesReceived);
-
-                if (response.Equals("startgame") || response.Equals("2"))
-                {
-                    worker.CancelAsync();
-
-                    onlineForm onlineGameForm = new onlineForm();
-                    onlineGameForm.Show();
-
-
-                    this._connectionForm.Hide();
-
-                    sendMessageToServer("startgame");
-
-                    return response;
-                }
-
-                return response;
-            }
-            catch (System.IO.IOException e)
-            {
-                MessageBox.Show("Connection to server has lost. Bye bye.");
-                Application.Exit();
-                return "";
-            }
-            catch(System.InvalidOperationException e1)
-            {
-                return "";
-            }
-        }
-
     }
 }

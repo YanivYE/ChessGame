@@ -12,16 +12,12 @@ namespace chessGraphics
 {
     public partial class connectionForm : Form
     {
-        private BackgroundWorker worker;
         bool validIP = false, firstClick = true;
         Server _server;
         public connectionForm()
         {
             InitializeComponent();
             _server = new Server(this);
-            worker = new BackgroundWorker();
-            worker.DoWork += worker_DoWork;
-            worker.WorkerSupportsCancellation = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -33,7 +29,7 @@ namespace chessGraphics
                 validIP = false;
 
                 // for printing bad nessage
-                _server.connectToServer(validIP, worker);
+                _server.connectToServer(validIP);
 
                 return;
             }
@@ -44,24 +40,19 @@ namespace chessGraphics
                 validIP = false;
 
                 // for printing bad nessage
-                _server.connectToServer(validIP, worker);
+                _server.connectToServer(validIP);
 
                 return;
             }
 
             validIP = splitValues.All(r => byte.TryParse(r, out tempForParsing));
 
-            if (_server.connectToServer(validIP, worker))
+            if (_server.connectToServer(validIP))
             {
                 this.button1.Enabled = false;
                 this.ipBox.Enabled = false;
             }
 
-            if(firstClick)
-            {
-                worker.RunWorkerAsync();
-                firstClick = false;
-            }
 
         }
 
@@ -70,17 +61,6 @@ namespace chessGraphics
             Application.Exit();
         }
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            string wantedResult = "2";
-            string result = "";
-            
-            while (!worker.CancellationPending || result != wantedResult)
-            {
-                result = _server.shouldStartGame(worker);
-                // Check for new messages here
-                Thread.Sleep(1000); // wait for 1 second before checking again
-            }
-        }
+
     }
 }

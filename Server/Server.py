@@ -8,10 +8,10 @@ num_connected_clients = 0
 # Create a dictionary to store the sockets for each player
 player_sockets = {}
 
-hostname = socket.gethostname()
-IP = socket.gethostbyname(hostname)
+# Set the IP address to listen on
+IP = "192.168.1.178"
 
-print("Your Local Computer IP Address Is: " + IP)
+print("Server listening on IP address: " + IP)
 
 
 def handle_client(client_soc, client_address, color):
@@ -75,14 +75,6 @@ def create_listening_sock():
     return listening_sock
 
 
-def receive_message(client_socket):
-    try:
-        data = client_socket.recv(1024)
-        print('Received message: ', data)
-    except (ConnectionResetError, ConnectionAbortedError):
-        print(end="")
-
-
 def main():
     print("Status: Waiting For Connections...")
     global num_connected_clients
@@ -108,33 +100,22 @@ def main():
             elif num_connected_clients == 2:
                 color = "White"
             else:
-                color = "Invalid"
+                color = ""
+            # Start a new thread to handle the client
+            client_thread = threading.Thread(target=handle_client, args=(client_soc, client_address, color))
+            client_thread.start()
 
-            # Store the socket for this player in the dictionary
+            # Save the client socket in the dictionary
             player_sockets[color] = client_soc
 
-            print("Connected to {}, with the color: {}".format(client_address, color))
-
-            client_soc.send(str(num_connected_clients).encode("ascii"))
-            print("Sent message to {} ({}): {}".format(client_soc.getsockname(), color, str(num_connected_clients)))
-
-            t = threading.Thread(target=handle_client, args=(client_soc, client_address, color))
-            t.start()
+            # Send the color to the client
+            client_soc.send(color.encode("ascii"))
+            print("Connected to {} ({})".format(client_address, color))
         else:
-            print("Cannot accept more than 2 connections at once. Disconnecting {}".format(client_address))
+            # If there are already two clients connected, send a message to the new client telling it to try again later
+            client_soc.send("Server is full. Please try again later.".encode("ascii"))
             client_soc.close()
             num_connected_clients -= 1
-
-    for sock in player_sockets.values():
-        receive_thread = threading.Thread(target=receive_message, args=(sock,))
-        receive_thread.start()
-
-    while True:
-        if num_connected_clients == 2:
-
-            print("Sent message to {} ({}): {}".format(player_sockets["Black"].getsockname(), "Black", str(num_connected_clients)))
-
-        time.sleep(1)
 
 
 if __name__ == '__main__':

@@ -61,7 +61,7 @@ namespace chessGraphics
         Thread connectionThread;
         private void Form1_Load(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("C:\\Users\\user\\Desktop\\C++\\week7+8\\chess_project\\Chess\\x64\\Debug\\Chess.exe");
+            //System.Diagnostics.Process.Start("C:\\Users\\user\\Desktop\\C++\\week7+8\\chess_project\\Chess\\x64\\Debug\\Chess.exe");
 
             enginePipe = new pipe();
             //this.Show();

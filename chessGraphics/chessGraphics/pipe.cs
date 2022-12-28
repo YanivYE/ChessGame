@@ -23,7 +23,7 @@ namespace chessGraphics
         public pipe()
         {
             pipeServer =
-                new NamedPipeServerStream("chessPipe", PipeDirection.InOut, 1);
+                new NamedPipeServerStream("chessPipeServer", PipeDirection.InOut, 1);
             ss = new StreamString(pipeServer);
        
 
