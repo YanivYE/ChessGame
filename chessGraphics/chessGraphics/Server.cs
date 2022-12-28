@@ -52,14 +52,16 @@ namespace chessGraphics
                     // transfer both clients to the gameForm form
                     if (response.Equals("2") || response.Equals("1"))
                     {
-                        if(response.Equals("2"))
-                        {
-                            // Send a message to the server indicating that this client is ready to start the game
-                            sendMessageToServer("startgame");
-                        }
+                        //if(response.Equals("2"))
+                        //{
+                        //    // Send a message to the server indicating that this client is ready to start the game
+                        //    sendMessageToServer("startgame");
+                        //}
 
-                        onlineForm gameForm = new onlineForm(this);
-                        gameForm.Show();
+                        lobbyForm lobby = new lobbyForm(this);
+                        lobby.Show();
+                        //onlineForm gameForm = new onlineForm(this);
+                        //gameForm.Show();
                         this._connectionForm.Hide();
                     }
                 }

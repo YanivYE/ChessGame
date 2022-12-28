@@ -10,7 +10,6 @@ player_sockets = {}
 
 # Set the IP address to listen on
 IP = "192.168.1.178"
-IP = "172.20.10.4"
 print("Server listening on IP address: " + IP)
 
 

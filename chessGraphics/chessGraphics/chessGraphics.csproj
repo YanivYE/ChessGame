@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="lobbyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lobbyForm.Designer.cs">
+      <DependentUpon>lobbyForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="connectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,6 +80,9 @@
     <Compile Include="pipe.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Square.cs" />
+    <EmbeddedResource Include="lobbyForm.resx">
+      <DependentUpon>lobbyForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="connectionForm.resx">
       <DependentUpon>connectionForm.cs</DependentUpon>
     </EmbeddedResource>
