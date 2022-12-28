@@ -4,7 +4,7 @@ It is recommended to use the following code in your project,
 in order to read and write information from and to the Backend
 */
 
-#include "Headers/GraphicHandeler.h"
+#include "Headers/pipe.h"
 #include <iostream>
 #include <thread>
 #include "Headers/BoardManager.h"
@@ -18,25 +18,25 @@ void main()
 {
 	srand(time_t(NULL));
 	
-	GraphicHandeler graphicHandeler;
+	Pipe p;
 	string ans;
-	bool isConnectedEngine = graphicHandeler.connectToGraphics();
+	bool isConnectedPipe = p.connectToPipe();
 
-	while (!isConnectedEngine)
+	while (!isConnectedPipe)
 	{
 		cout << "cant connect to graphics" << endl;
 		cout << "Do you try to connect again or exit? (0-try again, 1-exit)" << endl;
 		std::cin >> ans;
 
-		if (ans == "0" && !isConnectedEngine)
+		if (ans == "0" && !isConnectedPipe)
 		{
 			cout << "trying to connect again to pipe.." << endl;
-			//Sleep(5000);
-			isConnectedEngine = graphicHandeler.connectToGraphics();
+			Sleep(5000);
+			isConnectedPipe = p.connectToPipe();
 		}
 		else
 		{
-			graphicHandeler.dsiconnect();
+			p.close();
 
 			return;
 		}
@@ -47,14 +47,14 @@ void main()
 	// msgToGraphics should contain the board string accord the protocol
 	// YOUR CODE
 
-	strcpy_s(msgToGraphics, "rnbkqbnrpppppppp################################PPPPPPPPRNBKQBNR1"); // just example...
+	strcpy_s(msgToGraphics, "rnbkqbnrpppppppp################################PPPPPPPPRNBKQBNR0"); // just example...
 	// copy to vector
 	BoardManager board = BoardManager(msgToGraphics);
 	GameLogic algorithm = GameLogic(msgToGraphics);
-	graphicHandeler.sendMessageToGraphics(msgToGraphics);   // send the board string
+	p.sendMessageToGraphics(msgToGraphics);   // send the board string
 
 	// get message from graphics
-	string msgFromGraphics = graphicHandeler.getMessageFromGraphics();
+	string msgFromGraphics = p.getMessageFromGraphics();
 	string msgFromServer = "";
 
 	//p.sendMessageToServer(msgFromGraphics, serverSocket);
@@ -68,15 +68,15 @@ void main()
 		strcpy_s(msgToGraphics, board.movePieces(msgFromGraphics, algorithm).c_str()); // msgToGraphics should contain the result of the operation
 
 		// return result to graphics		
-		graphicHandeler.sendMessageToGraphics(msgToGraphics);
+		p.sendMessageToGraphics(msgToGraphics);
 
 		// get message from graphics
-		msgFromGraphics = graphicHandeler.getMessageFromGraphics();
+		msgFromGraphics = p.getMessageFromGraphics();
 		//p.sendMessageToServer(msgFromGraphics, serverSocket);
 
 		//msgFromServer = p.getMessageFromServer(serverSocket);
 		//cout << msgFromServer << endl;
 	}
 
-	graphicHandeler.dsiconnect();
+	p.close();
 }

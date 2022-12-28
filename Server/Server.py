@@ -10,7 +10,7 @@ player_sockets = {}
 
 # Set the IP address to listen on
 IP = "192.168.1.178"
-
+IP = "172.20.10.4"
 print("Server listening on IP address: " + IP)
 
 
@@ -33,7 +33,7 @@ def handle_client(client_soc, client_address, color):
                 del player_sockets[color]
                 if opposite_color in player_sockets:
                     opposite_player_socket = player_sockets[opposite_color]
-                    opposite_player_socket.send("quit".encode("ascii"))
+                    send_message(opposite_player_socket, "quit", opposite_color)
                     print("One Player has disconnected. Exiting the game")
                     opposite_player_socket.close()
                 break
@@ -43,15 +43,14 @@ def handle_client(client_soc, client_address, color):
             # Send the message to the opposite player if it is connected
             if opposite_color in player_sockets:
                 opposite_player_socket = player_sockets[opposite_color]
-                opposite_player_socket.send(message.encode("ascii"))
-                print("Sent message to {} ({}): {}".format(opposite_player_socket.getsockname(), color, message))
+                send_message(opposite_player_socket, message, opposite_color)
         except (ConnectionResetError, ConnectionAbortedError):
             print("Lost connection to {} ({})".format(client_address, color))
             num_connected_clients -= 1
             del player_sockets[color]
             if opposite_color in player_sockets:
                 opposite_player_socket = player_sockets[opposite_color]
-                opposite_player_socket.send("quit".encode("ascii"))
+                send_message(opposite_player_socket, "quit", opposite_color)
                 print("One Player has disconnected. Exiting the game")
                 opposite_player_socket.close()
             break
@@ -73,6 +72,11 @@ def create_listening_sock():
     listening_sock.listen(5)
 
     return listening_sock
+
+
+def send_message(sock, msg, color):
+    sock.send(msg.encode("ascii"))
+    print("Sent message to {} ({}): {}".format(sock.getsockname(), color, msg))
 
 
 def main():
@@ -108,14 +112,23 @@ def main():
             # Save the client socket in the dictionary
             player_sockets[color] = client_soc
 
-            # Send the color to the client
-            client_soc.send(color.encode("ascii"))
-            print("Connected to {} ({})".format(client_address, color))
+            print("Connected to {}, with the color: {}".format(client_address, color))
+
+            send_message(client_soc, str(num_connected_clients), color)
+
+            if num_connected_clients == 2:
+                print("2 Players Connected. Starting Game.")
+                break
         else:
             # If there are already two clients connected, send a message to the new client telling it to try again later
-            client_soc.send("Server is full. Please try again later.".encode("ascii"))
+            send_message(client_soc, "Server is full. Please try again later.", "")
             client_soc.close()
             num_connected_clients -= 1
+
+    time.sleep(3)
+
+    for color, sock in player_sockets.items():
+        send_message(sock, color, color)
 
 
 if __name__ == '__main__':

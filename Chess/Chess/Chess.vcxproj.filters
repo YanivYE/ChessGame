@@ -86,7 +86,7 @@
     <ClInclude Include="..\Headers\BoardManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Headers\GraphicHandeler.h">
+    <ClInclude Include="..\Headers\Pipe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

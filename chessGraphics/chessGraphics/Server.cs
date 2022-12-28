@@ -13,11 +13,12 @@ using System.Threading;
 
 namespace chessGraphics
 {
-    internal class Server
+    public class Server
     {
         public static TcpClient _client;
         NetworkStream _nwStream;
         string response;
+        public string _player;
 
         private connectionForm _connectionForm;
         public Server(connectionForm connectionForm) 
@@ -45,19 +46,19 @@ namespace chessGraphics
                         _connectionForm.isConnected.ForeColor = Color.Green;
                     }
 
-                    // Receive a message from the server
-                    var buffer = new byte[1024];
-                    int bytesReceived = _client.GetStream().Read(buffer, 0, 1024);
-                    response = Encoding.ASCII.GetString(buffer, 0, bytesReceived);
+                    response = getMessageFromServer();
 
                     // If the server sends a message indicating that there are 2 clients connected,
                     // transfer both clients to the gameForm form
-                    if (response.Equals("2"))
+                    if (response.Equals("2") || response.Equals("1"))
                     {
-                        // Send a message to the server indicating that this client is ready to start the game
-                        sendMessageToServer("startgame");
+                        if(response.Equals("2"))
+                        {
+                            // Send a message to the server indicating that this client is ready to start the game
+                            sendMessageToServer("startgame");
+                        }
 
-                        onlineForm gameForm = new onlineForm();
+                        onlineForm gameForm = new onlineForm(this);
                         gameForm.Show();
                         this._connectionForm.Hide();
                     }
@@ -88,11 +89,31 @@ namespace chessGraphics
             return true;
         }
 
+        public string getMessageFromServer()
+        {
+            var buffer = new byte[1024];
+            int bytesReceived = _client.GetStream().Read(buffer, 0, 1024);
+            return Encoding.ASCII.GetString(buffer, 0, bytesReceived);
+        }
+
         public void sendMessageToServer(string message)
         {
-            byte[] messageBytes = Encoding.ASCII.GetBytes(message);
-            int messageByteLength = Buffer.ByteLength(messageBytes);
-            _nwStream.Write(messageBytes, 0, messageByteLength);
+            try
+            {
+                byte[] messageBytes = Encoding.ASCII.GetBytes(message);
+                int messageByteLength = Buffer.ByteLength(messageBytes);
+                _nwStream.Write(messageBytes, 0, messageByteLength);
+            }
+            catch
+            {
+
+            }
+            
+        }
+
+        public bool isConnected()
+        {
+            return _client.Connected;
         }
     }
 }

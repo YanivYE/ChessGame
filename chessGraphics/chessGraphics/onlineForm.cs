@@ -20,13 +20,17 @@ namespace chessGraphics
         Button[,] matBoard;
 
         bool isCurPlWhite = true;
+        bool isMyTurn = false;
         bool isGameOver = false;
 
         const int BOARD_SIZE = 8;
+        Server _server;
+        String _player;
 
-        public onlineForm()
+        public onlineForm(Server server)
         {
             InitializeComponent();
+            _server = server;
         }
 
         private void initForm()
@@ -53,6 +57,9 @@ namespace chessGraphics
                     paintBoard(s);
 
                 }
+
+                _player = _server.getMessageFromServer();
+
 
             });
     
@@ -235,13 +242,26 @@ namespace chessGraphics
             return messages[res];
         }
         
+        void getMove()
+        {
+            string move = _server.getMessageFromServer();
 
+            string startPos = move.Substring(0, 2);
+            string endPos = move.Substring(2, 2);
+
+            int srcRow = 8 - (int)Char.GetNumericValue(startPos[1]);
+            int srcCol = startPos[0] - 'a';
+            int dstRow = 8 - (int)Char.GetNumericValue(endPos[1]);
+            int dstCol = endPos[0] - 'a';
+
+            srcSquare = new Square(srcRow, srcCol);
+            dstSquare = new Square(dstRow, dstCol);
+        }
 
         void playMove()
         {
             if (isGameOver)
                 return;
-
 
             try
             {
@@ -262,6 +282,7 @@ namespace chessGraphics
                     // should send pipe to engine
                     enginePipe.sendEngineMove(srcSquare.ToString() + dstSquare.ToString());
                     
+                    _server.sendMessageToServer(srcSquare.ToString() + dstSquare.ToString());
 
                      // should get pipe from engine
                     string m = enginePipe.getEngineMessage();
@@ -273,7 +294,14 @@ namespace chessGraphics
                         return;
                     }
 
-                    string res = convertEngineToText(m);
+                     if (!_server.isConnected())
+                     {
+                         MessageBox.Show("Connection to server has lost. Bye bye.");
+                         this.Close();
+                         return;
+                     }
+
+                     string res = convertEngineToText(m);
 
                     if (res.ToLower().StartsWith("game over"))
                     {
@@ -357,6 +385,8 @@ namespace chessGraphics
                 }
                 finally
                 {
+                try
+                {
                     Invoke((MethodInvoker)delegate
                     {
                         if (srcSquare != null)
@@ -370,7 +400,13 @@ namespace chessGraphics
 
                     });
                 }
+                catch
+                {
 
+                }
+                }
+
+            
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)

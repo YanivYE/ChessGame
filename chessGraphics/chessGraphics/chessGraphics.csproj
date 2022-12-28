@@ -51,7 +51,6 @@
     <Compile Include="connectionForm.Designer.cs">
       <DependentUpon>connectionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="engine.cs" />
     <Compile Include="onlineForm.cs">
       <SubType>Form</SubType>
     </Compile>

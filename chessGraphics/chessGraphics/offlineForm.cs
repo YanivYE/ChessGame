@@ -16,7 +16,7 @@ namespace chessGraphics
         private Square srcSquare;
         private Square dstSquare;
 
-        private engine myEngine;
+        private pipe enginePipe;
         Button[,] matBoard;
 
         bool isCurPlWhite = true;
@@ -31,7 +31,7 @@ namespace chessGraphics
 
         private void initForm()
         {
-            myEngine.connect();
+            enginePipe.connect();
 
             Invoke((MethodInvoker)delegate {  
 
@@ -39,7 +39,7 @@ namespace chessGraphics
                 lblCurrentPlayer.Visible = true;
                 label1.Visible = true;
 
-                string s = myEngine.getEngineMessage();
+                string s = enginePipe.getEngineMessage();
 
                 if (s.Length != (BOARD_SIZE * BOARD_SIZE + 1))
                 {
@@ -61,7 +61,7 @@ namespace chessGraphics
         Thread connectionThread;
         private void Form1_Load(object sender, EventArgs e)
         {
-            myEngine = new engine();
+            enginePipe = new pipe();
             //this.Show();
             
             //MessageBox.Show("Press OK to start waiting for engine to connect...");
@@ -261,13 +261,13 @@ namespace chessGraphics
 
 
                      // should send pipe to engine
-                     myEngine.sendEngineMove(srcSquare.ToString() + dstSquare.ToString());
+                     enginePipe.sendEngineMove(srcSquare.ToString() + dstSquare.ToString());
                     
 
                      // should get pipe from engine
-                    string m = myEngine.getEngineMessage();
+                    string m = enginePipe.getEngineMessage();
 
-                    if (!myEngine.isConnected())
+                    if (!enginePipe.isConnected())
                     {
                         MessageBox.Show("Connection to engine has lost. Bye bye.");
                         this.Close();
@@ -376,8 +376,8 @@ namespace chessGraphics
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            myEngine.sendEngineMove("quit");
-            myEngine.close();
+            enginePipe.sendEngineMove("quit");
+            enginePipe.close();
 
             Application.Exit();
         }
