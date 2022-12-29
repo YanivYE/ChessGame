@@ -45,38 +45,49 @@ public:
 
 	// get placement string(eg. a2) and convert to index
 	static int placementToIndex(const string placement);
+
 	// get openent color
 	static Player opponentColor(const Player currentPlayer);
+
 	// convert each char from graphic board into its piece
 	static Piece* charToPiece(const char pieceLetter, const int index);
+
 	// get valid/invalid code from move
 	int movementCode(const string source, const string destination, vector<Piece*>& board);
 
 	// move piece from source to dest
 	void commitMove(const string source, const string destination, vector<Piece*>& board);
+
 private:
 	// switch turn in engine
 	void switchTurn();
 	
 	// index to placement(eg. a2)
 	static string indexToPlacement(const int index);
+
 	// get piece color by letter
 	static Player findPieceColor(const char pieceLetter);
 
 	// check if valid move, and made chess
 	bool checkCode1(const string source, const string destination, const Player currentPlayer,
 		vector<Piece*>& board, bool checkingKingEscape);
+
 		// returns true if user tried to move player that isn't his
 	bool checkCode2(const Player sourcePlayer, const Player currentPlayer) const;
+
 	// returns true if destination not free
 	bool checkCode3(const Player destPlayer, const Player currentPlayer) const;
+
 	// returns true if chess on current player will accure because of move
 	bool checkCode4(const string source, const string destination, const Player currentPlayer, 
 		vector<Piece*>& board, bool checkingKingEscape);
+
 		// returns true if invalid movement with piece
 	bool checkCode6(const Piece* srcP, const Piece* destP, vector<Piece*> board) const;
+
 	// returns if source and dest are the same
 	bool checkCode7(const string source, const string destination) const;
+
 
 	bool checkCode8(const Player currentPlayer, const Piece* attacker, vector<Piece*>& board);
 
@@ -101,7 +112,7 @@ private:
 	Player charToPlayer(const char playerChar) const;
 
 	void switchTurnAndClearMemory(Piece* initialSrc, Piece* initialDst);
-private:
+
 	// curent turn(black / white)
 	Player _turn;
 };
