@@ -400,7 +400,7 @@ bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, ve
 		{
 			for (int i = std::min(curPos[0], destPos[0]) + 1; i < std::max(curPos[0], destPos[0]); i++)
 			{
-				boardPlacement = string(1, curPos[1] + 'a') + std::to_string(i);
+				boardPlacement = string(1, curPos[1] + 'a') + std::to_string(CHESS_BOARD_SIDE - i);
 				if (isPossibleSquareCapture(boardPlacement, king->_color, board))
 				{
 					return true;
@@ -413,7 +413,7 @@ bool GameLogic::isPossibleInterpose(const Piece* attacker, const Piece* king, ve
 		{
 			for (int i = std::min(curPos[1], destPos[1]) + 1; i < std::max(curPos[1], destPos[1]); i++)
 			{
-				boardPlacement = string(1, i + 'a') + std::to_string(curPos[0]);
+				boardPlacement = string(1, i + 'a') + std::to_string(CHESS_BOARD_SIDE - curPos[0]);
 				if (isPossibleSquareCapture(boardPlacement, king->_color, board))
 				{
 					return true;
