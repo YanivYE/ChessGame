@@ -12,6 +12,7 @@ player_sockets = {}
 #IP = "192.168.1.178"
 hostname = socket.gethostname()
 IP = socket.gethostbyname(hostname)
+#IP = "84.229.117.34"
 print("Server listening on IP address: " + IP)
 
 
@@ -128,7 +129,7 @@ def main():
             client_soc.close()
             num_connected_clients -= 1
 
-    time.sleep(1.5)
+    time.sleep(1)
 
     for color, sock in player_sockets.items():
         send_message(sock, color, color)
