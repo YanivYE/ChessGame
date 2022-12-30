@@ -47,6 +47,13 @@ bool King::isValidMove(string dest, vector<Piece*> board) const
     return true;
 }
 
+/*
+* Function checks if the player is performing a valid castling - by the castling conditions
+* Input: dest - a destiantion string(eg. a2, e4, f7)
+*        board - the board pieces vector
+*        king - the king performing the castling
+* Output: True/False - valid castling or not
+*/
 bool King::isCastling(string dest, vector<Piece*> board, const Piece* king) 
 {
     // check the row difference between the dest, and current pos
@@ -56,23 +63,29 @@ bool King::isCastling(string dest, vector<Piece*> board, const Piece* king)
 
     // check castling
     if (colDifference == 2 && rowDifference == 0 && !((King*)king)->_inCheck && king->clearMovingPath(dest, board))
+        // if the king moves 2 squares horizontally, not in check and has no interrupting pieces 
+        // in his path - can currently make castling
     {
-        if (king->_placement ==  WHITE_KING_INITIAL_PLACEMENT && !king->_moved) //this->_placement == BLACK_KING_INITIAL_PLACEMENT
+        if (king->_placement ==  WHITE_KING_INITIAL_PLACEMENT && !king->_moved) 
+            // if the king is in the white king placement and hasn't moved yet
         {
             if (board[GameLogic::placementToIndex(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
                 !board[GameLogic::placementToIndex(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT)]->_moved || 
                 board[GameLogic::placementToIndex(LEFT_WHITE_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
                 !board[GameLogic::placementToIndex(LEFT_WHITE_ROOK_INITIAL_PLACEMENT)]->_moved)
+                // if the white rooks are in their initial placements and hasn't moved yet
             {
                 return true;
             }
         }
-        if (king->_placement == BLACK_KING_INITIAL_PLACEMENT && !king->_moved) //this->_placement == BLACK_KING_INITIAL_PLACEMENT
+        if (king->_placement == BLACK_KING_INITIAL_PLACEMENT && !king->_moved)
+            // if the king is in the black king placement and hasn't moved yet
         {
             if (board[GameLogic::placementToIndex(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
                 !board[GameLogic::placementToIndex(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT)]->_moved ||
                 board[GameLogic::placementToIndex(LEFT_BLACK_ROOK_INITIAL_PLACEMENT)]->_type == ROOK &&
                 !board[GameLogic::placementToIndex(LEFT_BLACK_ROOK_INITIAL_PLACEMENT)]->_moved)
+                // if the black rooks are in their initial placements and hasn't moved yet
             {
 
                 return true;
@@ -80,10 +93,16 @@ bool King::isCastling(string dest, vector<Piece*> board, const Piece* king)
         }
     }
 
+    // invalid castling performe
     return false;
 }
 
-
+/*
+* Function gets a string vector of all possible king moves, depending on his location on the board
+* the vector includes destination strings like- e2
+* Input: pos - the current king position
+* Output: possible destinations vector
+*/
 vector<string> King::getKingMoves(const string& pos)
 {
     int r, c = 0;
@@ -103,8 +122,9 @@ vector<string> King::getKingMoves(const string& pos)
             if (r == 0 && c == 0) continue;
 
             // Check if the new position is on the board
-            if (row + r >= 0 && row + r < 8 && col + c >= 0 && col + c < 8)
+            if (row + r >= 0 && row + r < CHESS_BOARD_SIDE && col + c >= 0 && col + c < CHESS_BOARD_SIDE)
             {
+                // set position
                 position = char(col + c + 'a');
                 position += (char(row + r + '1'));
 
@@ -113,5 +133,7 @@ vector<string> King::getKingMoves(const string& pos)
             }
         }
     }
+
+    // return the possible king moves vector
     return kingMoves;
 }

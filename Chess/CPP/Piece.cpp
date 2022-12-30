@@ -119,6 +119,8 @@ Piece& Piece::operator=(const Piece& other)
     this->_color = other._color;
     this->_placement = other._placement;
     this->_type = other._type;
+    this->_moved = other._moved;
+
 
     return *this;
 }

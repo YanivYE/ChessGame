@@ -82,7 +82,8 @@ Piece* BoardManager::copyPiece(const Piece* piece)
 	newPiece->_placement = piece->_placement;
 	newPiece->_color = piece->_color;
 	newPiece->_moved = piece->_moved;
-	if (piece->_type == KING)
+
+	if (piece->_type == KING)	// if the piece is a king copy the inCheck field
 	{
 		((King*)newPiece)->_inCheck = ((King*)piece)->_inCheck;
 	}
@@ -186,10 +187,11 @@ string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 	// create string with the char
 	string returnCode(1, codeChr);
 
-	if (code == 9)
+	if (code == 9)	// if code 9 - castling
 	{
 		returnCode += ",";
 		returnCode += rookCastlingMovement(movement.substr(0, 2), movement.substr(2, 4), algorithm);
+		// add the rook castling movement to the code string
 	}
 
 	// add NULL at the end of the string

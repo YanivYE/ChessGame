@@ -27,6 +27,5 @@ public:
 	// get a vector that contains all the possible king moves
 	vector<string> getKingMoves(const string& pos);
 
-public:
 	bool _inCheck;		// is the king in check	
 };
