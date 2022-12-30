@@ -7,6 +7,7 @@ class Bishop : public Piece
 public:
 	// bishop constructor
 	Bishop(const string type, const string placement, const Player player);
+
 	// bishop destructor
 	~Bishop();
 

@@ -81,6 +81,7 @@ Piece* BoardManager::copyPiece(const Piece* piece)
 	newPiece->_type = piece->_type;
 	newPiece->_placement = piece->_placement;
 	newPiece->_color = piece->_color;
+	newPiece->_moved = piece->_moved;
 	if (piece->_type == KING)
 	{
 		((King*)newPiece)->_inCheck = ((King*)piece)->_inCheck;
