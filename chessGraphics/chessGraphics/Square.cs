@@ -17,6 +17,16 @@ namespace chessGraphics
             _colIndex = col;
         }
 
+        public void setRow(int row)
+        {
+            _rowIndex = row;
+        }
+
+        public void setCol(int col)
+        {
+            _colIndex = col;
+        }
+
         public int Row
         {
             get { return _rowIndex; }

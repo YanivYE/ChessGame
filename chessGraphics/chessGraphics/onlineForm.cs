@@ -20,19 +20,32 @@ namespace chessGraphics
         Button[,] matBoard;
 
         bool isCurPlWhite = true;
-        bool isMyTurn = false;
         bool isGameOver = false;
-
+        
         const int BOARD_SIZE = 8;
-        Server _server;
-        String _player;
+        static Server _server;
+        String _currentColor = "White";
 
         public onlineForm(Server server)
         {
             InitializeComponent();
             _server = server;
+            this.Text = "You Are Player Color: " + server._player;
         }
 
+        private void OnMessageReceived(object sender, DoWorkEventArgs e)
+        {
+            if (!_server._player.Equals(lblCurrentPlayer.Text))
+            {
+                String move = _server.getMessageFromServer();
+
+                if (move != "quit")
+                {
+                    receiveMove(move);
+                }
+            }
+        }
+        
         private void initForm()
         {
             enginePipe.connect();
@@ -57,12 +70,7 @@ namespace chessGraphics
                     paintBoard(s);
 
                 }
-
-                _player = _server.getMessageFromServer();
-
-
             });
-    
         }
 
         Thread connectionThread;
@@ -78,6 +86,7 @@ namespace chessGraphics
             connectionThread.Start();
             connectionThread.IsBackground = true;
 
+            
             //initForm();
         }
 
@@ -184,33 +193,63 @@ namespace chessGraphics
 
         void lastlbl_Click(object sender, EventArgs e)
         {
-            Button b = (Button)sender;
-            if (srcSquare != null)
+
+            if (_server._player == lblCurrentPlayer.Text)
             {
-                // unselected
-                if (matBoard[srcSquare.Row, srcSquare.Col] == b)
+                Button b = (Button)sender;
+                if (srcSquare != null)
                 {
-                 
-                    matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
-                    srcSquare = null;
+                    // unselected
+                    if (matBoard[srcSquare.Row, srcSquare.Col] == b)
+                    {
+
+                        matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
+                        srcSquare = null;
+                    }
+                    else
+                    {
+                        dstSquare = (Square)b.Tag;
+                        matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
+
+                        if (_currentColor.Equals(this.lblCurrentPlayer.Text))
+                        {
+                            _server.sendMessageToServer(srcSquare.ToString() + dstSquare.ToString());
+
+                            //_currentColor = isCurPlWhite ? "White" : "Black";
+                        }
+
+                        Thread t = new Thread(playMove);
+                        t.Start();
+                        //   t.IsBackground = true;
+                        //playMove();
+                    }
                 }
                 else
                 {
-                    dstSquare = (Square)b.Tag;
-                    matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
-
-                    Thread t = new Thread(playMove);
-                    t.Start();
-                 //   t.IsBackground = true;
-                    //playMove();
+                    srcSquare = (Square)b.Tag;
+                    matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
                 }
-            }
+            }  
             else
             {
-                srcSquare = (Square)b.Tag;
-                matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
+
+                if (!enginePipe.isConnected())
+                {
+                    MessageBox.Show("Connection to engine has lost. Bye bye.");
+                    this.Close();
+                    return;
+                }
+
+                if (!_server.isConnected())
+                {
+                    MessageBox.Show("Connection to server has lost. Bye bye.");
+                    this.Close();
+                    return;
+                }
+
+                MessageBox.Show("Not Your Turn!", "Error");
             }
-         
+
         }
 
         // messages should be according the protocol.
@@ -229,7 +268,6 @@ namespace chessGraphics
             "Unknown message"
             };
 
-
         string convertEngineToText(string m)
         {
             // TODO: check what does try parse do, and see if works not only with string with 1 tav
@@ -240,22 +278,6 @@ namespace chessGraphics
                 return messages[messages.Length - 1];
 
             return messages[res];
-        }
-        
-        void getMove()
-        {
-            string move = _server.getMessageFromServer();
-
-            string startPos = move.Substring(0, 2);
-            string endPos = move.Substring(2, 2);
-
-            int srcRow = 8 - (int)Char.GetNumericValue(startPos[1]);
-            int srcCol = startPos[0] - 'a';
-            int dstRow = 8 - (int)Char.GetNumericValue(endPos[1]);
-            int dstCol = endPos[0] - 'a';
-
-            srcSquare = new Square(srcRow, srcCol);
-            dstSquare = new Square(dstRow, dstCol);
         }
 
         void playMove()
@@ -281,11 +303,8 @@ namespace chessGraphics
 
                     // should send pipe to engine
                     enginePipe.sendEngineMove(srcSquare.ToString() + dstSquare.ToString());
-                    
-                    _server.sendMessageToServer(srcSquare.ToString() + dstSquare.ToString());
-
                      // should get pipe from engine
-                    string m = enginePipe.getEngineMessage();
+                     string m = enginePipe.getEngineMessage();
 
                     if (!enginePipe.isConnected())
                     {
@@ -303,7 +322,7 @@ namespace chessGraphics
 
                      string res = convertEngineToText(m);
 
-                    if (res.ToLower().StartsWith("game over"))
+                     if (res.ToLower().StartsWith("game over"))
                     {
                         isGameOver = true;
                     }
@@ -311,8 +330,9 @@ namespace chessGraphics
                     {
                         isCurPlWhite = !isCurPlWhite;
                         lblCurrentPlayer.Text = isCurPlWhite ? "White" : "Black";
+                         _currentColor = lblCurrentPlayer.Text;
 
-                        matBoard[dstSquare.Row, dstSquare.Col].BackgroundImage = matBoard[srcSquare.Row, srcSquare.Col].BackgroundImage;
+                         matBoard[dstSquare.Row, dstSquare.Col].BackgroundImage = matBoard[srcSquare.Row, srcSquare.Col].BackgroundImage;
                         matBoard[srcSquare.Row, srcSquare.Col].BackgroundImage = null;
 
                         matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
@@ -376,9 +396,7 @@ namespace chessGraphics
                     label2.Visible = true;
                     this.Refresh();
                  });
-                
-           
-                }
+            }
                 catch
                 {
 
@@ -404,9 +422,32 @@ namespace chessGraphics
                 {
 
                 }
-                }
+            }
+        }
 
-            
+        // This method will be called when the other player makes a move
+        void receiveMove(string move)
+        {
+            String src = move.Substring(0, 2);
+            String dst = move.Substring(2, 2);
+
+            for(int i = 0; i < BOARD_SIZE; i++)
+            {
+                for(int j = 0; j < BOARD_SIZE; j++)
+                {
+                    if (matBoard[i, j].Tag.ToString().Equals(src))
+                    {
+                        srcSquare = (Square)matBoard[i, j].Tag;
+                    }
+                    else if (matBoard[i, j].Tag.ToString().Equals(dst))
+                    {
+                        dstSquare = (Square)matBoard[i, j].Tag;
+                    }
+                }
+            }
+
+            playMove();
+
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -415,6 +456,22 @@ namespace chessGraphics
             enginePipe.close();
 
             Application.Exit();
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled == true)
+            {
+                Console.WriteLine("Canceled!");
+            }
+            else if (e.Error != null)
+            {
+                Console.WriteLine("Error: " + e.Error.Message);
+            }
+            else
+            {
+                Console.WriteLine("Done!");
+            }
         }
 
     }

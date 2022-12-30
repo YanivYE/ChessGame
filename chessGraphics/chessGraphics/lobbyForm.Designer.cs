@@ -79,6 +79,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "lobbyForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.lobbyForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

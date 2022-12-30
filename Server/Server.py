@@ -9,7 +9,9 @@ num_connected_clients = 0
 player_sockets = {}
 
 # Set the IP address to listen on
-IP = "192.168.1.178"
+#IP = "192.168.1.178"
+hostname = socket.gethostname()
+IP = socket.gethostbyname(hostname)
 print("Server listening on IP address: " + IP)
 
 
@@ -99,9 +101,9 @@ def main():
 
         if num_connected_clients <= 2:
             if num_connected_clients == 1:
-                color = "Black"
-            elif num_connected_clients == 2:
                 color = "White"
+            elif num_connected_clients == 2:
+                color = "Black"
             else:
                 color = ""
             # Start a new thread to handle the client

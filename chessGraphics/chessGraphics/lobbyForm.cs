@@ -59,6 +59,7 @@ namespace chessGraphics
             else
             {
                 this.color.Text = _color;
+                _server._player = _color;
 
                 timer1.Start();
             }
