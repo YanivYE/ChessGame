@@ -13,11 +13,10 @@ namespace chessGraphics
     public partial class connectionForm : Form
     {
         bool validIP = false, firstClick = true;
-        Server _server;
+        String _ip = "";
         public connectionForm()
         {
             InitializeComponent();
-            _server = new Server(this);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -28,8 +27,7 @@ namespace chessGraphics
             {
                 validIP = false;
 
-                // for printing bad nessage
-                _server.connectToServer(validIP);
+                badIp();
 
                 return;
             }
@@ -39,19 +37,18 @@ namespace chessGraphics
             {
                 validIP = false;
 
-                // for printing bad nessage
-                _server.connectToServer(validIP);
+                badIp();
 
                 return;
             }
 
-            validIP = splitValues.All(r => byte.TryParse(r, out tempForParsing));
-
-            if (_server.connectToServer(validIP))
-            {
-                this.button1.Enabled = false;
-                this.ipBox.Enabled = false;
-            }
+            //validIP = splitValues.All(r => byte.TryParse(r, out tempForParsing));
+            //
+            //if (_server.connectToServer(validIP))
+            //{
+            //    this.button1.Enabled = false;
+            //    this.ipBox.Enabled = false;
+            //}
 
 
         }
@@ -61,6 +58,13 @@ namespace chessGraphics
             Application.Exit();
         }
 
+        void badIp()
+        {
+            MessageBox.Show("Illegail IPV4 Adress. Pleae enter in this format: X.X.X.X, thank you.", "Invalid IP",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            ipBox.Clear();
+        }
 
     }
 }

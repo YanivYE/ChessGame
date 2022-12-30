@@ -12,11 +12,10 @@ namespace chessGraphics
 {
     public partial class lobbyForm : Form
     {
-        Server _server;
         BackgroundWorker _worker;
         string _color;
 
-        public lobbyForm(Server server)
+        public lobbyForm()
         {
             InitializeComponent();
             _server = server;
@@ -59,7 +58,6 @@ namespace chessGraphics
             else
             {
                 this.color.Text = _color;
-                _server._player = _color;
 
                 timer1.Start();
             }
@@ -72,7 +70,7 @@ namespace chessGraphics
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            onlineForm gameForm = new onlineForm(_server);
+            onlineForm gameForm = new onlineForm();
             gameForm.Show();
 
             this.Hide();

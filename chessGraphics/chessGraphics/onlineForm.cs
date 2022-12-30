@@ -23,29 +23,12 @@ namespace chessGraphics
         bool isGameOver = false;
         
         const int BOARD_SIZE = 8;
-        static Server _server;
-        String _currentColor = "White";
 
-        public onlineForm(Server server)
+        public onlineForm()
         {
             InitializeComponent();
-            _server = server;
-            this.Text = "You Are Player Color: " + server._player;
         }
 
-        private void OnMessageReceived(object sender, DoWorkEventArgs e)
-        {
-            if (!_server._player.Equals(lblCurrentPlayer.Text))
-            {
-                String move = _server.getMessageFromServer();
-
-                if (move != "quit")
-                {
-                    receiveMove(move);
-                }
-            }
-        }
-        
         private void initForm()
         {
             enginePipe.connect();
@@ -193,63 +176,32 @@ namespace chessGraphics
 
         void lastlbl_Click(object sender, EventArgs e)
         {
-
-            if (_server._player == lblCurrentPlayer.Text)
+            Button b = (Button)sender;
+            if (srcSquare != null)
             {
-                Button b = (Button)sender;
-                if (srcSquare != null)
+                // unselected
+                if (matBoard[srcSquare.Row, srcSquare.Col] == b)
                 {
-                    // unselected
-                    if (matBoard[srcSquare.Row, srcSquare.Col] == b)
-                    {
 
-                        matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
-                        srcSquare = null;
-                    }
-                    else
-                    {
-                        dstSquare = (Square)b.Tag;
-                        matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
-
-                        if (_currentColor.Equals(this.lblCurrentPlayer.Text))
-                        {
-                            _server.sendMessageToServer(srcSquare.ToString() + dstSquare.ToString());
-
-                            //_currentColor = isCurPlWhite ? "White" : "Black";
-                        }
-
-                        Thread t = new Thread(playMove);
-                        t.Start();
-                        //   t.IsBackground = true;
-                        //playMove();
-                    }
+                    matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.Blue;
+                    srcSquare = null;
                 }
                 else
                 {
-                    srcSquare = (Square)b.Tag;
-                    matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
+                    dstSquare = (Square)b.Tag;
+                    matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
+
+                    Thread t = new Thread(playMove);
+                    t.Start();
+                    //   t.IsBackground = true;
+                    //playMove();
                 }
-            }  
+            }
             else
             {
-
-                if (!enginePipe.isConnected())
-                {
-                    MessageBox.Show("Connection to engine has lost. Bye bye.");
-                    this.Close();
-                    return;
-                }
-
-                if (!_server.isConnected())
-                {
-                    MessageBox.Show("Connection to server has lost. Bye bye.");
-                    this.Close();
-                    return;
-                }
-
-                MessageBox.Show("Not Your Turn!", "Error");
+                srcSquare = (Square)b.Tag;
+                matBoard[srcSquare.Row, srcSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
             }
-
         }
 
         // messages should be according the protocol.
@@ -313,13 +265,6 @@ namespace chessGraphics
                         return;
                     }
 
-                     if (!_server.isConnected())
-                     {
-                         MessageBox.Show("Connection to server has lost. Bye bye.");
-                         this.Close();
-                         return;
-                     }
-
                      string res = convertEngineToText(m);
 
                      if (res.ToLower().StartsWith("game over"))
@@ -330,7 +275,6 @@ namespace chessGraphics
                     {
                         isCurPlWhite = !isCurPlWhite;
                         lblCurrentPlayer.Text = isCurPlWhite ? "White" : "Black";
-                         _currentColor = lblCurrentPlayer.Text;
 
                          matBoard[dstSquare.Row, dstSquare.Col].BackgroundImage = matBoard[srcSquare.Row, srcSquare.Col].BackgroundImage;
                         matBoard[srcSquare.Row, srcSquare.Col].BackgroundImage = null;
@@ -456,22 +400,6 @@ namespace chessGraphics
             enginePipe.close();
 
             Application.Exit();
-        }
-
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled == true)
-            {
-                Console.WriteLine("Canceled!");
-            }
-            else if (e.Error != null)
-            {
-                Console.WriteLine("Error: " + e.Error.Message);
-            }
-            else
-            {
-                Console.WriteLine("Done!");
-            }
         }
 
     }
