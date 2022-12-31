@@ -45,10 +45,13 @@ namespace chessGraphics
                 {
                     receiveMove(move);
                 }
-                else if(move != "quit")
+                else if(move == "quit")
                 {
+                    enginePipe.sendEngineMove("quit");
+                    enginePipe.close();
+
                     MessageBox.Show("Connection to server has lost. Bye bye.");
-                    this.Close();
+                    Application.Exit(); 
                     return;
                 }
             }
@@ -371,10 +374,7 @@ namespace chessGraphics
                         label2.Visible = true;
                         this.Refresh();
 
-                        //Square srcRook = new Square(1, 2);
-                        // TODO: code 9 - CASTLING check if contains made castling move
-                        // from messages array
-                        if (!(Int32.Parse(m.ToLower()) > 1 && Int32.Parse(m.ToLower()) < 8))
+                        if (!((int.Parse(m[0].ToString())) > 1 && (int.Parse(m[0].ToString())) < 8))
                         {
                             _currentColor = lblCurrentPlayer.Text;
                         }

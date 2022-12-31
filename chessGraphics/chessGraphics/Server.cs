@@ -31,7 +31,7 @@ namespace chessGraphics
         {
             try
             {
-                const int PORT = 8200;
+                const int PORT = 3389;
 
                 if (validIP)
                 {
@@ -139,9 +139,9 @@ namespace chessGraphics
                 Thread t = new Thread(() => sendMessageToServer(""));
                 t.Start();
 
-                if (_client.GetStream() != null)
+                if (_client.GetStream() == null)
                 {
-                    return true;
+                    return false;
                 }
 
                 t.Abort();

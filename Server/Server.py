@@ -1,6 +1,7 @@
 import socket
 import threading
 import time
+from requests import get
 
 # This variable will keep track of the number of connected clients
 num_connected_clients = 0
@@ -8,12 +9,16 @@ num_connected_clients = 0
 # Create a dictionary to store the sockets for each player
 player_sockets = {}
 
+PORT = 3389
 # Set the IP address to listen on
-#IP = "192.168.1.178"
+
 hostname = socket.gethostname()
 IP = socket.gethostbyname(hostname)
+
 print("Server listening on IP address: " + IP)
 
+#IP = get('https://api.ipify.org').content.decode('utf8')
+#print('My public IP address is: {}'.format(IP))
 
 def handle_client(client_soc, client_address, color):
     global num_connected_clients
@@ -41,8 +46,10 @@ def handle_client(client_soc, client_address, color):
 
             print("Received message from {} ({}): {}".format(client_address, color, message))
 
+            if message == "ping":
+                send_message(player_sockets[color], "pong", color)
             # Send the message to the opposite player if it is connected
-            if opposite_color in player_sockets:
+            elif opposite_color in player_sockets:
                 opposite_player_socket = player_sockets[opposite_color]
                 send_message(opposite_player_socket, message, opposite_color)
         except (ConnectionResetError, ConnectionAbortedError):
@@ -66,7 +73,7 @@ def create_listening_sock():
     listening_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to the server's address and port
-    server_address = (IP, 8200)
+    server_address = (IP, PORT)
     listening_sock.bind(server_address)
 
     # Listen for incoming connections
@@ -126,7 +133,7 @@ def main():
             client_soc.close()
             num_connected_clients -= 1
 
-    time.sleep(3)
+    time.sleep(1)
 
     for color, sock in player_sockets.items():
         send_message(sock, color, color)
