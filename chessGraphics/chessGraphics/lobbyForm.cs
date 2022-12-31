@@ -12,10 +12,11 @@ namespace chessGraphics
 {
     public partial class lobbyForm : Form
     {
+        Server _server;
         BackgroundWorker _worker;
         string _color;
 
-        public lobbyForm()
+        public lobbyForm(Server server)
         {
             InitializeComponent();
             _server = server;
@@ -34,6 +35,13 @@ namespace chessGraphics
         void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             _color = _server.getMessageFromServer();
+
+            if(_color.Equals("") || _color.Equals("quit"))
+            {
+                MessageBox.Show("Connection to server has lost. Bye bye.");
+                Application.Exit();
+                return;
+            }
 
             // Check if the worker has been cancelled
             if ((sender as BackgroundWorker).CancellationPending)
@@ -58,6 +66,7 @@ namespace chessGraphics
             else
             {
                 this.color.Text = _color;
+                _server._player = _color;
 
                 timer1.Start();
             }
@@ -70,7 +79,7 @@ namespace chessGraphics
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            onlineForm gameForm = new onlineForm();
+            onlineForm gameForm = new onlineForm(_server);
             gameForm.Show();
 
             this.Hide();

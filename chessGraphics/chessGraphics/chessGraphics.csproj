@@ -78,6 +78,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="pipe.cs" />
+    <Compile Include="Server.cs" />
     <Compile Include="Square.cs" />
     <EmbeddedResource Include="lobbyForm.resx">
       <DependentUpon>lobbyForm.cs</DependentUpon>

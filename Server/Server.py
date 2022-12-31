@@ -12,7 +12,6 @@ player_sockets = {}
 #IP = "192.168.1.178"
 hostname = socket.gethostname()
 IP = socket.gethostbyname(hostname)
-#IP = "84.229.117.34"
 print("Server listening on IP address: " + IP)
 
 
@@ -42,10 +41,8 @@ def handle_client(client_soc, client_address, color):
 
             print("Received message from {} ({}): {}".format(client_address, color, message))
 
-            if message == "ping":
-                send_message(player_sockets[color], "pong", color)
             # Send the message to the opposite player if it is connected
-            elif opposite_color in player_sockets:
+            if opposite_color in player_sockets:
                 opposite_player_socket = player_sockets[opposite_color]
                 send_message(opposite_player_socket, message, opposite_color)
         except (ConnectionResetError, ConnectionAbortedError):
@@ -129,7 +126,7 @@ def main():
             client_soc.close()
             num_connected_clients -= 1
 
-    time.sleep(1)
+    time.sleep(3)
 
     for color, sock in player_sockets.items():
         send_message(sock, color, color)
