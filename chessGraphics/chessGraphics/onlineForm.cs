@@ -66,6 +66,8 @@ namespace chessGraphics
         
         private void initForm()
         {
+            System.Diagnostics.Process.Start("Chess.exe");
+
             enginePipe.connect();
 
             Invoke((MethodInvoker)delegate {  
@@ -97,10 +99,9 @@ namespace chessGraphics
         }
 
         Thread connectionThread;
+        Thread checkServerThread;
         private void Form1_Load(object sender, EventArgs e)
         {
-            //System.Diagnostics.Process.Start("C:\\Users\\user\\Desktop\\C++\\week7+8\\chess_project\\Chess\\x64\\Debug\\Chess.exe");
-
             enginePipe = new pipe();
             //this.Show();
             
@@ -109,11 +110,28 @@ namespace chessGraphics
             connectionThread.Start();
             connectionThread.IsBackground = true;
 
+            checkServerThread = new Thread(checkServerConnection);
+            checkServerThread.Start();
+            checkServerThread.IsBackground = true;
+
             if (!backgroundWorker1.IsBusy)
             {
                 backgroundWorker1.RunWorkerAsync();
             }
             //initForm();
+        }
+
+        void checkServerConnection()
+        {
+            while(1 == 1)
+            {
+                if (!_server.isConnected())
+                {
+                    MessageBox.Show("Connection to server has lost. Bye bye.");
+                    Application.Exit();
+                    return;
+                }
+            }
         }
 
         Image getImageBySign(char sign)

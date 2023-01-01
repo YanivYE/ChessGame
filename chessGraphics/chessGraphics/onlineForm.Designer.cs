@@ -577,10 +577,11 @@
             this.Controls.Add(this.lblResult);
             this.Controls.Add(this.lblMove);
             this.Controls.Add(this.btnBoard);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "onlineForm";
-            this.Text = "VS";
+            this.Text = "Chess Graphics";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);

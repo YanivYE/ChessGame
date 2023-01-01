@@ -52,19 +52,12 @@ namespace chessGraphics
                     // transfer both clients to the gameForm form
                     if (response.Equals("2") || response.Equals("1"))
                     {
-                        //if(response.Equals("2"))
-                        //{
-                        //    // Send a message to the server indicating that this client is ready to start the game
-                        //    sendMessageToServer("startgame");
-                        //}
-
                         lobbyForm lobby = new lobbyForm(this);
                         lobby.Show();
-                        //onlineForm gameForm = new onlineForm(this);
-                        //gameForm.Show();
+
                         this._connectionForm.Hide();
                     }
-                    else if(response.Equals("quit"))
+                    else if (response.Equals("quit"))
                     {
                         MessageBox.Show("Connection to server has lost. Bye bye.");
                         this._connectionForm.Close();
@@ -73,17 +66,18 @@ namespace chessGraphics
                 }
                 else
                 {
-                    MessageBox.Show("Illegail IPV4 Adress. Pleae enter in this format: X.X.X.X, thank you.", "Invalid IP",
+                    MessageBox.Show("Illegail IPV4 Adress. Pleae enter in this format: X.X.X.X.", "Invalid IP",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     _connectionForm.ipBox.Clear();
 
                     return false;
                 }
+
             }
-            catch (System.Net.Sockets.SocketException e)
+            catch 
             {
-                MessageBox.Show("Couldn't Connect. Please try agaian later", "Connection not established.",
+                MessageBox.Show("Couldn't Connect. Please check IP adress format, or if server is open.", "Connection not established.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 _connectionForm.ipBox.Clear();

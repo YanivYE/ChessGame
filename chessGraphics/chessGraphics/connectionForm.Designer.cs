@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(connectionForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.isConnected = new System.Windows.Forms.Label();
@@ -36,6 +37,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.numClients = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -84,9 +86,9 @@
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.label4.Location = new System.Drawing.Point(28, 174);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(361, 25);
+            this.label4.Size = new System.Drawing.Size(309, 25);
             this.label4.TabIndex = 4;
-            this.label4.Text = "Enter Local IPV4 Adress Of Hosting PC:";
+            this.label4.Text = "Enter IPV4 Adress Of Hosting PC:";
             // 
             // button1
             // 
@@ -120,11 +122,23 @@
             this.numClients.TabIndex = 7;
             this.numClients.Text = "0";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.label5.Location = new System.Drawing.Point(12, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(687, 22);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "*If after connecting to an ip it crashes,it\'s because VS is trying to connect. Pl" +
+    "eae wait.\r\n";
+            // 
             // connectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(711, 360);
+            this.ClientSize = new System.Drawing.Size(769, 360);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.numClients);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button1);
@@ -134,9 +148,11 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.Name = "connectionForm";
+            this.Text = "Connect To The Server Host";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.connectionForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -153,5 +169,6 @@
         public System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label3;
         public System.Windows.Forms.Label numClients;
+        private System.Windows.Forms.Label label5;
     }
 }

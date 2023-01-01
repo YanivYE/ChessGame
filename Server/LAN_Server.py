@@ -85,61 +85,60 @@ def send_message(sock, msg, color):
 
 
 def main():
+    global num_connected_clients
+
     print("Server listening on IP address: " + IP)
     print("Status: Waiting For Connections...")
 
+    listening_sock = create_listening_sock()
+
+    # Accept incoming connections and start a new thread for each client
     while True:
-        global num_connected_clients
+        if listening_sock.fileno() != -1:
+            client_soc, client_address = listening_sock.accept()
+        else:
+            break
 
-        listening_sock = create_listening_sock()
+        num_connected_clients += 1
 
-        # Accept incoming connections and start a new thread for each client
-        while True:
-            if listening_sock.fileno() != -1:
-                client_soc, client_address = listening_sock.accept()
+        if num_connected_clients == 2:
+            # If the number of connected clients has reached 2, stop accepting new connections
+            listening_sock.close()
+
+        if num_connected_clients <= 2:
+            if num_connected_clients == 1:
+                color = "White"
+            elif num_connected_clients == 2:
+                color = "Black"
             else:
-                break
+                color = ""
+            # Start a new thread to handle the client
+            client_thread = threading.Thread(target=handle_client, args=(client_soc, client_address, color))
+            client_thread.start()
 
-            num_connected_clients += 1
+            # Save the client socket in the dictionary
+            player_sockets[color] = client_soc
+
+            print("Connected to {}, with the color: {}".format(client_address, color))
+
+            send_message(client_soc, str(num_connected_clients), color)
 
             if num_connected_clients == 2:
-                # If the number of connected clients has reached 2, stop accepting new connections
-                listening_sock.close()
+                print("2 Players Connected. Starting game.")
+                break
+        else:
+            # If there are already two clients connected, send a message to the new client telling it to try again later
+            send_message(client_soc, "Server is full. Please try again later.", "")
+            client_soc.close()
+            num_connected_clients -= 1
 
-            if num_connected_clients <= 2:
-                if num_connected_clients == 1:
-                    color = "White"
-                elif num_connected_clients == 2:
-                    color = "Black"
-                else:
-                    color = ""
-                # Start a new thread to handle the client
-                client_thread = threading.Thread(target=handle_client, args=(client_soc, client_address, color))
-                client_thread.start()
+    time.sleep(1)
 
-                # Save the client socket in the dictionary
-                player_sockets[color] = client_soc
-
-                print("Connected to {}, with the color: {}".format(client_address, color))
-
-                send_message(client_soc, str(num_connected_clients), color)
-
-                if num_connected_clients == 2:
-                    print("2 Players Connected. Starting game.")
-                    break
-            else:
-                # If there are already two clients connected, send a message to the new client telling it to try again later
-                send_message(client_soc, "Server is full. Please try again later.", "")
-                client_soc.close()
-                num_connected_clients -= 1
-
-        time.sleep(1)
-
-        try:
-            for color, sock in player_sockets.items():
-                send_message(sock, color, color)
-        except OSError:
-            print("Couldn't Send Colors. One or more player disconnected.")
+    try:
+        for color, sock in player_sockets.items():
+            send_message(sock, color, color)
+    except OSError:
+        print("Couldn't Send Colors. One or more player disconnected.")
 
 
 if __name__ == '__main__':
