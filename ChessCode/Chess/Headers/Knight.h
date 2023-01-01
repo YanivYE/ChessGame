@@ -7,7 +7,8 @@ class Knight : public Piece
 public:
 	// knight constructor
 	Knight(const string type, const string placement, const Player player);
-	// knight constructor
+
+	// knight destructor
 	~Knight();
 
 	// check if the moved knight move is valid

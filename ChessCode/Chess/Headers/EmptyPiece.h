@@ -7,6 +7,7 @@ class EmptyPiece : public Piece
 public:
 	// empty piece constructor
 	EmptyPiece(const string type, const string placement, const Player player);
+
 	// empty piece destructor
 	~EmptyPiece();
 

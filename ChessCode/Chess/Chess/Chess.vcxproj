@@ -158,6 +158,8 @@
     <ClInclude Include="..\Headers\Pipe.h" />
     <ClInclude Include="..\Headers\Queen.h" />
     <ClInclude Include="..\Headers\Rook.h" />
+    <ClInclude Include="..\Headers\stdafx.h" />
+    <ClInclude Include="..\Headers\targetver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

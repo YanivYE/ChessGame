@@ -54,7 +54,7 @@ void BoardManager::copyBoard(vector<Piece*> originalBoard, vector<Piece*>& copyB
 	int i = 0;
 	Piece* copiedPiece = nullptr;
 
-	// loop through out the piece
+	// loop through out the pieces
 	for (i = 0; i < CHESS_BOARD_SIZE; i++)
 	{
 		// copy piece
@@ -81,6 +81,12 @@ Piece* BoardManager::copyPiece(const Piece* piece)
 	newPiece->_type = piece->_type;
 	newPiece->_placement = piece->_placement;
 	newPiece->_color = piece->_color;
+	newPiece->_moved = piece->_moved;
+
+	if (piece->_type == KING)	// if the piece is a king copy the inCheck field
+	{
+		((King*)newPiece)->_inCheck = ((King*)piece)->_inCheck;
+	}
 
 	// return new members
 	return newPiece;
@@ -120,7 +126,7 @@ char BoardManager::getPieceLetter(const Piece* piece)
 	{
 		return getUpperLower(piece, PAWN_CHAR_LOWER);
 	}
-	else //if (strcmp(piece->_type.c_str(), EMPTY_PIECE) == 0)
+	else 
 	{
 		return EMPTY_PIECE_CHAR;
 	}
@@ -181,10 +187,11 @@ string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 	// create string with the char
 	string returnCode(1, codeChr);
 
-	if (code == 9)
+	if (code == 9)	// if code 9 - castling
 	{
 		returnCode += ",";
 		returnCode += rookCastlingMovement(movement.substr(0, 2), movement.substr(2, 4), algorithm);
+		// add the rook castling movement to the code string
 	}
 
 	// add NULL at the end of the string
@@ -194,47 +201,68 @@ string BoardManager::movePieces(const string movement, GameLogic& algorithm)
 	return returnCode;
 }
 
+/*
+* Function gets a string movement for a rook castling. the string includes the source placement 
+* and the destination for performing the castling, representned by two 2D array indexes seperated by coma
+* the movement dependes on wich king is castling and which type of castking he chose- big or small
+* Input: kingSource - chosen king initial placement
+*		 kingDest - chosen king castling destination
+*		 algorithm - the game logic algorithm for commiting the castling move on the baord
+* Output: rook movement string
+*/
 string BoardManager::rookCastlingMovement(string kingSource, string kingDest, GameLogic& algorithm)
 {
 	string rookMovement = "";
-	if (kingSource == WHITE_KING_INITIAL_PLACEMENT)
+	if (kingSource == WHITE_KING_INITIAL_PLACEMENT)	// white king castling
 	{
-		if (kingDest == SMALL_CASTLING_WHITE_KING_PLACEMENT)
+		if (kingDest == SMALL_CASTLING_WHITE_KING_PLACEMENT)	// performing small castling
 		{
-			rookMovement += (convertRookIndexes(LEFT_WHITE_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(LEFT_WHITE_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(LEFT_WHITE_ROOK_INITIAL_PLACEMENT) + "," + 
+				convertRookIndexes(LEFT_WHITE_ROOK_CASTLING_PLACEMENT));  // create rook castling indexes
 			algorithm.commitMove(LEFT_WHITE_ROOK_INITIAL_PLACEMENT, LEFT_WHITE_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
+			// commit castling move
 		}
 		else
 		{
-			rookMovement += (convertRookIndexes(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(RIGHT_WHITE_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT) + "," + 
+				convertRookIndexes(RIGHT_WHITE_ROOK_CASTLING_PLACEMENT));  // create rook castling indexes
 			algorithm.commitMove(RIGHT_WHITE_ROOK_INITIAL_PLACEMENT, RIGHT_WHITE_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
+			// commit castling move
 		}
 	}
-	else
+	else		
 	{
-		if (kingDest == SMALL_CASTLING_BLACK_KING_PLACEMENT)
+		if (kingDest == SMALL_CASTLING_BLACK_KING_PLACEMENT)	// performing small castling
 		{
-			rookMovement += (convertRookIndexes(LEFT_BLACK_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(LEFT_BLACK_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(LEFT_BLACK_ROOK_INITIAL_PLACEMENT) + "," +
+				convertRookIndexes(LEFT_BLACK_ROOK_CASTLING_PLACEMENT));	// create rook castling indexes
 			algorithm.commitMove(LEFT_BLACK_ROOK_INITIAL_PLACEMENT, LEFT_BLACK_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
+			// commit castling move
 		}
 		else
 		{
-			rookMovement += (convertRookIndexes(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT) + "," + convertRookIndexes(RIGHT_BLACK_ROOK_CASTLING_PLACEMENT));
+			rookMovement += (convertRookIndexes(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT) + "," + 
+				convertRookIndexes(RIGHT_BLACK_ROOK_CASTLING_PLACEMENT));	// create rook castling indexes
 			algorithm.commitMove(RIGHT_BLACK_ROOK_INITIAL_PLACEMENT, RIGHT_BLACK_ROOK_CASTLING_PLACEMENT, this->_boardPieces);
+			// commit castling move
 		}
 	}
-
 	return rookMovement;
-	
 }
 
+/*
+* Function converts board placements indexes to 2D array indexes seperated by a coma
+* Input: boardIndex - board index string- e2
+* Output: rook index
+*/
 string BoardManager::convertRookIndexes(string boardIndex)
 {
 	string rookIndex = "";
 
-	rookIndex += std::to_string((CHESS_BOARD_SIDE - (boardIndex[1] - '1') - 1));
+	rookIndex += std::to_string((CHESS_BOARD_SIDE - (boardIndex[1] - '1') - 1));  // convert board index number 
+	// to 2D array index 
 	rookIndex += ",";
-	rookIndex += std::to_string((boardIndex[0] - 'a'));
+	rookIndex += std::to_string((boardIndex[0] - 'a'));		// convert board index letter to 2D array index 
 
 	return rookIndex;
 }

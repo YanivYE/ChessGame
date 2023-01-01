@@ -19,7 +19,9 @@ void main()
 	srand(time_t(NULL));
 	
 	Pipe p;
+
 	string ans;
+
 	bool isConnectedPipe = p.connectToPipe();
 
 	while (!isConnectedPipe)
@@ -68,7 +70,7 @@ void main()
 		strcpy_s(msgToGraphics, board.movePieces(msgFromGraphics, algorithm).c_str()); // msgToGraphics should contain the result of the operation
 
 		// return result to graphics		
-		p.sendMessageToGraphics(msgToGraphics);
+		p.sendMessageToGraphics(msgToGraphics);   
 
 		// get message from graphics
 		msgFromGraphics = p.getMessageFromGraphics();
