@@ -45,7 +45,7 @@ def handle_client(client_soc, client_address, color):
             if opposite_color in player_sockets:
                 opposite_player_socket = player_sockets[opposite_color]
                 send_message(opposite_player_socket, message, opposite_color)
-        except (ConnectionResetError, ConnectionAbortedError):
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
             print("Lost connection to {} ({})".format(client_address, color))
             num_connected_clients -= 1
 

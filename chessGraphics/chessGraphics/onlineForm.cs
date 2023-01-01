@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Diagnostics;
 
 namespace chessGraphics
 {
@@ -81,7 +77,11 @@ namespace chessGraphics
         private void initForm()
         {
             // start chess exe(engine)
-            System.Diagnostics.Process.Start("Chess.exe");
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = "Chess.exe";
+            startInfo.WindowStyle = ProcessWindowStyle.Minimized;
+
+            Process.Start(startInfo);
 
             enginePipe.connect();
 

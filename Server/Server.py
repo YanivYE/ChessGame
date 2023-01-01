@@ -85,7 +85,7 @@ def send_message(sock, msg, color):
 
 
 def main():
-    print("Server listening on IP address: " + IP)
+    #print("Server listening on IP address: " + IP)
     print("Status: Waiting For Connections...")
 
     while True:
