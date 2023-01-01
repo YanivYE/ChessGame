@@ -23,39 +23,53 @@ namespace chessGraphics
         bool isGameOver = false;
         
         const int BOARD_SIZE = 8;
-        static Server _server;
-        String _currentColor = "White";
+        static Server _server; // server
+        String _currentColor = "White"; // current player 
 
         public onlineForm(Server server)
         {
             InitializeComponent();
+            // set server member
             _server = server;
-            this.Text = "You Are Player Color: " + server._player;
 
+            // set form title, text to color
+            this.Text = "You Are Player Color: " + server._player;
+            this.playerColor.Text = server._player;
+
+            /// add background worker and let it check if it should recieve message
             backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            // check if this player color isn't the current player text(not his turn)
             if (!_server._player.Equals(lblCurrentPlayer.Text))
             {
+                // if so, get message from server for the current move
                 String move = _server.getMessageFromServer();
 
-                if (move != "quit" && move != "pong")
+                // if the move isn't to quit game
+                if (move != "quit")
                 {
+                    // do move to board
                     receiveMove(move);
                 }
+                // if the move is quit
                 else if(move == "quit")
                 {
+                    // send message to pipe to quit
                     enginePipe.sendEngineMove("quit");
                     enginePipe.close();
 
+                    // close client and show message
                     MessageBox.Show("Connection to server has lost. Bye bye.");
-                    Application.Exit(); 
+                    Application.Exit();
+                    
                     return;
                 }
             }
 
+            // check if at anytime server isn't connected, so exit
             if(!_server.isConnected())
             {
                 MessageBox.Show("Connection to server has lost. Bye bye.");
@@ -66,6 +80,7 @@ namespace chessGraphics
         
         private void initForm()
         {
+            // start chess exe(engine)
             System.Diagnostics.Process.Start("Chess.exe");
 
             enginePipe.connect();
@@ -74,6 +89,8 @@ namespace chessGraphics
 
                 lblWaiting.Visible = false;
                 lblCurrentPlayer.Visible = true;
+                playerColor.Visible = true;
+                thisPlayer.Visible = true;
                 label1.Visible = true;
 
                 string s = enginePipe.getEngineMessage();
@@ -92,8 +109,10 @@ namespace chessGraphics
                 }
             });
 
+            // if worker is asleep (idk why he likes to sleep and turn off)
             if(!backgroundWorker1.IsBusy)
             {
+                // wake him up
                 backgroundWorker1.RunWorkerAsync();
             }
         }
@@ -110,12 +129,15 @@ namespace chessGraphics
             connectionThread.Start();
             connectionThread.IsBackground = true;
 
+            // check if server is connected to a different thread
             checkServerThread = new Thread(checkServerConnection);
             checkServerThread.Start();
             checkServerThread.IsBackground = true;
 
+            // if worker is asleep (idk why he likes to sleep and turn off)
             if (!backgroundWorker1.IsBusy)
             {
+                // wake him up
                 backgroundWorker1.RunWorkerAsync();
             }
             //initForm();
@@ -123,8 +145,10 @@ namespace chessGraphics
 
         void checkServerConnection()
         {
+            // while thread is open
             while(1 == 1)
             {
+                // if isn't connected, exit
                 if (!_server.isConnected())
                 {
                     MessageBox.Show("Connection to server has lost. Bye bye.");
@@ -237,7 +261,6 @@ namespace chessGraphics
 
         void lastlbl_Click(object sender, EventArgs e)
         {
-
             if (!enginePipe.isConnected())
             {
                 MessageBox.Show("Connection to engine has lost. Bye bye.");
@@ -245,6 +268,7 @@ namespace chessGraphics
                 return;
             }
 
+            // check for server connection
             if (!_server.isConnected())
             {
                 MessageBox.Show("Connection to server has lost. Bye bye.");
@@ -252,6 +276,7 @@ namespace chessGraphics
                 return;
             }
 
+            // check if it's his turn
             if (_server._player == lblCurrentPlayer.Text)
             {
                 Button b = (Button)sender;
@@ -269,16 +294,15 @@ namespace chessGraphics
                         dstSquare = (Square)b.Tag;
                         matBoard[dstSquare.Row, dstSquare.Col].FlatAppearance.BorderColor = Color.DarkGreen;
 
-                        if (_currentColor.Equals(this.lblCurrentPlayer.Text))
+                        // if we are on this turn, and server is connected
+                        if (_currentColor.Equals(this.lblCurrentPlayer.Text) && _server.isConnected())
                         {
-                            if(_server.isConnected())
+                            // send the current message to server, if sending was invalid exit.
+                            if (!_server.sendMessageToServer(srcSquare.ToString() + dstSquare.ToString()))
                             {
-                                if(!_server.sendMessageToServer(srcSquare.ToString() + dstSquare.ToString()))
-                                {
-                                    MessageBox.Show("Connection to engine has lost. Bye bye.");
-                                    this.Close();
-                                    return;
-                                }
+                                MessageBox.Show("Connection to engine has lost. Bye bye.");
+                                this.Close();
+                                return;
                             }
                         }
 
@@ -296,6 +320,7 @@ namespace chessGraphics
             }  
             else
             {
+                // if not, bad player!!!
                 MessageBox.Show("Not Your Turn!", "Error");
             }
 
@@ -313,18 +338,23 @@ namespace chessGraphics
             "Invalid move - illegeal movement with piece",
             "Invalid move - source and dest are equal",
             "Game over - check mate",
-            "Valid move - you made castling",
+            "Valid move - you made castling", // castling move
             "Unknown message"
             };
 
         string convertEngineToText(string m)
         {
-            // TODO: check what does try parse do, and see if works not only with string with 1 tav
+            // because of the castling move, we needed to change the convert function a bit
             int res;
-            bool b = int.TryParse(new string(m[0], 1), out res);
+            bool b = int.TryParse(new string(m[0], 1), out res); // get only first tav of returned code
 
             if (!b || res < 0 || res >= messages.Length)
+                // return without the last tav(null)
                 return messages[messages.Length - 1];
+
+            // if the code is game over, add a pretty text and not just check mate...
+            if (res == 8)
+                return messages[res] + "\n" + lblCurrentPlayer.Text + "Wins!";
 
             return messages[res];
         }
@@ -362,6 +392,7 @@ namespace chessGraphics
                         return;
                     }
 
+                    // check if server still connected
                      if (!_server.isConnected())
                      {
                          MessageBox.Show("Connection to server has lost. Bye bye.");
@@ -371,7 +402,7 @@ namespace chessGraphics
 
                      string res = convertEngineToText(m);
 
-                     if (res.ToLower().StartsWith("game over"))
+                    if (res.ToLower().StartsWith("game over"))
                     {
                         isGameOver = true;
                     }
@@ -392,33 +423,40 @@ namespace chessGraphics
                         label2.Visible = true;
                         this.Refresh();
 
+                        // if move was valid, change color of current player
                         if (!((int.Parse(m[0].ToString())) > 1 && (int.Parse(m[0].ToString())) < 8))
                         {
                             _currentColor = lblCurrentPlayer.Text;
                         }
 
+                         // check if we code code 9 - castling move
                         if (m.ToLower().Contains("9"))
                         {
+                            // refresh form poperties
                             lblEngineCalc.Visible = false;
                             lblResult.Text = string.Format("{0}", res);
                             lblResult.Visible = true;
                             label2.Visible = true;
                             this.Refresh();
 
+                            // get the rook placement(src, dst) from the code
                             string[] rookPlacements = m.Split(',');
                             int srcRow = rookPlacements[1][0] - '0';
                             int dstRow = rookPlacements[3][0] - '0';
                             int srcCol = rookPlacements[2][0] - '0';
                             int dstCol = rookPlacements[4][0] - '0';
+
+                            // create 2 square that represnets there placements
                             Square srcRook = new Square(srcRow, srcCol);
                             Square dstRook = new Square(dstRow, dstCol);
 
+                            // move the rooks
                             matBoard[dstRook.Row, dstRook.Col].BackgroundImage = matBoard[srcRook.Row, srcRook.Col].BackgroundImage;
                             matBoard[srcRook.Row, srcRook.Col].BackgroundImage = null;
-
                             matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
                             matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
 
+                            // idk what does this do but magshimim put it in playmove
                             Invoke((MethodInvoker)delegate
                             {
                                 if (srcRook != null)
@@ -432,6 +470,7 @@ namespace chessGraphics
 
                             });
 
+                            // refresh form poperties
                             lblEngineCalc.Visible = false;
                             lblResult.Text = string.Format("{0}", res);
                             lblResult.Visible = true;
@@ -440,6 +479,7 @@ namespace chessGraphics
                         }
                     }
 
+                    // refresh form poperties
                     lblEngineCalc.Visible = false;
                     lblResult.Text = string.Format("{0}", res);
                     lblResult.Visible = true;
@@ -447,10 +487,13 @@ namespace chessGraphics
                     this.Refresh();
                  });
 
+                // if worker is asleep (idk why he likes to sleep and turn off)
                 if (!backgroundWorker1.IsBusy)
                 {
+                    // wake him up
                     backgroundWorker1.RunWorkerAsync();
                 }
+            
             }
                 catch
                 {
@@ -473,8 +516,10 @@ namespace chessGraphics
 
                     });
 
+                    // if worker is asleep (idk why he likes to sleep and turn off)
                     if (!backgroundWorker1.IsBusy)
                     {
+                        // wake him up
                         backgroundWorker1.RunWorkerAsync();
                     }
                 }
@@ -485,30 +530,37 @@ namespace chessGraphics
             }
         }
 
-        // This method will be called when the other player makes a move
+        /*
+         * Function gets a move, and plays the move on the board
+         */
         void receiveMove(string move)
         {
+            // get src, dst
             String src = move.Substring(0, 2);
             String dst = move.Substring(2, 2);
 
+            // check each cube on board
             for(int i = 0; i < BOARD_SIZE; i++)
             {
                 for(int j = 0; j < BOARD_SIZE; j++)
                 {
+                    // check if it's the src/dst square
                     if (matBoard[i, j].Tag.ToString().Equals(src))
                     {
+                        // if so set src sqaure to current square
                         srcSquare = (Square)matBoard[i, j].Tag;
                     }
                     else if (matBoard[i, j].Tag.ToString().Equals(dst))
                     {
+                        // if so set dst sqaure to current square
                         dstSquare = (Square)matBoard[i, j].Tag;
                     }
                 }
             }
 
+            // play move on board
             Thread t = new Thread(playMove);
             t.Start();
-
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -517,22 +569,6 @@ namespace chessGraphics
             enginePipe.close();
 
             Application.Exit();
-        }
-
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled == true)
-            {
-                Console.WriteLine("Canceled!");
-            }
-            else if (e.Error != null)
-            {
-                Console.WriteLine("Error: " + e.Error.Message);
-            }
-            else
-            {
-                Console.WriteLine("Done!");
-            }
         }
 
     }

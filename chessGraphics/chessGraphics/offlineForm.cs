@@ -216,28 +216,28 @@ namespace chessGraphics
             "Invalid move - illegeal movement with piece",
             "Invalid move - source and dest are equal",
             "Game over - check mate",
-            "Valid move - you made castling",
+            "Valid move - you made castling", // added castling message
             "Unknown message"
             };
 
 
         string convertEngineToText(string m)
         {
-            // TODO: check what does try parse do, and see if works not only with string with 1 tav
+            // because of the castling move, we needed to change the convert function a bit
             int res;
-            bool b = int.TryParse(new string(m[0], 1), out res);
+            bool b = int.TryParse(new string(m[0], 1), out res); // get only first tav of returned code
 
             if (!b || res < 0 || res >= messages.Length)
+                // return without the last tav(null)
                 return messages[messages.Length - 1];
             
+            // if the code is game over, add a pretty text and not just check mate...
             if(res == 8)
                 return messages[res] + "\n" + lblCurrentPlayer.Text + "Wins!";
 
             return messages[res];
         }
         
-
-
         void playMove()
         {
             if (isGameOver)
@@ -297,31 +297,34 @@ namespace chessGraphics
                         label2.Visible = true;
                         this.Refresh();
 
-                        //Square srcRook = new Square(1, 2);
-                        // TODO: code 9 - CASTLING check if contains made castling move
-                        // from messages array
+                        // check if we code code 9 - castling move
                         if (m.ToLower().Contains("9"))
                         {
+                            // refresh form poperties
                             lblEngineCalc.Visible = false;
                             lblResult.Text = string.Format("{0}", res);
                             lblResult.Visible = true;
                             label2.Visible = true;
                             this.Refresh();
 
+                            // get the rook placement(src, dst) from the code
                             string[] rookPlacements = m.Split(',');
                             int srcRow = rookPlacements[1][0] - '0';
                             int dstRow = rookPlacements[3][0] - '0';
                             int srcCol = rookPlacements[2][0] - '0';
                             int dstCol = rookPlacements[4][0] - '0';
+
+                            // create 2 square that represnets there placements
                             Square srcRook = new Square(srcRow, srcCol);
                             Square dstRook = new Square(dstRow, dstCol);
 
+                            // move the rooks
                             matBoard[dstRook.Row, dstRook.Col].BackgroundImage = matBoard[srcRook.Row, srcRook.Col].BackgroundImage;
                             matBoard[srcRook.Row, srcRook.Col].BackgroundImage = null;
-
                             matBoard[srcRook.Row, srcRook.Col].FlatAppearance.BorderColor = Color.Blue;
                             matBoard[dstRook.Row, dstRook.Col].FlatAppearance.BorderColor = Color.Blue;
 
+                             // idk what does this do but magshimim put it in playmove
                             Invoke((MethodInvoker)delegate
                             {
                                 if (srcRook != null)
@@ -335,6 +338,7 @@ namespace chessGraphics
 
                             });
 
+                            // refresh form poperties
                             lblEngineCalc.Visible = false;
                             lblResult.Text = string.Format("{0}", res);
                             lblResult.Visible = true;
@@ -343,6 +347,7 @@ namespace chessGraphics
                         }
                     }
 
+                    // refresh form poperties
                     lblEngineCalc.Visible = false;
                     lblResult.Text = string.Format("{0}", res);
                     lblResult.Visible = true;

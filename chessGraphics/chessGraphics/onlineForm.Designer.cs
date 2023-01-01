@@ -70,6 +70,8 @@
             this.label33 = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.thisPlayer = new System.Windows.Forms.Label();
+            this.playerColor = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnBoard
@@ -95,7 +97,7 @@
             this.lblMove.AutoSize = true;
             this.lblMove.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMove.ForeColor = System.Drawing.Color.Red;
-            this.lblMove.Location = new System.Drawing.Point(839, 123);
+            this.lblMove.Location = new System.Drawing.Point(839, 155);
             this.lblMove.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMove.Name = "lblMove";
             this.lblMove.Size = new System.Drawing.Size(203, 29);
@@ -108,7 +110,7 @@
             this.lblResult.AutoSize = true;
             this.lblResult.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblResult.ForeColor = System.Drawing.Color.Red;
-            this.lblResult.Location = new System.Drawing.Point(839, 210);
+            this.lblResult.Location = new System.Drawing.Point(839, 242);
             this.lblResult.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(40, 29);
@@ -121,7 +123,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(839, 32);
+            this.label1.Location = new System.Drawing.Point(839, 64);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(160, 29);
@@ -134,7 +136,7 @@
             this.lblCurrentPlayer.AutoSize = true;
             this.lblCurrentPlayer.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentPlayer.ForeColor = System.Drawing.Color.Red;
-            this.lblCurrentPlayer.Location = new System.Drawing.Point(999, 32);
+            this.lblCurrentPlayer.Location = new System.Drawing.Point(999, 64);
             this.lblCurrentPlayer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblCurrentPlayer.Name = "lblCurrentPlayer";
             this.lblCurrentPlayer.Size = new System.Drawing.Size(67, 29);
@@ -147,7 +149,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Red;
-            this.label2.Location = new System.Drawing.Point(839, 170);
+            this.label2.Location = new System.Drawing.Point(839, 202);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(198, 29);
@@ -172,7 +174,7 @@
             this.lblEngineCalc.AutoSize = true;
             this.lblEngineCalc.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEngineCalc.ForeColor = System.Drawing.Color.Red;
-            this.lblEngineCalc.Location = new System.Drawing.Point(839, 78);
+            this.lblEngineCalc.Location = new System.Drawing.Point(839, 110);
             this.lblEngineCalc.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblEngineCalc.Name = "lblEngineCalc";
             this.lblEngineCalc.Size = new System.Drawing.Size(221, 29);
@@ -532,6 +534,32 @@
             this.label34.TabIndex = 42;
             this.label34.Text = "h";
             // 
+            // thisPlayer
+            // 
+            this.thisPlayer.AutoSize = true;
+            this.thisPlayer.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.thisPlayer.ForeColor = System.Drawing.Color.Red;
+            this.thisPlayer.Location = new System.Drawing.Point(839, 35);
+            this.thisPlayer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.thisPlayer.Name = "thisPlayer";
+            this.thisPlayer.Size = new System.Drawing.Size(155, 29);
+            this.thisPlayer.TabIndex = 6;
+            this.thisPlayer.Text = "You are player:";
+            this.thisPlayer.Visible = false;
+            // 
+            // playerColor
+            // 
+            this.playerColor.AutoSize = true;
+            this.playerColor.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.playerColor.ForeColor = System.Drawing.Color.Red;
+            this.playerColor.Location = new System.Drawing.Point(999, 35);
+            this.playerColor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.playerColor.Name = "playerColor";
+            this.playerColor.Size = new System.Drawing.Size(67, 29);
+            this.playerColor.TabIndex = 7;
+            this.playerColor.Text = "White";
+            this.playerColor.Visible = false;
+            // 
             // onlineForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -572,6 +600,8 @@
             this.Controls.Add(this.lblEngineCalc);
             this.Controls.Add(this.lblWaiting);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.playerColor);
+            this.Controls.Add(this.thisPlayer);
             this.Controls.Add(this.lblCurrentPlayer);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblResult);
@@ -632,6 +662,8 @@
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label label34;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Label thisPlayer;
+        private System.Windows.Forms.Label playerColor;
     }
 }
 

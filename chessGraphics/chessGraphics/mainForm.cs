@@ -19,6 +19,7 @@ namespace chessGraphics
 
         private void button1_Click(object sender, EventArgs e)
         {
+            // transfer to offline game form
             offlineForm offlineGameForm = new offlineForm();
             offlineGameForm.Show();
 
@@ -27,14 +28,11 @@ namespace chessGraphics
 
         private void button2_Click(object sender, EventArgs e)
         {
+            // transfer to connection form
             connectionForm connection = new connectionForm();
             connection.Show();
 
             this.Hide();
-            //onlineForm onlineGameForm = new onlineForm();
-            //onlineGameForm.Show();
-
-            //this.Hide();
         }
 
         private void OnMouseEnterButton1(object sender, EventArgs e)
