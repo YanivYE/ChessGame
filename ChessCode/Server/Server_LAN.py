@@ -1,6 +1,8 @@
 import socket
 import threading
 import time
+import socket
+
 
 # num of connected clients
 num_connected_clients = 0
@@ -11,9 +13,18 @@ player_sockets = {}
 # port to listen on
 PORT = 3389
 
-# IP address to listen on
-hostname = socket.gethostname()
-IP = socket.gethostbyname(hostname)
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
 
 
 def handle_client(client_soc, client_address, color):
@@ -72,7 +83,7 @@ def handle_client(client_soc, client_address, color):
             break
 
 
-def create_listening_sock():
+def create_listening_sock(ip):
     """
     Function creates a listening socket and returns it.
     :return: a listening socket
@@ -81,7 +92,7 @@ def create_listening_sock():
     listening_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to the server's address and port
-    server_address = (IP, PORT)
+    server_address = (ip, PORT)
     listening_sock.bind(server_address)
 
     # Listen for incoming connections
@@ -105,13 +116,14 @@ def send_message(sock, msg, color):
 
 def main():
     global num_connected_clients
+    IP = get_ip()
 
     # print ip
     print("Server listening on IP address: " + IP)
     print("Status: Waiting For Connections...")
 
     # get new listening socket
-    listening_sock = create_listening_sock()
+    listening_sock = create_listening_sock(IP)
 
     while True:
         # set new client properties to listening socket accepted client
