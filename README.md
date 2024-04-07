@@ -24,9 +24,9 @@ A Chess Game simulator offering both SinglePlayer and MultyPlayer options.
 
 To start the game, run the following command in your terminal:
 
-\```bash
+```bash
 ChessGame/chessGraphics.exe
-\```
+```
 
 ### Game Modes
 
@@ -41,12 +41,15 @@ For the Multiplayer mode, you have two options:
 1. **LAN Server**:
     - Run the LAN server in your terminal:
 
-      \```bash
+      ```bash
       ChessGame/Server_lan.exe
-      \```
+      ```
 
     - Insert the given IP address from the MultiPlayer screen
 
 2. **Public IP adress**:
     - Insert the following IP address: 34.165.202.107
+     ```bash
+       34.165.202.107
+      ```
 
