@@ -49,7 +49,7 @@ For the Multiplayer mode, you have two options:
 
 2. **Public IP adress**:
     - Insert the following IP address: 34.165.202.107
-     ```bash
+       ```bash
        34.165.202.107
-      ```
+       ```
 
